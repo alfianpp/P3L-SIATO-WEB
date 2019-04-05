@@ -14,13 +14,7 @@ class AppHelper
         if($request->has($fillable) && $request->filled($fillable)) {
             return true;
         }
-        else if($request->has($notnull) && $request->filled($notnull)) {
-            foreach($nullable as $key) {
-                if($request->has($key) && !$request->filled($key)) {
-                    return false;
-                }
-            }
-            
+        else if($request->has($notnull) && $request->filled($notnull)) {            
             return true;
         }
         else {

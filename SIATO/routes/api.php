@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::prefix('auth')->group(function () {
+    Route::post('pegawai', 'API\PegawaiController@login');
+});
+
 Route::prefix('data')->group(function () {
     Route::apiResource('pegawai', 'API\PegawaiController')->except(['index', 'show']);
     Route::post('pegawai/index', 'API\PegawaiController@index');
@@ -41,4 +45,24 @@ Route::prefix('data')->group(function () {
     Route::apiResource('cabang', 'API\CabangController')->except(['index', 'show']);
     Route::post('cabang/index', 'API\CabangController@index');
     Route::post('cabang/{cabang}', 'API\CabangController@show');
+});
+
+Route::prefix('transaksi')->group(function () {
+    Route::prefix('pengadaan')->group(function () {
+        Route::apiResource('data', 'API\PengadaanBarangController')->except(['index', 'show']);
+        Route::post('index', 'API\PengadaanBarangController@index');
+        Route::post('data/{pengadaan}', 'API\PengadaanBarangController@show');
+
+        Route::apiResource('detail', 'API\DetailPengadaanBarangController')->except(['index', 'show']);
+        Route::post('detail/{pengadaan}', 'API\DetailPengadaanBarangController@show');
+    });
+
+    Route::prefix('penjualan')->group(function () {
+        Route::apiResource('data', 'API\PenjualanController')->except(['index', 'show']);
+        Route::post('index', 'API\PenjualanController@index');
+        Route::post('data/{penjualan}', 'API\PenjualanController@show');
+
+        Route::apiResource('detail', 'API\DetailPenjualanController')->except(['index', 'show']);
+        Route::post('detail/{penjualan}', 'API\DetailPenjualanController@show');
+    });
 });
