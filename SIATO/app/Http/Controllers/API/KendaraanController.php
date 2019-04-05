@@ -28,7 +28,7 @@ class KendaraanController extends Controller
         'nomor_polisi' => 'alpha_num|max:12|unique:kendaraan',
         'merk' => 'alpha_spaces|max:32',
         'tipe' => 'alpha_num_spaces|max:32',
-        'id_pemilik' => 'integer|digits:1|exists:konsumen,id',
+        'id_pemilik' => 'integer|digits:1|exists:konsumen,id'
     ];
 
     /**

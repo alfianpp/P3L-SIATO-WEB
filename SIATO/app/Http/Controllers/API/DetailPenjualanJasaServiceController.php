@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Konsumen;
-use App\Http\Resources\Konsumen as KonsumenResource;
+use App\JasaService;
+use App\DetailPenjualanJasaService;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,12 +11,12 @@ use App\Http\Controllers\Controller;
 use AppHelper;
 use APIHelper;
 
-class KonsumenController extends Controller
+class DetailPenjualanJasaServiceController extends Controller
 {
     var $permitted_role = ['0', '1'];
 
     var $nullable = [];
-    var $uneditable = [];
+    var $uneditable = ['id_detail_penjualan', 'id_jasaservice'];
 
     var $response = [
         'error' => false,
@@ -25,28 +25,19 @@ class KonsumenController extends Controller
     ];
 
     var $rules = [
-        'nama' => 'alpha_spaces|max:64',
-        'nomor_telepon' => 'numeric|digits_between:10,13',
-        'alamat' => ''
+        'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
+        'id_jasaservice' => 'integer|exists:jasa_service,id',
+        'jumlah' => 'integer|min:1'
     ];
 
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = KonsumenResource::collection(Konsumen::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
-
-        return APIHelper::JSONResponse($this->response);
+        //
     }
 
     /**
@@ -58,31 +49,34 @@ class KonsumenController extends Controller
     public function store(Request $request)
     {
         if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = new Konsumen;
+            $detail_penjualan_jasaservice = new DetailPenjualanJasaService;
 
-            if(AppHelper::isFillableFilled($request, $konsumen->getFillable(), $this->nullable)) {
+            if(AppHelper::isFillableFilled($request, $detail_penjualan_jasaservice->getFillable(), $this->nullable)) {
                 $validation = AppHelper::isValidRequest($request, $this->rules);
     
                 if($validation['isValid']) {
-                    $konsumen->fill($request->only($konsumen->getFillable()));
+                    $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
+                    
+                    $jasa_service = JasaService::find($request->id_jasaservice);
+                    $detail_penjualan_jasaservice->harga = $jasa_service->harga_jual;
     
-                    if($konsumen->save()) {
-                        $this->response['message'] = 'Berhasil menambah data konsumen.';
+                    if($detail_penjualan_jasaservice->save()) {
+                        $this->response['message'] = 'Berhasil menambah data penjualan jasa service.';
                     }
                     else {
                         $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data konsumen.';
+                        $this->response['message'] = 'Gagal menambah data penjualan jasa service.';
                     }
                 }
                 else {
                     $this->response['error'] = true;
-                    $this->response['message'] = 'Data konsumen yang dimasukkan tidak valid.';
+                    $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak valid.';
                     $this->response['data'] = $validation['errors'];
                 }
             }
             else {
                 $this->response['error'] = true;
-                $this->response['message'] = 'Data konsumen yang dimasukkan tidak lengkap.';
+                $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak lengkap.';
             }
         }
         else {
@@ -96,29 +90,12 @@ class KonsumenController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
-
-            if($konsumen) {
-                $this->response['data'] = new KonsumenResource($konsumen);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
-            }
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
-
-        return APIHelper::JSONResponse($this->response);
+        //
     }
 
     /**
@@ -131,33 +108,33 @@ class KonsumenController extends Controller
     public function update(Request $request, $id)
     {
         if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
+            $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
 
-            if($konsumen) {
+            if($detail_penjualan_jasaservice) {
                 $validation = AppHelper::isValidRequest($request, $this->rules);
     
                 if($validation['isValid']) {
-                    $konsumen->fill(array_filter(collect($request->only($konsumen->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    $detail_penjualan_jasaservice->fill(array_filter(collect($request->only($detail_penjualan_jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                         return ($value !== null);
                     }));
     
-                    if($konsumen->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data konsumen.';
+                    if($detail_penjualan_jasaservice->save()) {
+                        $this->response['message'] = 'Berhasil memperbarui data penjualan jasa service.';
                     }
                     else {
                         $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data konsumen.';
+                        $this->response['message'] = 'Gagal memperbarui data penjualan jasa service.';
                     }
                 }
                 else {
                     $this->response['error'] = true;
-                    $this->response['message'] = 'Data konsumen yang dimasukkan tidak valid.';
+                    $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak valid.';
                     $this->response['data'] = $validation['errors'];
                 }
             }
             else {
                 $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
+                $this->response['message'] = 'Data penjualan jasa service tidak ditemukan.';
             }
         }
         else {
@@ -178,20 +155,20 @@ class KonsumenController extends Controller
     public function destroy(Request $request, $id)
     {
         if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
-            
-            if($konsumen) {
-                if($konsumen->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data konsumen.';
+            $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
+
+            if($detail_penjualan_jasaservice) {
+                if($detail_penjualan_jasaservice->delete()) {
+                    $this->response['message'] = 'Berhasil menghapus data penjualan jasa service.';
                 }
                 else {
                     $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data konsumen.';
+                    $this->response['message'] = 'Gagal menghapus data penjualan jasa service.';
                 }
             }
             else {
                 $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
+                $this->response['message'] = 'Data penjualan jasa service tidak ditemukan.';
             }
         }
         else {

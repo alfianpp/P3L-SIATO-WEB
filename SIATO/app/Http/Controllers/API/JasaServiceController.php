@@ -26,7 +26,7 @@ class JasaServiceController extends Controller
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64|unique:jasa_service',
-        'harga_jual' => 'numeric|digits_between:1,11',
+        'harga_jual' => 'numeric|digits_between:1,11'
     ];
 
     /**

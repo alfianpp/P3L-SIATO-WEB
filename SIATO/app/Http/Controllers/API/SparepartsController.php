@@ -40,7 +40,7 @@ class SparepartsController extends Controller
         'harga_jual' => 'numeric|digits_between:1,11',
         'stok' => 'integer|min:0',
         'stok_minimal' => 'integer|min:0',
-        'gambar' => 'image64:jpeg,jpg,png',
+        'gambar' => 'image64:jpeg,jpg,png'
     ];
 
     /**
