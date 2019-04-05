@@ -34,7 +34,7 @@ class PegawaiController extends Controller
         'nomor_telepon' => 'numeric|digits_between:10,13',
         'alamat' => '',
         'gaji' => 'numeric|digits_between:1,11',
-        'role' => 'integer|digits:1',
+        'role' => 'integer|digits:1'
     ];
 
     /**

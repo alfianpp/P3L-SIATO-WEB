@@ -28,7 +28,7 @@ class SupplierController extends Controller
         'nama' => 'alpha_spaces|max:64',
         'alamat' => '',
         'nama_sales' => 'alpha_spaces|max:64',
-        'nomor_telepon_sales' => 'numeric|digits_between:10,13',
+        'nomor_telepon_sales' => 'numeric|digits_between:10,13'
     ];
 
     /**
