@@ -165,7 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Intervention\Image\ImageServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -227,7 +227,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'AppHelper' => App\Helpers\AppHelper::class,
         'APIHelper' => App\Helpers\APIHelper::class,
-
+        'Image' => Intervention\Image\Facades\Image::class,
+        
     ],
 
 ];

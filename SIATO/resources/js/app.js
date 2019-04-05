@@ -20,7 +20,9 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('admin-kelola-pegawai', require('./components/admin/kelola/pegawai/index.vue').default);
+Vue.component('admin-kelola-spareparts', require('./components/admin/kelola/spareparts/index.vue').default);
+Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/index.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,5 +31,16 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    data: {
+        app: {
+            url: 'http://127.0.0.1:8000/',
+        },
+        api_key: null,
+    },
+    created() {
+        if(document.querySelector('meta[name="api_key"]')) {
+            this.api_key = document.querySelector('meta[name="api_key"]').getAttribute('content')
+        }
+    },
 });
