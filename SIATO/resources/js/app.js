@@ -22,7 +22,9 @@ window.Vue = require('vue');
 
 Vue.component('admin-kelola-pegawai', require('./components/admin/kelola/pegawai/index.vue').default);
 Vue.component('admin-kelola-spareparts', require('./components/admin/kelola/spareparts/index.vue').default);
+Vue.component('admin-kelola-konsumen', require('./components/admin/kelola/konsumen/index.vue').default);
 Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/index.vue').default);
+Vue.component('admin-kelola-kendaraan', require('./components/admin/kelola/kendaraan/index.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

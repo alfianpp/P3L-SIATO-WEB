@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 class AdminController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -37,8 +32,18 @@ class AdminController extends Controller
         return view('admin.kelola.spareparts');
     }
 
+    public function kelolaKonsumen()
+    {
+        return view('admin.kelola.konsumen');
+    }
+
     public function kelolaCabang()
     {
         return view('admin.kelola.cabang');
+    }
+
+    public function kelolaKendaraan()
+    {
+        return view('admin.kelola.kendaraan');
     }
 }

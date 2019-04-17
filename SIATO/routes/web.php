@@ -17,21 +17,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::prefix('admin')->group(function() {
+Route::prefix('admin')->group(function () {
     Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
 
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
 
-    Route::prefix('kelola')->group(function() {
+    Route::prefix('kelola')->group(function () {
         Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         });
 
         Route::get('pegawai', 'AdminController@kelolaPegawai')->name('admin.kelola.pegawai');
         Route::get('spareparts', 'AdminController@kelolaSpareparts')->name('admin.kelola.spareparts');
+        Route::get('konsumen', 'AdminController@kelolaKonsumen')->name('admin.kelola.konsumen');
         Route::get('cabang', 'AdminController@kelolaCabang')->name('admin.kelola.cabang');
+        Route::get('kendaraan', 'AdminController@kelolaKendaraan')->name('admin.kelola.kendaraan');
     });
 });
 

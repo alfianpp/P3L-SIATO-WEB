@@ -50,6 +50,12 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.cabang' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.cabang') }}"><i class="fa fa-database"></i> <span>Cabang</span></a>
                     </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.konsumen' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.konsumen') }}"><i class="fa fa-database"></i> <span>Konsumen</span></a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.kendaraan' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.kendaraan') }}"><i class="fa fa-database"></i> <span>Kendaraan</span></a>
+                    </li>
                 </ul>
             </section>
         </aside>
