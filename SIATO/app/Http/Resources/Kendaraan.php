@@ -3,13 +3,15 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Konsumen as KonsumenResource;
 
 class Kendaraan extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     public function toArray($request)
@@ -18,7 +20,7 @@ class Kendaraan extends JsonResource
             'nomor_polisi' => $this->nomor_polisi,
             'merk' => $this->merk,
             'tipe' => $this->tipe,
-            'id_pemilik' => $this->id_pemilik,
+            'pemilik' => new KonsumenResource($this->konsumen),
         ];
     }
 }

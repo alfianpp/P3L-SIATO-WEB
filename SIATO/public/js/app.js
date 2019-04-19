@@ -2061,6 +2061,661 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _konsumen_form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../konsumen/form-tambah-ubah.vue */ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formTambahUbah: _konsumen_form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['formAction', 'selectedkendaraan', 'fromTambahUbah'],
+  data: function data() {
+    return {
+      kendaraan: {
+        id: null,
+        nomor_polisi: null,
+        merk: null,
+        tipe: null,
+        id_pemilik: null
+      },
+      response: {
+        error: false,
+        message: '',
+        data: null
+      },
+      reloadList: false,
+      listKonsumen: null
+    };
+  },
+  methods: {
+    getAllKonsumen: function getAllKonsumen() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/data/konsumen/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.listKonsumen = response.data.data;
+
+          if ($.fn.dataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().destroy();
+          }
+        }
+      });
+    },
+    addKendaraaan: function addKendaraaan() {
+      var _this2 = this;
+
+      axios.post(this.$root.app.url + 'api/data/kendaraan/', {
+        nomor_polisi: this.kendaraan.nomor_polisi,
+        merk: this.kendaraan.merk,
+        tipe: this.kendaraan.tipe,
+        id_pemilik: this.kendaraan.id_pemilik,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this2.response = response.data;
+
+        if (_this2.response.error == false) {
+          alert(_this2.response.message);
+          _this2.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    updatekendaraan: function updatekendaraan() {
+      var _this3 = this;
+
+      axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.id, {
+        nomor_polisi: this.kendaraan.nomor_polisi,
+        merk: this.kendaraan.merk,
+        tipe: this.kendaraan.tipe,
+        id_pemilik: this.kendaraan.id_pemilik,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this3.response = response.data;
+
+        if (_this3.response.error == false) {
+          alert(_this3.response.message);
+          _this3.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    close: function close() {
+      this.kendaraan.id = null;
+      this.kendaraan.nomor_polisi = null;
+      this.kendaraan.merk = null;
+      this.kendaraan.tipe = null;
+      this.kendaraan.id_pemilik = null;
+      this.response.error = false;
+      this.response.message = '';
+      this.response.data = null;
+      this.$emit('close', this.reloadList);
+      this.reloadList = false;
+    }
+  },
+  created: function created() {
+    this.getAllKonsumen();
+
+    if (this.selectedkendaraan != null) {
+      this.kendaraan.id = this.selectedkendaraan.id;
+      this.kendaraan.nomor_polisi = this.selectedkendaraan.nomor_polisi;
+      this.kendaraan.merk = this.selectedkendaraan.merk;
+      this.kendaraan.tipe = this.selectedkendaraan.tipe;
+      this.kendaraan.id_pemilik = this.selectedkendaraan.id_pemilik;
+    }
+  },
+  mounted: function mounted() {
+    $(this.$refs.modal).on("hidden.bs.modal", this.close);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue */ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formTambahUbah: _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      listKendaraan: null,
+      listKonsumen: null,
+      formAction: null,
+      selectedKendaraan: null,
+      showForm: false
+    };
+  },
+  methods: {
+    getAllKendaraan: function getAllKendaraan() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/data/kendaraan/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.listKendaraan = response.data.data;
+
+          if ($.fn.dataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().destroy();
+          }
+        }
+      });
+    },
+    deleteKendaraan: function deleteKendaraan(kode) {
+      var _this2 = this;
+
+      if (confirm("Apakah Anda ingin melanjutkan untuk menghapus kendaraan ini?")) {
+        axios["delete"](this.$root.app.url + 'api/data/kendaraan/' + kode, {
+          data: {
+            api_key: this.$root.api_key
+          }
+        }).then(function (response) {
+          if (response.data.error == false) {
+            alert(response.data.message);
+
+            _this2.getAllKendaraan();
+          }
+        });
+      }
+    },
+    openForm: function openForm(action) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      this.formAction = action;
+
+      if (index != null) {
+        this.selectedKendaraan = this.listKendaraan[index];
+      }
+
+      this.showForm = true;
+    },
+    closeForm: function closeForm(reloadList) {
+      this.formAction = null;
+      this.selectedKendaraan = null;
+      this.showForm = false;
+
+      if (reloadList) {
+        this.getAllKendaraan();
+      }
+    }
+  },
+  created: function created() {
+    this.getAllKendaraan();
+  },
+  updated: function updated() {
+    this.$nextTick(function () {
+      if (!$.fn.dataTable.isDataTable('#mytable')) {
+        $('#mytable').DataTable({
+          'autoWidth': true,
+          'info': true,
+          'lengthChange': true,
+          'ordering': true,
+          'paging': true,
+          'searching': true,
+          'order': [[0, 'asc']],
+          'columnDefs': [{
+            "orderable": false,
+            "targets": [0, 2, 3, 4]
+          }, {
+            "searchable": false,
+            "targets": [0, 2, 3, 4]
+          }]
+        });
+      }
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['formAction', 'selectedKonsumen'],
+  data: function data() {
+    return {
+      konsumen: {
+        id: null,
+        nama: null,
+        nomor_telepon: null,
+        alamat: null
+      },
+      response: {
+        error: false,
+        message: '',
+        data: null
+      },
+      reloadList: false
+    };
+  },
+  methods: {
+    addKonsumen: function addKonsumen() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/data/konsumen/', {
+        nama: this.konsumen.nama,
+        nomor_telepon: this.konsumen.nomor_telepon,
+        alamat: this.konsumen.alamat,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this.response = response.data;
+
+        if (_this.response.error == false) {
+          alert(_this.response.message);
+          _this.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    updateKonsumen: function updateKonsumen() {
+      var _this2 = this;
+
+      axios.put(this.$root.app.url + 'api/data/konsumen/' + this.konsumen.id, {
+        nama: this.konsumen.nama,
+        nomor_telepon: this.konsumen.nomor_telepon,
+        alamat: this.konsumen.alamat,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this2.response = response.data;
+
+        if (_this2.response.error == false) {
+          alert(_this2.response.message);
+          _this2.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    close: function close() {
+      this.konsumen.id = null;
+      this.konsumen.nama = null;
+      this.konsumen.nomor_telepon = null;
+      this.konsumen.alamat = null;
+      this.response.error = false;
+      this.response.message = '';
+      this.response.data = null;
+      this.$emit('close', this.reloadList);
+      this.reloadList = false;
+    }
+  },
+  created: function created() {
+    if (this.selectedKonsumen != null) {
+      this.konsumen.id = this.selectedKonsumen.id;
+      this.konsumen.nama = this.selectedKonsumen.nama;
+      this.konsumen.nomor_telepon = this.selectedKonsumen.nomor_telepon;
+      this.konsumen.alamat = this.selectedKonsumen.alamat;
+    }
+  },
+  mounted: function mounted() {
+    $(this.$refs.modal).on("hidden.bs.modal", this.close);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue */ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formTambahUbah: _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      listKonsumen: null,
+      formAction: null,
+      selectedKonsumen: null,
+      showForm: false
+    };
+  },
+  methods: {
+    getAllKonsumen: function getAllKonsumen() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/data/konsumen/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.listKonsumen = response.data.data;
+
+          if ($.fn.dataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().destroy();
+          }
+        }
+      });
+    },
+    deleteKonsumen: function deleteKonsumen(kode) {
+      var _this2 = this;
+
+      if (confirm("Apakah Anda ingin melanjutkan untuk menghapus konsumen ini?")) {
+        axios["delete"](this.$root.app.url + 'api/data/konsumen/' + kode, {
+          data: {
+            api_key: this.$root.api_key
+          }
+        }).then(function (response) {
+          if (response.data.error == false) {
+            alert(response.data.message);
+
+            _this2.getAllKonsumen();
+          }
+        });
+      }
+    },
+    openForm: function openForm(action) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      this.formAction = action;
+
+      if (index != null) {
+        this.selectedKonsumen = this.listKonsumen[index];
+      }
+
+      this.showForm = true;
+    },
+    closeForm: function closeForm(reloadList) {
+      this.formAction = null;
+      this.selectedKonsumen = null;
+      this.showForm = false;
+
+      if (reloadList) {
+        this.getAllKonsumen();
+      }
+    }
+  },
+  created: function created() {
+    this.getAllKonsumen();
+  },
+  updated: function updated() {
+    this.$nextTick(function () {
+      if (!$.fn.dataTable.isDataTable('#mytable')) {
+        $('#mytable').DataTable({
+          'autoWidth': true,
+          'info': true,
+          'lengthChange': true,
+          'ordering': true,
+          'paging': true,
+          'searching': true,
+          'order': [[0, 'asc']],
+          'columnDefs': [{
+            "orderable": false,
+            "targets": [0, 2, 3, 4]
+          }, {
+            "searchable": false,
+            "targets": [0, 2, 3, 4]
+          }]
+        });
+      }
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/pegawai/form-tambah-ubah.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/pegawai/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
@@ -40151,6 +40806,1042 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda&":
+/*!******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda& ***!
+  \******************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      ref: "modal",
+      staticClass: "modal fade",
+      attrs: { id: "form-tambah-ubah" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Tambah Data Kendaraan")
+                ])
+              : _vm.formAction == "UBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Ubah Data Kendaraan")
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.response.error == true
+              ? _c(
+                  "div",
+                  { staticClass: "alert alert-danger alert-dismissible" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [_vm._v("×")]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(1),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.response.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("form", { staticClass: "form-horizontal" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.nomor_polisi
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Nomor Polisi")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.kendaraan.nomor_polisi,
+                          expression: "kendaraan.nomor_polisi"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Nomor Polisi" },
+                      domProps: { value: _vm.kendaraan.nomor_polisi },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.kendaraan,
+                            "nomor_polisi",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.nomor_polisi
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.nomor_polisi[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.merk
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Merk")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.kendaraan.merk,
+                          expression: "kendaraan.merk"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Merk" },
+                      domProps: { value: _vm.kendaraan.merk },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.kendaraan, "merk", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.merk
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.merk[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.tipe
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Tipe")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.kendaraan.tipe,
+                          expression: "kendaraan.tipe"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Tipe" },
+                      domProps: { value: _vm.kendaraan.tipe },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.kendaraan, "tipe", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.tipe
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.tipe[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.id_pemilik
+                  }
+                },
+                [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-sm-3 control-label",
+                      attrs: { for: "pemilik" }
+                    },
+                    [_vm._v("Pemilik")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.kendaraan.id_pemilik,
+                            expression: "kendaraan.id_pemilik"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { id: "pemilik" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.kendaraan,
+                              "id_pemilik",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      _vm._l(_vm.listKonsumen, function(konsumen, index) {
+                        return _c(
+                          "option",
+                          { key: index, domProps: { value: konsumen.id } },
+                          [_vm._v(_vm._s(konsumen.nama))]
+                        )
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.id_pemilik
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.id_pemilik[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Batal")]
+            ),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addKendaraaan()
+                      }
+                    }
+                  },
+                  [_vm._v("Tambah")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.formAction == "UBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updatekendaraan()
+                      }
+                    }
+                  },
+                  [_vm._v("Ubah")]
+                )
+              : _vm._e()
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [
+      _c("i", { staticClass: "icon fa fa-ban" }),
+      _vm._v(" Terjadi Kesalahan")
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "content-wrapper" },
+    [
+      _c("section", { staticClass: "content-header" }, [
+        _c("h1", [_vm._v("Kelola Data Kendaraan")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "pull-right",
+            staticStyle: {
+              "margin-top": "0",
+              "margin-bottom": "0",
+              position: "absolute",
+              top: "11px",
+              right: "15px"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-block btn-success",
+                attrs: {
+                  type: "button",
+                  "data-toggle": "modal",
+                  "data-target": "#form-tambah-ubah"
+                },
+                on: {
+                  click: function($event) {
+                    return _vm.openForm("TAMBAH")
+                  }
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus" }), _vm._v(" Tambah")]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("section", { staticClass: "content" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-xs-12" }, [
+            _c("div", { staticClass: "box" }, [
+              _c("div", { staticClass: "box-body" }, [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered table-hover",
+                    attrs: { id: "mytable" }
+                  },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.listKendaraan, function(kendaraan, index) {
+                        return _c("tr", { key: index }, [
+                          _c("td", [_vm._v(_vm._s(index + 1))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(kendaraan.nomor_polisi))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(kendaraan.merk))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(kendaraan.tipe))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(kendaraan.pemilik.nama))]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "pull-right" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary btn-sm",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": "#form-tambah-ubah"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openForm("UBAH", index)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-pencil" }),
+                                _vm._v(" Ubah")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteKendaraan(kendaraan.id)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-trash" }),
+                                _vm._v(" Hapus")
+                              ]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.showForm == true
+        ? _c("form-tambah-ubah", {
+            attrs: {
+              "form-action": _vm.formAction,
+              "selected-kendaraan": _vm.selectedKendaraan
+            },
+            on: { close: _vm.closeForm }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nomor Polisi")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Merk")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Tipe")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Pemilik")]),
+        _vm._v(" "),
+        _c("th")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      ref: "modal",
+      staticClass: "modal fade",
+      attrs: { id: "form-tambah-ubah" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Tambah Data Konsumen")
+                ])
+              : _vm.formAction == "UBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Ubah Data Konsumen")
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.response.error == true
+              ? _c(
+                  "div",
+                  { staticClass: "alert alert-danger alert-dismissible" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [_vm._v("×")]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(1),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.response.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("form", { staticClass: "form-horizontal" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.nama
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Nama")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.konsumen.nama,
+                          expression: "konsumen.nama"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Nama" },
+                      domProps: { value: _vm.konsumen.nama },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.konsumen, "nama", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.nama
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.nama[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.nomor_telepon
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Nomor telepon")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.konsumen.nomor_telepon,
+                          expression: "konsumen.nomor_telepon"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Nomor telepon" },
+                      domProps: { value: _vm.konsumen.nomor_telepon },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.konsumen,
+                            "nomor_telepon",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.merk
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.nomor_telepon[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.alamat
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Alamat")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.konsumen.alamat,
+                          expression: "konsumen.alamat"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", rows: "3", placeholder: "Alamat" },
+                      domProps: { value: _vm.konsumen.alamat },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.konsumen, "alamat", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.tipe
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.alamat[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Batal")]
+            ),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addKonsumen()
+                      }
+                    }
+                  },
+                  [_vm._v("Tambah")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.formAction == "UBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updateKonsumen()
+                      }
+                    }
+                  },
+                  [_vm._v("Ubah")]
+                )
+              : _vm._e()
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [
+      _c("i", { staticClass: "icon fa fa-ban" }),
+      _vm._v(" Terjadi Kesalahan")
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "content-wrapper" },
+    [
+      _c("section", { staticClass: "content-header" }, [
+        _c("h1", [_vm._v("Kelola Data Konsumen")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "pull-right",
+            staticStyle: {
+              "margin-top": "0",
+              "margin-bottom": "0",
+              position: "absolute",
+              top: "11px",
+              right: "15px"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-block btn-success",
+                attrs: {
+                  type: "button",
+                  "data-toggle": "modal",
+                  "data-target": "#form-tambah-ubah"
+                },
+                on: {
+                  click: function($event) {
+                    return _vm.openForm("TAMBAH")
+                  }
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus" }), _vm._v(" Tambah")]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("section", { staticClass: "content" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-xs-12" }, [
+            _c("div", { staticClass: "box" }, [
+              _c("div", { staticClass: "box-body" }, [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered table-hover",
+                    attrs: { id: "mytable" }
+                  },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.listKonsumen, function(konsumen, index) {
+                        return _c("tr", { key: index }, [
+                          _c("td", [_vm._v(_vm._s(index + 1))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(konsumen.nama))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(konsumen.nomor_telepon))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(konsumen.alamat))]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "pull-right" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary btn-sm",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": "#form-tambah-ubah"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openForm("UBAH", index)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-pencil" }),
+                                _vm._v(" Ubah")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteKonsumen(konsumen.id)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-trash" }),
+                                _vm._v(" Hapus")
+                              ]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.showForm == true
+        ? _c("form-tambah-ubah", {
+            attrs: {
+              "form-action": _vm.formAction,
+              "selected-konsumen": _vm.selectedKonsumen
+            },
+            on: { close: _vm.closeForm }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nama")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nomor Telepon")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Alamat")]),
+        _vm._v(" "),
+        _c("th")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/pegawai/form-tambah-ubah.vue?vue&type=template&id=409db970&":
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/kelola/pegawai/form-tambah-ubah.vue?vue&type=template&id=409db970& ***!
@@ -55018,9 +56709,11 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 Vue.component('admin-kelola-pegawai', __webpack_require__(/*! ./components/admin/kelola/pegawai/index.vue */ "./resources/js/components/admin/kelola/pegawai/index.vue")["default"]);
 Vue.component('admin-kelola-spareparts', __webpack_require__(/*! ./components/admin/kelola/spareparts/index.vue */ "./resources/js/components/admin/kelola/spareparts/index.vue")["default"]);
+Vue.component('admin-kelola-konsumen', __webpack_require__(/*! ./components/admin/kelola/konsumen/index.vue */ "./resources/js/components/admin/kelola/konsumen/index.vue")["default"]);
 Vue.component('admin-kelola-cabang', __webpack_require__(/*! ./components/admin/kelola/cabang/index.vue */ "./resources/js/components/admin/kelola/cabang/index.vue")["default"]);
 Vue.component('admin-pengadaan-barang', __webpack_require__(/*! ./components/admin/pengadaan_barang/index.vue */ "./resources/js/components/admin/pengadaan_barang/index.vue")["default"]);
 Vue.component('admin-pengadaan-barang-detail', __webpack_require__(/*! ./components/admin/pengadaan_barang/detail.vue */ "./resources/js/components/admin/pengadaan_barang/detail.vue")["default"]);
+Vue.component('admin-kelola-kendaraan', __webpack_require__(/*! ./components/admin/kelola/kendaraan/index.vue */ "./resources/js/components/admin/kelola/kendaraan/index.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -55235,6 +56928,282 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_ed29700a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_ed29700a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=template&id=89748bda& */ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda&");
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda& ***!
+  \************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=template&id=89748bda& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/form-tambah-ubah.vue?vue&type=template&id=89748bda&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_89748bda___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/index.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/index.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=8257b484& */ "./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/kelola/kendaraan/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=8257b484& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/kendaraan/index.vue?vue&type=template&id=8257b484&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_8257b484___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=template&id=6492813c& */ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c&");
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=template&id=6492813c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/form-tambah-ubah.vue?vue&type=template&id=6492813c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_6492813c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/index.vue":
+/*!*****************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/index.vue ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=43f15bcf& */ "./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/kelola/konsumen/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf& ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=43f15bcf& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/kelola/konsumen/index.vue?vue&type=template&id=43f15bcf&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_43f15bcf___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -55810,8 +57779,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\My Documents\Project\WEB\P3L-SIATO-WEB\SIATO\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\My Documents\Project\WEB\P3L-SIATO-WEB\SIATO\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\P3L\P3L-SIATO-WEB\SIATO\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\P3L\P3L-SIATO-WEB\SIATO\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -61,4 +61,9 @@ class Kendaraan extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function konsumen()
+    {
+        return $this->belongsTo('App\Konsumen', 'id_pemilik');
+    }
 }
