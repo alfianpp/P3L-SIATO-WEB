@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Kelola Data Pegawai</h1>
+            <h1>Pengadaan Barang</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
                 <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
             </div>
@@ -16,28 +16,25 @@
                                 <thead>
                                     <tr>
                                         <th>No.</th>
-                                        <th>Nama</th>
-                                        <th>Username</th>
-                                        <th>Nomor telepon</th>
-                                        <th>Alamat</th>
-                                        <th>Gaji</th>
-                                        <th>Peran</th>
+                                        <th>Supplier</th>
+                                        <th>Total</th>
+                                        <th>Tanggal Transaksi</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
-                                    <tr v-for="(pegawai, index) in listPegawai" v-bind:key="index">
+                                    <tr v-for="(pengadaan_barang, index) in listPengadaanBarang" v-bind:key="index">
                                         <td>{{ index+1 }}</td>
-                                        <td>{{ pegawai.nama }}</td>
-                                        <td>{{ pegawai.username }}</td>
-                                        <td>{{ pegawai.nomor_telepon }}</td>
-                                        <td>{{ pegawai.alamat }}</td>
-                                        <td>{{ pegawai.gaji }}</td>
-                                        <td>{{ peranByID(pegawai.role) }}</td>
+                                        <td>{{ pengadaan_barang.supplier.nama }}</td>
+                                        <td>Rp{{ formatNum(pengadaan_barang.total) }}</td>
+                                        <td>{{ pengadaan_barang.tgl_transaksi }}</td>
+                                        <td>{{ getStatus(pengadaan_barang.status) }}</td>
                                         <td class="pull-right">
+                                            <a :href="'/admin/transaksi/pengadaan_barang/detail/' + pengadaan_barang.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
                                             <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
-                                            <button @click="deletePegawai(pegawai.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
+                                            <button @click="deletePengadaanBarang(pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -51,7 +48,7 @@
         <form-tambah-ubah 
         v-if="showForm == true" 
         v-bind:form-action="formAction" 
-        v-bind:selected-pegawai="selectedPegawai" 
+        v-bind:selected-pengadaan-barang="selectedPengadaanBarang" 
         v-on:close="closeForm">
         </form-tambah-ubah>
     </div>
@@ -59,27 +56,28 @@
 
 <script>
 import formTambahUbah from './form-tambah-ubah.vue';
+import numeral from 'numeral'
 
 export default {
     components: {
-      formTambahUbah,
+      formTambahUbah
     },
     data: function() {
         return {
-            listPegawai: null,
+            listPengadaanBarang: null,
             formAction: null,
-            selectedPegawai: null,
+            selectedPengadaanBarang: null,
             showForm: false,
         }
     },
     methods: {
-        getAllPegawai() {
-            axios.post(this.$root.app.url + 'api/data/pegawai/index', {
+        getAllPengadaanBarang() {
+            axios.post(this.$root.app.url + 'api/transaksi/pengadaan/index', {
                 api_key: this.$root.api_key,
             })
             .then(response => {
                 if(response.data.error == false) {
-                    this.listPegawai = response.data.data
+                    this.listPengadaanBarang = response.data.data
 
                     if($.fn.dataTable.isDataTable( '#mytable')) {
                         $('#mytable').DataTable().destroy()
@@ -87,9 +85,9 @@ export default {
                 }
             })
         },
-        deletePegawai(id) {
-            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus pegawai ini?")) {
-                axios.delete(this.$root.app.url + 'api/data/pegawai/' + id, { 
+        deletePengadaanBarang(id) {
+            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus pengadaan barang ini?")) {
+                axios.delete(this.$root.app.url + 'api/transaksi/pengadaan/data/' + id, { 
                     data: {
                         api_key: this.$root.api_key
                     } 
@@ -97,41 +95,46 @@ export default {
                 .then(response => {
                     if(response.data.error == false) {
                         alert(response.data.message)
-                        this.getAllPegawai()
+                        this.getAllPengadaanBarang()
                     }
                 })
-            }
-        },
-        peranByID($id) {
-            if($id == 1) {
-                return "CS"
-            }
-            else if($id == 2) {
-                return "Kasir"
-            }
-            else if($id == 3) {
-                return "Montir"
             }
         },
         openForm(action, index = null) {
             this.formAction = action
             if(index != null) {
-                this.selectedPegawai = this.listPegawai[index]
+                this.selectedPengadaanBarang = this.listPengadaanBarang[index]
             }
-            this.showForm = true
+            this.showForm = true 
         },
         closeForm(reloadList) {
             this.formAction = null
-            this.selectedPegawai = null
+            this.selectedPengadaanBarang = null
             this.showForm = false
 
             if(reloadList) {
-                this.getAllPegawai()
+                this.getAllPengadaanBarang()
             }
         },
+        getStatus(id) {
+            switch(id) {
+                case 1:
+                    return "Terbuka"
+                    break
+                case 2:
+                    return "Menunggu verifikasi"
+                    break
+                case 3:
+                    return "Selesai"
+                    break
+            }
+        },
+        formatNum(val) {
+            return numeral(val).format('0,0.00')
+        }
     },
     created() {
-        this.getAllPegawai()
+        this.getAllPengadaanBarang()
     },
     updated() {
         this.$nextTick(function () {
@@ -145,8 +148,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4, 5, 6, 7]},
-                        {"searchable": false, "targets": [0, 2, 3, 4, 5, 6, 7]}
+                        {"orderable": false, "targets": [0, 1, 2, 3, 4, 5]},
+                        {"searchable": false, "targets": [0, 1, 2, 3, 4, 5]}
                     ],
                 })
             }

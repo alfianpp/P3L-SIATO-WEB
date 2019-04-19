@@ -50,6 +50,11 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.cabang' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.cabang') }}"><i class="fa fa-database"></i> <span>Cabang</span></a>
                     </li>
+
+                    <li class="header">TRANSAKSI</li>
+                    <li class="{{ Route::currentRouteName() == 'admin.transaksi.pengadaan_barang' ? 'active' : '' }}">
+                        <a href="{{ route('admin.transaksi.pengadaan_barang') }}"><i class="fa fa-database"></i> <span>Pengadaan Barang</span></a>
+                    </li>
                 </ul>
             </section>
         </aside>

@@ -24,6 +24,9 @@ Vue.component('admin-kelola-pegawai', require('./components/admin/kelola/pegawai
 Vue.component('admin-kelola-spareparts', require('./components/admin/kelola/spareparts/index.vue').default);
 Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/index.vue').default);
 
+Vue.component('admin-pengadaan-barang', require('./components/admin/pengadaan_barang/index.vue').default);
+Vue.component('admin-pengadaan-barang-detail', require('./components/admin/pengadaan_barang/detail.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -27,7 +27,7 @@ class DetailPengadaanBarangController extends Controller
 
     var $rules = [
         'id_pengadaan_barang' => 'integer|exists:pengadaan_barang,id',
-        'kode_spareparts' => 'alpha_dash|max:12|unique:spareparts,kode',
+        'kode_spareparts' => 'alpha_dash|max:12|exists:spareparts,kode',
         'jumlah_pesan' => 'integer|min:1',
         'jumlah_datang' => 'integer|min:1'
     ];

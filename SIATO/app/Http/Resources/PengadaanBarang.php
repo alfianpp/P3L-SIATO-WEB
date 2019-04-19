@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Supplier as SupplierResource;
+
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PengadaanBarang extends JsonResource
@@ -16,9 +18,9 @@ class PengadaanBarang extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_supplier' => $this->id_cabang,
+            'supplier' => new SupplierResource($this->supplier),
             'total' => $this->total,
-            'status' => $this->id_kasir,
+            'status' => $this->status,
             'tgl_transaksi' => $this->tgl_transaksi,
         ];
     }

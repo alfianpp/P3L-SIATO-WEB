@@ -41,6 +41,11 @@ class PengadaanBarang extends Model
      */
     protected $hidden = [];
 
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier', 'id_supplier');
+    }
+
     public function detail()
     {
         return $this->hasMany('App\DetailPengadaanBarang', 'id_pengadaan_barang');

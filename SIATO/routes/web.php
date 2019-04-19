@@ -33,6 +33,13 @@ Route::prefix('admin')->group(function() {
         Route::get('spareparts', 'AdminController@kelolaSpareparts')->name('admin.kelola.spareparts');
         Route::get('cabang', 'AdminController@kelolaCabang')->name('admin.kelola.cabang');
     });
+
+    Route::prefix('transaksi')->group(function() {
+        Route::prefix('pengadaan_barang')->group(function() {
+            Route::get('/', 'AdminController@pengadaanBarang')->name('admin.transaksi.pengadaan_barang');
+            Route::get('/detail/{id}', 'AdminController@pengadaanBarangDetail')->name('admin.transaksi.pengadaan_barang.detail');
+        });
+    });
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

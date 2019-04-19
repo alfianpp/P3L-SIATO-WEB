@@ -2330,6 +2330,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2376,6 +2382,15 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+    peranByID: function peranByID($id) {
+      if ($id == 1) {
+        return "CS";
+      } else if ($id == 2) {
+        return "Kasir";
+      } else if ($id == 3) {
+        return "Montir";
+      }
+    },
     openForm: function openForm(action) {
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.formAction = action;
@@ -2412,10 +2427,10 @@ __webpack_require__.r(__webpack_exports__);
           'order': [[0, 'asc']],
           'columnDefs': [{
             "orderable": false,
-            "targets": [0, 2, 3, 4]
+            "targets": [0, 2, 3, 4, 5, 6, 7]
           }, {
             "searchable": false,
-            "targets": [0, 2, 3, 4]
+            "targets": [0, 2, 3, 4, 5, 6, 7]
           }]
         });
       }
@@ -2868,6 +2883,736 @@ __webpack_require__.r(__webpack_exports__);
           }, {
             "searchable": false,
             "targets": [4, 5, 6, 7]
+          }]
+        });
+      }
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_detail_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah-detail.vue */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue");
+/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! numeral */ "./node_modules/numeral/numeral.js");
+/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(numeral__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formTambahUbah: _form_tambah_ubah_detail_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['id'],
+  data: function data() {
+    return {
+      PengadaanBarang: null,
+      listDetailPengadaanBarang: null,
+      formAction: null,
+      selectedDetailPengadaanBarang: null,
+      showForm: false
+    };
+  },
+  methods: {
+    getPengadaanBarangData: function getPengadaanBarangData() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/data/' + this.id, {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.PengadaanBarang = response.data.data;
+        }
+      });
+    },
+    getDetailPengadaanBarang: function getDetailPengadaanBarang() {
+      var _this2 = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail/' + this.id, {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this2.listDetailPengadaanBarang = response.data.data;
+
+          if ($.fn.dataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().destroy();
+          }
+        }
+      });
+    },
+    deleteDetailPengadaanBarang: function deleteDetailPengadaanBarang(id) {
+      var _this3 = this;
+
+      if (confirm("Apakah Anda ingin melanjutkan untuk menghapus pengadaan barang ini?")) {
+        axios["delete"](this.$root.app.url + 'api/transaksi/pengadaan/detail/' + id, {
+          data: {
+            api_key: this.$root.api_key
+          }
+        }).then(function (response) {
+          if (response.data.error == false) {
+            alert(response.data.message);
+
+            _this3.getDetailPengadaanBarang();
+          }
+        });
+      }
+    },
+    openForm: function openForm(action) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      this.formAction = action;
+
+      if (index != null) {
+        this.selectedDetailPengadaanBarang = this.listDetailPengadaanBarang[index];
+      }
+
+      this.showForm = true;
+    },
+    closeForm: function closeForm(reloadList) {
+      this.formAction = null;
+      this.selectedDetailPengadaanBarang = null;
+      this.showForm = false;
+
+      if (reloadList) {
+        this.getDetailPengadaanBarang();
+      }
+    },
+    getStatus: function getStatus(id) {
+      switch (id) {
+        case 1:
+          return "Terbuka";
+          break;
+
+        case 2:
+          return "Menunggu verifikasi";
+          break;
+
+        case 3:
+          return "Selesai";
+          break;
+      }
+    },
+    formatNum: function formatNum(val) {
+      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0');
+    },
+    formatCurrency: function formatCurrency(val) {
+      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0.00');
+    }
+  },
+  created: function created() {
+    this.getDetailPengadaanBarang();
+    this.getPengadaanBarangData();
+  },
+  updated: function updated() {
+    this.$nextTick(function () {
+      if (!$.fn.dataTable.isDataTable('#mytable')) {
+        $('#mytable').DataTable({
+          'autoWidth': true,
+          'info': true,
+          'lengthChange': true,
+          'ordering': true,
+          'paging': true,
+          'searching': true,
+          'order': [[0, 'asc']],
+          'columnDefs': [{
+            "orderable": false,
+            "targets": [0, 2, 3, 4, 5]
+          }, {
+            "searchable": false,
+            "targets": [0, 2, 3, 4, 5]
+          }]
+        });
+      }
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['idPengadaanBarang', 'formAction', 'selectedDetailPengadaanBarang'],
+  data: function data() {
+    return {
+      detailPengadaanBarang: {
+        id: null,
+        id_pengadaan_barang: null,
+        kode_spareparts: null,
+        jumlah_pesan: null,
+        jumlah_datang: null,
+        harga: null
+      },
+      listSpareparts: null,
+      response: {
+        error: false,
+        message: '',
+        data: null
+      },
+      reloadList: false
+    };
+  },
+  methods: {
+    addDetailPengadaanBarang: function addDetailPengadaanBarang() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail', {
+        id_pengadaan_barang: this.idPengadaanBarang,
+        kode_spareparts: this.detailPengadaanBarang.kode_spareparts,
+        jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this.response = response.data;
+
+        if (_this.response.error == false) {
+          alert(_this.response.message);
+          _this.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    updateDetailPengadaanBarang: function updateDetailPengadaanBarang() {
+      var _this2 = this;
+
+      axios.put(this.$root.app.url + 'api/transaksi/pengadaan/detail/' + this.detailPengadaanBarang.id, {
+        jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this2.response = response.data;
+
+        if (_this2.response.error == false) {
+          alert(_this2.response.message);
+          _this2.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    getSpareparts: function getSpareparts() {
+      var _this3 = this;
+
+      axios.post(this.$root.app.url + 'api/data/spareparts/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this3.response = response.data;
+
+        if (_this3.response.error == false) {
+          _this3.listSpareparts = _this3.response.data;
+        }
+      });
+    },
+    close: function close() {
+      this.detailPengadaanBarang.id = null;
+      this.detailPengadaanBarang.id_pengadaan_barang = null;
+      this.detailPengadaanBarang.kode_spareparts = null;
+      this.detailPengadaanBarang.jumlah_pesan = null;
+      this.detailPengadaanBarang.jumlah_datang = null;
+      this.detailPengadaanBarang.harga = null;
+      this.listSpareparts = null;
+      this.response.error = false;
+      this.response.message = '';
+      this.response.data = null;
+      this.$emit('close', this.reloadList);
+      this.reloadList = false;
+    }
+  },
+  created: function created() {
+    this.getSpareparts();
+
+    if (this.selectedDetailPengadaanBarang != null) {
+      this.detailPengadaanBarang.id = this.selectedDetailPengadaanBarang.id;
+      this.detailPengadaanBarang.id_pengadaan_barang = this.selectedDetailPengadaanBarang.id_pengadaan_barang;
+      this.detailPengadaanBarang.kode_spareparts = this.selectedDetailPengadaanBarang.kode_spareparts;
+      this.detailPengadaanBarang.jumlah_pesan = this.selectedDetailPengadaanBarang.jumlah_pesan;
+      this.detailPengadaanBarang.jumlah_datang = this.selectedDetailPengadaanBarang.jumlah_datang;
+      this.detailPengadaanBarang.harga = this.selectedDetailPengadaanBarang.harga;
+    }
+  },
+  mounted: function mounted() {
+    $(this.$refs.modal).on("hidden.bs.modal", this.close);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['formAction', 'selectedPengadaanBarang'],
+  data: function data() {
+    return {
+      listSupplier: null,
+      pengadaan_barang: {
+        id: null,
+        supplier: {
+          id: null,
+          nama: null,
+          alamat: null,
+          nama_sales: null,
+          nomor_telepon_sales: null
+        },
+        total: null,
+        status: null,
+        tgl_transaksi: null
+      },
+      response: {
+        error: false,
+        message: '',
+        data: null
+      },
+      reloadList: false
+    };
+  },
+  methods: {
+    addPengadaanBarang: function addPengadaanBarang() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/data', {
+        id_supplier: this.pengadaan_barang.supplier.id,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this.response = response.data;
+
+        if (_this.response.error == false) {
+          alert(_this.response.message);
+          _this.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    updatePengadaanBarang: function updatePengadaanBarang() {
+      var _this2 = this;
+
+      axios.put(this.$root.app.url + 'api/transaksi/pengadaan/data/' + this.pengadaan_barang.id, {
+        id_supplier: this.pengadaan_barang.supplier.id,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this2.response = response.data;
+
+        if (_this2.response.error == false) {
+          alert(_this2.response.message);
+          _this2.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+        }
+      });
+    },
+    getSupplier: function getSupplier() {
+      var _this3 = this;
+
+      axios.post(this.$root.app.url + 'api/data/supplier/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this3.response = response.data;
+
+        if (_this3.response.error == false) {
+          _this3.listSupplier = _this3.response.data;
+        }
+      });
+    },
+    close: function close() {
+      this.pengadaan_barang.id = null;
+      this.pengadaan_barang.supplier.id = null;
+      this.pengadaan_barang.supplier.nama = null;
+      this.pengadaan_barang.supplier.alamat = null;
+      this.pengadaan_barang.supplier.nama_sales = null;
+      this.pengadaan_barang.supplier.nomor_telepon_sales = null;
+      this.pengadaan_barang.total = null;
+      this.pengadaan_barang.status = null;
+      this.pengadaan_barang.tgl_transaksi = null;
+      this.response.error = false;
+      this.response.message = '';
+      this.response.data = null;
+      this.$emit('close', this.reloadList);
+      this.reloadList = false;
+    }
+  },
+  created: function created() {
+    this.getSupplier();
+
+    if (this.selectedPengadaanBarang != null) {
+      this.pengadaan_barang.id = this.selectedPengadaanBarang.id;
+      this.pengadaan_barang.supplier.id = this.selectedPengadaanBarang.supplier.id;
+      this.pengadaan_barang.supplier.nama = this.selectedPengadaanBarang.supplier.nama;
+      this.pengadaan_barang.supplier.alamat = this.selectedPengadaanBarang.supplier.alamat;
+      this.pengadaan_barang.supplier.nama_sales = this.selectedPengadaanBarang.supplier.nama_sales;
+      this.pengadaan_barang.supplier.nomor_telepon_sales = this.selectedPengadaanBarang.supplier.nomor_telepon_sales;
+      this.pengadaan_barang.total = this.selectedPengadaanBarang.total;
+      this.pengadaan_barang.status = this.selectedPengadaanBarang.status;
+      this.pengadaan_barang.tgl_transaksi = this.selectedPengadaanBarang.tgl_transaksi;
+    }
+  },
+  mounted: function mounted() {
+    $(this.$refs.modal).on("hidden.bs.modal", this.close);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue");
+/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! numeral */ "./node_modules/numeral/numeral.js");
+/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(numeral__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formTambahUbah: _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      listPengadaanBarang: null,
+      formAction: null,
+      selectedPengadaanBarang: null,
+      showForm: false
+    };
+  },
+  methods: {
+    getAllPengadaanBarang: function getAllPengadaanBarang() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/index', {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.listPengadaanBarang = response.data.data;
+
+          if ($.fn.dataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().destroy();
+          }
+        }
+      });
+    },
+    deletePengadaanBarang: function deletePengadaanBarang(id) {
+      var _this2 = this;
+
+      if (confirm("Apakah Anda ingin melanjutkan untuk menghapus pengadaan barang ini?")) {
+        axios["delete"](this.$root.app.url + 'api/transaksi/pengadaan/data/' + id, {
+          data: {
+            api_key: this.$root.api_key
+          }
+        }).then(function (response) {
+          if (response.data.error == false) {
+            alert(response.data.message);
+
+            _this2.getAllPengadaanBarang();
+          }
+        });
+      }
+    },
+    openForm: function openForm(action) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      this.formAction = action;
+
+      if (index != null) {
+        this.selectedPengadaanBarang = this.listPengadaanBarang[index];
+      }
+
+      this.showForm = true;
+    },
+    closeForm: function closeForm(reloadList) {
+      this.formAction = null;
+      this.selectedPengadaanBarang = null;
+      this.showForm = false;
+
+      if (reloadList) {
+        this.getAllPengadaanBarang();
+      }
+    },
+    getStatus: function getStatus(id) {
+      switch (id) {
+        case 1:
+          return "Terbuka";
+          break;
+
+        case 2:
+          return "Menunggu verifikasi";
+          break;
+
+        case 3:
+          return "Selesai";
+          break;
+      }
+    },
+    formatNum: function formatNum(val) {
+      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0.00');
+    }
+  },
+  created: function created() {
+    this.getAllPengadaanBarang();
+  },
+  updated: function updated() {
+    this.$nextTick(function () {
+      if (!$.fn.dataTable.isDataTable('#mytable')) {
+        $('#mytable').DataTable({
+          'autoWidth': true,
+          'info': true,
+          'lengthChange': true,
+          'ordering': true,
+          'paging': true,
+          'searching': true,
+          'order': [[0, 'asc']],
+          'columnDefs': [{
+            "orderable": false,
+            "targets": [0, 1, 2, 3, 4, 5]
+          }, {
+            "searchable": false,
+            "targets": [0, 1, 2, 3, 4, 5]
           }]
         });
       }
@@ -34841,6 +35586,1030 @@ return jQuery;
 
 /***/ }),
 
+/***/ "./node_modules/numeral/numeral.js":
+/*!*****************************************!*\
+  !*** ./node_modules/numeral/numeral.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! @preserve
+ * numeral.js
+ * version : 2.0.6
+ * author : Adam Draper
+ * license : MIT
+ * http://adamwdraper.github.com/Numeral-js/
+ */
+
+(function (global, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {}
+}(this, function () {
+    /************************************
+        Variables
+    ************************************/
+
+    var numeral,
+        _,
+        VERSION = '2.0.6',
+        formats = {},
+        locales = {},
+        defaults = {
+            currentLocale: 'en',
+            zeroFormat: null,
+            nullFormat: null,
+            defaultFormat: '0,0',
+            scalePercentBy100: true
+        },
+        options = {
+            currentLocale: defaults.currentLocale,
+            zeroFormat: defaults.zeroFormat,
+            nullFormat: defaults.nullFormat,
+            defaultFormat: defaults.defaultFormat,
+            scalePercentBy100: defaults.scalePercentBy100
+        };
+
+
+    /************************************
+        Constructors
+    ************************************/
+
+    // Numeral prototype object
+    function Numeral(input, number) {
+        this._input = input;
+
+        this._value = number;
+    }
+
+    numeral = function(input) {
+        var value,
+            kind,
+            unformatFunction,
+            regexp;
+
+        if (numeral.isNumeral(input)) {
+            value = input.value();
+        } else if (input === 0 || typeof input === 'undefined') {
+            value = 0;
+        } else if (input === null || _.isNaN(input)) {
+            value = null;
+        } else if (typeof input === 'string') {
+            if (options.zeroFormat && input === options.zeroFormat) {
+                value = 0;
+            } else if (options.nullFormat && input === options.nullFormat || !input.replace(/[^0-9]+/g, '').length) {
+                value = null;
+            } else {
+                for (kind in formats) {
+                    regexp = typeof formats[kind].regexps.unformat === 'function' ? formats[kind].regexps.unformat() : formats[kind].regexps.unformat;
+
+                    if (regexp && input.match(regexp)) {
+                        unformatFunction = formats[kind].unformat;
+
+                        break;
+                    }
+                }
+
+                unformatFunction = unformatFunction || numeral._.stringToNumber;
+
+                value = unformatFunction(input);
+            }
+        } else {
+            value = Number(input)|| null;
+        }
+
+        return new Numeral(input, value);
+    };
+
+    // version number
+    numeral.version = VERSION;
+
+    // compare numeral object
+    numeral.isNumeral = function(obj) {
+        return obj instanceof Numeral;
+    };
+
+    // helper functions
+    numeral._ = _ = {
+        // formats numbers separators, decimals places, signs, abbreviations
+        numberToFormat: function(value, format, roundingFunction) {
+            var locale = locales[numeral.options.currentLocale],
+                negP = false,
+                optDec = false,
+                leadingCount = 0,
+                abbr = '',
+                trillion = 1000000000000,
+                billion = 1000000000,
+                million = 1000000,
+                thousand = 1000,
+                decimal = '',
+                neg = false,
+                abbrForce, // force abbreviation
+                abs,
+                min,
+                max,
+                power,
+                int,
+                precision,
+                signed,
+                thousands,
+                output;
+
+            // make sure we never format a null value
+            value = value || 0;
+
+            abs = Math.abs(value);
+
+            // see if we should use parentheses for negative number or if we should prefix with a sign
+            // if both are present we default to parentheses
+            if (numeral._.includes(format, '(')) {
+                negP = true;
+                format = format.replace(/[\(|\)]/g, '');
+            } else if (numeral._.includes(format, '+') || numeral._.includes(format, '-')) {
+                signed = numeral._.includes(format, '+') ? format.indexOf('+') : value < 0 ? format.indexOf('-') : -1;
+                format = format.replace(/[\+|\-]/g, '');
+            }
+
+            // see if abbreviation is wanted
+            if (numeral._.includes(format, 'a')) {
+                abbrForce = format.match(/a(k|m|b|t)?/);
+
+                abbrForce = abbrForce ? abbrForce[1] : false;
+
+                // check for space before abbreviation
+                if (numeral._.includes(format, ' a')) {
+                    abbr = ' ';
+                }
+
+                format = format.replace(new RegExp(abbr + 'a[kmbt]?'), '');
+
+                if (abs >= trillion && !abbrForce || abbrForce === 't') {
+                    // trillion
+                    abbr += locale.abbreviations.trillion;
+                    value = value / trillion;
+                } else if (abs < trillion && abs >= billion && !abbrForce || abbrForce === 'b') {
+                    // billion
+                    abbr += locale.abbreviations.billion;
+                    value = value / billion;
+                } else if (abs < billion && abs >= million && !abbrForce || abbrForce === 'm') {
+                    // million
+                    abbr += locale.abbreviations.million;
+                    value = value / million;
+                } else if (abs < million && abs >= thousand && !abbrForce || abbrForce === 'k') {
+                    // thousand
+                    abbr += locale.abbreviations.thousand;
+                    value = value / thousand;
+                }
+            }
+
+            // check for optional decimals
+            if (numeral._.includes(format, '[.]')) {
+                optDec = true;
+                format = format.replace('[.]', '.');
+            }
+
+            // break number and format
+            int = value.toString().split('.')[0];
+            precision = format.split('.')[1];
+            thousands = format.indexOf(',');
+            leadingCount = (format.split('.')[0].split(',')[0].match(/0/g) || []).length;
+
+            if (precision) {
+                if (numeral._.includes(precision, '[')) {
+                    precision = precision.replace(']', '');
+                    precision = precision.split('[');
+                    decimal = numeral._.toFixed(value, (precision[0].length + precision[1].length), roundingFunction, precision[1].length);
+                } else {
+                    decimal = numeral._.toFixed(value, precision.length, roundingFunction);
+                }
+
+                int = decimal.split('.')[0];
+
+                if (numeral._.includes(decimal, '.')) {
+                    decimal = locale.delimiters.decimal + decimal.split('.')[1];
+                } else {
+                    decimal = '';
+                }
+
+                if (optDec && Number(decimal.slice(1)) === 0) {
+                    decimal = '';
+                }
+            } else {
+                int = numeral._.toFixed(value, 0, roundingFunction);
+            }
+
+            // check abbreviation again after rounding
+            if (abbr && !abbrForce && Number(int) >= 1000 && abbr !== locale.abbreviations.trillion) {
+                int = String(Number(int) / 1000);
+
+                switch (abbr) {
+                    case locale.abbreviations.thousand:
+                        abbr = locale.abbreviations.million;
+                        break;
+                    case locale.abbreviations.million:
+                        abbr = locale.abbreviations.billion;
+                        break;
+                    case locale.abbreviations.billion:
+                        abbr = locale.abbreviations.trillion;
+                        break;
+                }
+            }
+
+
+            // format number
+            if (numeral._.includes(int, '-')) {
+                int = int.slice(1);
+                neg = true;
+            }
+
+            if (int.length < leadingCount) {
+                for (var i = leadingCount - int.length; i > 0; i--) {
+                    int = '0' + int;
+                }
+            }
+
+            if (thousands > -1) {
+                int = int.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + locale.delimiters.thousands);
+            }
+
+            if (format.indexOf('.') === 0) {
+                int = '';
+            }
+
+            output = int + decimal + (abbr ? abbr : '');
+
+            if (negP) {
+                output = (negP && neg ? '(' : '') + output + (negP && neg ? ')' : '');
+            } else {
+                if (signed >= 0) {
+                    output = signed === 0 ? (neg ? '-' : '+') + output : output + (neg ? '-' : '+');
+                } else if (neg) {
+                    output = '-' + output;
+                }
+            }
+
+            return output;
+        },
+        // unformats numbers separators, decimals places, signs, abbreviations
+        stringToNumber: function(string) {
+            var locale = locales[options.currentLocale],
+                stringOriginal = string,
+                abbreviations = {
+                    thousand: 3,
+                    million: 6,
+                    billion: 9,
+                    trillion: 12
+                },
+                abbreviation,
+                value,
+                i,
+                regexp;
+
+            if (options.zeroFormat && string === options.zeroFormat) {
+                value = 0;
+            } else if (options.nullFormat && string === options.nullFormat || !string.replace(/[^0-9]+/g, '').length) {
+                value = null;
+            } else {
+                value = 1;
+
+                if (locale.delimiters.decimal !== '.') {
+                    string = string.replace(/\./g, '').replace(locale.delimiters.decimal, '.');
+                }
+
+                for (abbreviation in abbreviations) {
+                    regexp = new RegExp('[^a-zA-Z]' + locale.abbreviations[abbreviation] + '(?:\\)|(\\' + locale.currency.symbol + ')?(?:\\))?)?$');
+
+                    if (stringOriginal.match(regexp)) {
+                        value *= Math.pow(10, abbreviations[abbreviation]);
+                        break;
+                    }
+                }
+
+                // check for negative number
+                value *= (string.split('-').length + Math.min(string.split('(').length - 1, string.split(')').length - 1)) % 2 ? 1 : -1;
+
+                // remove non numbers
+                string = string.replace(/[^0-9\.]+/g, '');
+
+                value *= Number(string);
+            }
+
+            return value;
+        },
+        isNaN: function(value) {
+            return typeof value === 'number' && isNaN(value);
+        },
+        includes: function(string, search) {
+            return string.indexOf(search) !== -1;
+        },
+        insert: function(string, subString, start) {
+            return string.slice(0, start) + subString + string.slice(start);
+        },
+        reduce: function(array, callback /*, initialValue*/) {
+            if (this === null) {
+                throw new TypeError('Array.prototype.reduce called on null or undefined');
+            }
+
+            if (typeof callback !== 'function') {
+                throw new TypeError(callback + ' is not a function');
+            }
+
+            var t = Object(array),
+                len = t.length >>> 0,
+                k = 0,
+                value;
+
+            if (arguments.length === 3) {
+                value = arguments[2];
+            } else {
+                while (k < len && !(k in t)) {
+                    k++;
+                }
+
+                if (k >= len) {
+                    throw new TypeError('Reduce of empty array with no initial value');
+                }
+
+                value = t[k++];
+            }
+            for (; k < len; k++) {
+                if (k in t) {
+                    value = callback(value, t[k], k, t);
+                }
+            }
+            return value;
+        },
+        /**
+         * Computes the multiplier necessary to make x >= 1,
+         * effectively eliminating miscalculations caused by
+         * finite precision.
+         */
+        multiplier: function (x) {
+            var parts = x.toString().split('.');
+
+            return parts.length < 2 ? 1 : Math.pow(10, parts[1].length);
+        },
+        /**
+         * Given a variable number of arguments, returns the maximum
+         * multiplier that must be used to normalize an operation involving
+         * all of them.
+         */
+        correctionFactor: function () {
+            var args = Array.prototype.slice.call(arguments);
+
+            return args.reduce(function(accum, next) {
+                var mn = _.multiplier(next);
+                return accum > mn ? accum : mn;
+            }, 1);
+        },
+        /**
+         * Implementation of toFixed() that treats floats more like decimals
+         *
+         * Fixes binary rounding issues (eg. (0.615).toFixed(2) === '0.61') that present
+         * problems for accounting- and finance-related software.
+         */
+        toFixed: function(value, maxDecimals, roundingFunction, optionals) {
+            var splitValue = value.toString().split('.'),
+                minDecimals = maxDecimals - (optionals || 0),
+                boundedPrecision,
+                optionalsRegExp,
+                power,
+                output;
+
+            // Use the smallest precision value possible to avoid errors from floating point representation
+            if (splitValue.length === 2) {
+              boundedPrecision = Math.min(Math.max(splitValue[1].length, minDecimals), maxDecimals);
+            } else {
+              boundedPrecision = minDecimals;
+            }
+
+            power = Math.pow(10, boundedPrecision);
+
+            // Multiply up by precision, round accurately, then divide and use native toFixed():
+            output = (roundingFunction(value + 'e+' + boundedPrecision) / power).toFixed(boundedPrecision);
+
+            if (optionals > maxDecimals - boundedPrecision) {
+                optionalsRegExp = new RegExp('\\.?0{1,' + (optionals - (maxDecimals - boundedPrecision)) + '}$');
+                output = output.replace(optionalsRegExp, '');
+            }
+
+            return output;
+        }
+    };
+
+    // avaliable options
+    numeral.options = options;
+
+    // avaliable formats
+    numeral.formats = formats;
+
+    // avaliable formats
+    numeral.locales = locales;
+
+    // This function sets the current locale.  If
+    // no arguments are passed in, it will simply return the current global
+    // locale key.
+    numeral.locale = function(key) {
+        if (key) {
+            options.currentLocale = key.toLowerCase();
+        }
+
+        return options.currentLocale;
+    };
+
+    // This function provides access to the loaded locale data.  If
+    // no arguments are passed in, it will simply return the current
+    // global locale object.
+    numeral.localeData = function(key) {
+        if (!key) {
+            return locales[options.currentLocale];
+        }
+
+        key = key.toLowerCase();
+
+        if (!locales[key]) {
+            throw new Error('Unknown locale : ' + key);
+        }
+
+        return locales[key];
+    };
+
+    numeral.reset = function() {
+        for (var property in defaults) {
+            options[property] = defaults[property];
+        }
+    };
+
+    numeral.zeroFormat = function(format) {
+        options.zeroFormat = typeof(format) === 'string' ? format : null;
+    };
+
+    numeral.nullFormat = function (format) {
+        options.nullFormat = typeof(format) === 'string' ? format : null;
+    };
+
+    numeral.defaultFormat = function(format) {
+        options.defaultFormat = typeof(format) === 'string' ? format : '0.0';
+    };
+
+    numeral.register = function(type, name, format) {
+        name = name.toLowerCase();
+
+        if (this[type + 's'][name]) {
+            throw new TypeError(name + ' ' + type + ' already registered.');
+        }
+
+        this[type + 's'][name] = format;
+
+        return format;
+    };
+
+
+    numeral.validate = function(val, culture) {
+        var _decimalSep,
+            _thousandSep,
+            _currSymbol,
+            _valArray,
+            _abbrObj,
+            _thousandRegEx,
+            localeData,
+            temp;
+
+        //coerce val to string
+        if (typeof val !== 'string') {
+            val += '';
+
+            if (console.warn) {
+                console.warn('Numeral.js: Value is not string. It has been co-erced to: ', val);
+            }
+        }
+
+        //trim whitespaces from either sides
+        val = val.trim();
+
+        //if val is just digits return true
+        if (!!val.match(/^\d+$/)) {
+            return true;
+        }
+
+        //if val is empty return false
+        if (val === '') {
+            return false;
+        }
+
+        //get the decimal and thousands separator from numeral.localeData
+        try {
+            //check if the culture is understood by numeral. if not, default it to current locale
+            localeData = numeral.localeData(culture);
+        } catch (e) {
+            localeData = numeral.localeData(numeral.locale());
+        }
+
+        //setup the delimiters and currency symbol based on culture/locale
+        _currSymbol = localeData.currency.symbol;
+        _abbrObj = localeData.abbreviations;
+        _decimalSep = localeData.delimiters.decimal;
+        if (localeData.delimiters.thousands === '.') {
+            _thousandSep = '\\.';
+        } else {
+            _thousandSep = localeData.delimiters.thousands;
+        }
+
+        // validating currency symbol
+        temp = val.match(/^[^\d]+/);
+        if (temp !== null) {
+            val = val.substr(1);
+            if (temp[0] !== _currSymbol) {
+                return false;
+            }
+        }
+
+        //validating abbreviation symbol
+        temp = val.match(/[^\d]+$/);
+        if (temp !== null) {
+            val = val.slice(0, -1);
+            if (temp[0] !== _abbrObj.thousand && temp[0] !== _abbrObj.million && temp[0] !== _abbrObj.billion && temp[0] !== _abbrObj.trillion) {
+                return false;
+            }
+        }
+
+        _thousandRegEx = new RegExp(_thousandSep + '{2}');
+
+        if (!val.match(/[^\d.,]/g)) {
+            _valArray = val.split(_decimalSep);
+            if (_valArray.length > 2) {
+                return false;
+            } else {
+                if (_valArray.length < 2) {
+                    return ( !! _valArray[0].match(/^\d+.*\d$/) && !_valArray[0].match(_thousandRegEx));
+                } else {
+                    if (_valArray[0].length === 1) {
+                        return ( !! _valArray[0].match(/^\d+$/) && !_valArray[0].match(_thousandRegEx) && !! _valArray[1].match(/^\d+$/));
+                    } else {
+                        return ( !! _valArray[0].match(/^\d+.*\d$/) && !_valArray[0].match(_thousandRegEx) && !! _valArray[1].match(/^\d+$/));
+                    }
+                }
+            }
+        }
+
+        return false;
+    };
+
+
+    /************************************
+        Numeral Prototype
+    ************************************/
+
+    numeral.fn = Numeral.prototype = {
+        clone: function() {
+            return numeral(this);
+        },
+        format: function(inputString, roundingFunction) {
+            var value = this._value,
+                format = inputString || options.defaultFormat,
+                kind,
+                output,
+                formatFunction;
+
+            // make sure we have a roundingFunction
+            roundingFunction = roundingFunction || Math.round;
+
+            // format based on value
+            if (value === 0 && options.zeroFormat !== null) {
+                output = options.zeroFormat;
+            } else if (value === null && options.nullFormat !== null) {
+                output = options.nullFormat;
+            } else {
+                for (kind in formats) {
+                    if (format.match(formats[kind].regexps.format)) {
+                        formatFunction = formats[kind].format;
+
+                        break;
+                    }
+                }
+
+                formatFunction = formatFunction || numeral._.numberToFormat;
+
+                output = formatFunction(value, format, roundingFunction);
+            }
+
+            return output;
+        },
+        value: function() {
+            return this._value;
+        },
+        input: function() {
+            return this._input;
+        },
+        set: function(value) {
+            this._value = Number(value);
+
+            return this;
+        },
+        add: function(value) {
+            var corrFactor = _.correctionFactor.call(null, this._value, value);
+
+            function cback(accum, curr, currI, O) {
+                return accum + Math.round(corrFactor * curr);
+            }
+
+            this._value = _.reduce([this._value, value], cback, 0) / corrFactor;
+
+            return this;
+        },
+        subtract: function(value) {
+            var corrFactor = _.correctionFactor.call(null, this._value, value);
+
+            function cback(accum, curr, currI, O) {
+                return accum - Math.round(corrFactor * curr);
+            }
+
+            this._value = _.reduce([value], cback, Math.round(this._value * corrFactor)) / corrFactor;
+
+            return this;
+        },
+        multiply: function(value) {
+            function cback(accum, curr, currI, O) {
+                var corrFactor = _.correctionFactor(accum, curr);
+                return Math.round(accum * corrFactor) * Math.round(curr * corrFactor) / Math.round(corrFactor * corrFactor);
+            }
+
+            this._value = _.reduce([this._value, value], cback, 1);
+
+            return this;
+        },
+        divide: function(value) {
+            function cback(accum, curr, currI, O) {
+                var corrFactor = _.correctionFactor(accum, curr);
+                return Math.round(accum * corrFactor) / Math.round(curr * corrFactor);
+            }
+
+            this._value = _.reduce([this._value, value], cback);
+
+            return this;
+        },
+        difference: function(value) {
+            return Math.abs(numeral(this._value).subtract(value).value());
+        }
+    };
+
+    /************************************
+        Default Locale && Format
+    ************************************/
+
+    numeral.register('locale', 'en', {
+        delimiters: {
+            thousands: ',',
+            decimal: '.'
+        },
+        abbreviations: {
+            thousand: 'k',
+            million: 'm',
+            billion: 'b',
+            trillion: 't'
+        },
+        ordinal: function(number) {
+            var b = number % 10;
+            return (~~(number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+        },
+        currency: {
+            symbol: '$'
+        }
+    });
+
+    
+
+(function() {
+        numeral.register('format', 'bps', {
+            regexps: {
+                format: /(BPS)/,
+                unformat: /(BPS)/
+            },
+            format: function(value, format, roundingFunction) {
+                var space = numeral._.includes(format, ' BPS') ? ' ' : '',
+                    output;
+
+                value = value * 10000;
+
+                // check for space before BPS
+                format = format.replace(/\s?BPS/, '');
+
+                output = numeral._.numberToFormat(value, format, roundingFunction);
+
+                if (numeral._.includes(output, ')')) {
+                    output = output.split('');
+
+                    output.splice(-1, 0, space + 'BPS');
+
+                    output = output.join('');
+                } else {
+                    output = output + space + 'BPS';
+                }
+
+                return output;
+            },
+            unformat: function(string) {
+                return +(numeral._.stringToNumber(string) * 0.0001).toFixed(15);
+            }
+        });
+})();
+
+
+(function() {
+        var decimal = {
+            base: 1000,
+            suffixes: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        },
+        binary = {
+            base: 1024,
+            suffixes: ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+        };
+
+    var allSuffixes =  decimal.suffixes.concat(binary.suffixes.filter(function (item) {
+            return decimal.suffixes.indexOf(item) < 0;
+        }));
+        var unformatRegex = allSuffixes.join('|');
+        // Allow support for BPS (http://www.investopedia.com/terms/b/basispoint.asp)
+        unformatRegex = '(' + unformatRegex.replace('B', 'B(?!PS)') + ')';
+
+    numeral.register('format', 'bytes', {
+        regexps: {
+            format: /([0\s]i?b)/,
+            unformat: new RegExp(unformatRegex)
+        },
+        format: function(value, format, roundingFunction) {
+            var output,
+                bytes = numeral._.includes(format, 'ib') ? binary : decimal,
+                suffix = numeral._.includes(format, ' b') || numeral._.includes(format, ' ib') ? ' ' : '',
+                power,
+                min,
+                max;
+
+            // check for space before
+            format = format.replace(/\s?i?b/, '');
+
+            for (power = 0; power <= bytes.suffixes.length; power++) {
+                min = Math.pow(bytes.base, power);
+                max = Math.pow(bytes.base, power + 1);
+
+                if (value === null || value === 0 || value >= min && value < max) {
+                    suffix += bytes.suffixes[power];
+
+                    if (min > 0) {
+                        value = value / min;
+                    }
+
+                    break;
+                }
+            }
+
+            output = numeral._.numberToFormat(value, format, roundingFunction);
+
+            return output + suffix;
+        },
+        unformat: function(string) {
+            var value = numeral._.stringToNumber(string),
+                power,
+                bytesMultiplier;
+
+            if (value) {
+                for (power = decimal.suffixes.length - 1; power >= 0; power--) {
+                    if (numeral._.includes(string, decimal.suffixes[power])) {
+                        bytesMultiplier = Math.pow(decimal.base, power);
+
+                        break;
+                    }
+
+                    if (numeral._.includes(string, binary.suffixes[power])) {
+                        bytesMultiplier = Math.pow(binary.base, power);
+
+                        break;
+                    }
+                }
+
+                value *= (bytesMultiplier || 1);
+            }
+
+            return value;
+        }
+    });
+})();
+
+
+(function() {
+        numeral.register('format', 'currency', {
+        regexps: {
+            format: /(\$)/
+        },
+        format: function(value, format, roundingFunction) {
+            var locale = numeral.locales[numeral.options.currentLocale],
+                symbols = {
+                    before: format.match(/^([\+|\-|\(|\s|\$]*)/)[0],
+                    after: format.match(/([\+|\-|\)|\s|\$]*)$/)[0]
+                },
+                output,
+                symbol,
+                i;
+
+            // strip format of spaces and $
+            format = format.replace(/\s?\$\s?/, '');
+
+            // format the number
+            output = numeral._.numberToFormat(value, format, roundingFunction);
+
+            // update the before and after based on value
+            if (value >= 0) {
+                symbols.before = symbols.before.replace(/[\-\(]/, '');
+                symbols.after = symbols.after.replace(/[\-\)]/, '');
+            } else if (value < 0 && (!numeral._.includes(symbols.before, '-') && !numeral._.includes(symbols.before, '('))) {
+                symbols.before = '-' + symbols.before;
+            }
+
+            // loop through each before symbol
+            for (i = 0; i < symbols.before.length; i++) {
+                symbol = symbols.before[i];
+
+                switch (symbol) {
+                    case '$':
+                        output = numeral._.insert(output, locale.currency.symbol, i);
+                        break;
+                    case ' ':
+                        output = numeral._.insert(output, ' ', i + locale.currency.symbol.length - 1);
+                        break;
+                }
+            }
+
+            // loop through each after symbol
+            for (i = symbols.after.length - 1; i >= 0; i--) {
+                symbol = symbols.after[i];
+
+                switch (symbol) {
+                    case '$':
+                        output = i === symbols.after.length - 1 ? output + locale.currency.symbol : numeral._.insert(output, locale.currency.symbol, -(symbols.after.length - (1 + i)));
+                        break;
+                    case ' ':
+                        output = i === symbols.after.length - 1 ? output + ' ' : numeral._.insert(output, ' ', -(symbols.after.length - (1 + i) + locale.currency.symbol.length - 1));
+                        break;
+                }
+            }
+
+
+            return output;
+        }
+    });
+})();
+
+
+(function() {
+        numeral.register('format', 'exponential', {
+        regexps: {
+            format: /(e\+|e-)/,
+            unformat: /(e\+|e-)/
+        },
+        format: function(value, format, roundingFunction) {
+            var output,
+                exponential = typeof value === 'number' && !numeral._.isNaN(value) ? value.toExponential() : '0e+0',
+                parts = exponential.split('e');
+
+            format = format.replace(/e[\+|\-]{1}0/, '');
+
+            output = numeral._.numberToFormat(Number(parts[0]), format, roundingFunction);
+
+            return output + 'e' + parts[1];
+        },
+        unformat: function(string) {
+            var parts = numeral._.includes(string, 'e+') ? string.split('e+') : string.split('e-'),
+                value = Number(parts[0]),
+                power = Number(parts[1]);
+
+            power = numeral._.includes(string, 'e-') ? power *= -1 : power;
+
+            function cback(accum, curr, currI, O) {
+                var corrFactor = numeral._.correctionFactor(accum, curr),
+                    num = (accum * corrFactor) * (curr * corrFactor) / (corrFactor * corrFactor);
+                return num;
+            }
+
+            return numeral._.reduce([value, Math.pow(10, power)], cback, 1);
+        }
+    });
+})();
+
+
+(function() {
+        numeral.register('format', 'ordinal', {
+        regexps: {
+            format: /(o)/
+        },
+        format: function(value, format, roundingFunction) {
+            var locale = numeral.locales[numeral.options.currentLocale],
+                output,
+                ordinal = numeral._.includes(format, ' o') ? ' ' : '';
+
+            // check for space before
+            format = format.replace(/\s?o/, '');
+
+            ordinal += locale.ordinal(value);
+
+            output = numeral._.numberToFormat(value, format, roundingFunction);
+
+            return output + ordinal;
+        }
+    });
+})();
+
+
+(function() {
+        numeral.register('format', 'percentage', {
+        regexps: {
+            format: /(%)/,
+            unformat: /(%)/
+        },
+        format: function(value, format, roundingFunction) {
+            var space = numeral._.includes(format, ' %') ? ' ' : '',
+                output;
+
+            if (numeral.options.scalePercentBy100) {
+                value = value * 100;
+            }
+
+            // check for space before %
+            format = format.replace(/\s?\%/, '');
+
+            output = numeral._.numberToFormat(value, format, roundingFunction);
+
+            if (numeral._.includes(output, ')')) {
+                output = output.split('');
+
+                output.splice(-1, 0, space + '%');
+
+                output = output.join('');
+            } else {
+                output = output + space + '%';
+            }
+
+            return output;
+        },
+        unformat: function(string) {
+            var number = numeral._.stringToNumber(string);
+            if (numeral.options.scalePercentBy100) {
+                return number * 0.01;
+            }
+            return number;
+        }
+    });
+})();
+
+
+(function() {
+        numeral.register('format', 'time', {
+        regexps: {
+            format: /(:)/,
+            unformat: /(:)/
+        },
+        format: function(value, format, roundingFunction) {
+            var hours = Math.floor(value / 60 / 60),
+                minutes = Math.floor((value - (hours * 60 * 60)) / 60),
+                seconds = Math.round(value - (hours * 60 * 60) - (minutes * 60));
+
+            return hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+        },
+        unformat: function(string) {
+            var timeArray = string.split(':'),
+                seconds = 0;
+
+            // turn hours and minutes into seconds and add them all up
+            if (timeArray.length === 3) {
+                // hours
+                seconds = seconds + (Number(timeArray[0]) * 60 * 60);
+                // minutes
+                seconds = seconds + (Number(timeArray[1]) * 60);
+                // seconds
+                seconds = seconds + Number(timeArray[2]);
+            } else if (timeArray.length === 2) {
+                // minutes
+                seconds = seconds + (Number(timeArray[0]) * 60);
+                // seconds
+                seconds = seconds + Number(timeArray[1]);
+            }
+            return Number(seconds);
+        }
+    });
+})();
+
+return numeral;
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/popper.js/dist/esm/popper.js":
 /*!***************************************************!*\
   !*** ./node_modules/popper.js/dist/esm/popper.js ***!
@@ -39001,9 +40770,17 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(pegawai.nama))]),
                           _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(pegawai.username))]),
+                          _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(pegawai.nomor_telepon))]),
                           _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(pegawai.alamat))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(pegawai.gaji))]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(_vm._s(_vm.peranByID(pegawai.role)))
+                          ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "pull-right" }, [
                             _c(
@@ -39080,9 +40857,15 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Nama")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Username")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Nomor telepon")]),
         _vm._v(" "),
         _c("th", [_vm._v("Alamat")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Gaji")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Peran")]),
         _vm._v(" "),
         _c("th")
       ])
@@ -40058,6 +41841,997 @@ var staticRenderFns = [
         _c("th", [_vm._v("Harga Beli")]),
         _vm._v(" "),
         _c("th", [_vm._v("Peletakan")]),
+        _vm._v(" "),
+        _c("th")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "content-wrapper" },
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("section", { staticClass: "content" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-xs-12" }, [
+            _c("div", { staticClass: "box" }, [
+              _c("div", { staticClass: "box-body" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "row",
+                    staticStyle: { "margin-bottom": "15px" }
+                  },
+                  [
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _vm._m(1),
+                        _vm._v(" "),
+                        _vm.PengadaanBarang != null
+                          ? _c("div", { staticClass: "col-sm-8" }, [
+                              _vm._v(
+                                "\n                                        " +
+                                  _vm._s(_vm.PengadaanBarang.supplier.nama) +
+                                  " "
+                              ),
+                              _c("br"),
+                              _vm._v(
+                                "\n                                        " +
+                                  _vm._s(_vm.PengadaanBarang.tgl_transaksi) +
+                                  " "
+                              ),
+                              _c("br"),
+                              _vm._v(
+                                "\n                                        " +
+                                  _vm._s(
+                                    _vm.getStatus(_vm.PengadaanBarang.status)
+                                  ) +
+                                  "\n                                    "
+                              )
+                            ])
+                          : _vm._e()
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-6" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "pull-right btn btn-success",
+                          attrs: {
+                            type: "button",
+                            "data-toggle": "modal",
+                            "data-target": "#form-tambah-ubah"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.openForm("TAMBAH")
+                            }
+                          }
+                        },
+                        [
+                          _c("i", { staticClass: "fa fa-plus" }),
+                          _vm._v(" Tambah")
+                        ]
+                      )
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered table-hover",
+                    attrs: { id: "mytable" }
+                  },
+                  [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.listDetailPengadaanBarang, function(
+                        detail_pengadaan_barang,
+                        index
+                      ) {
+                        return _c("tr", { key: index }, [
+                          _c("td", [_vm._v(_vm._s(index + 1))]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(detail_pengadaan_barang.kode_spareparts)
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.formatNum(
+                                  detail_pengadaan_barang.jumlah_pesan
+                                )
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.formatNum(
+                                  detail_pengadaan_barang.jumlah_datang
+                                )
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              "Rp" +
+                                _vm._s(
+                                  _vm.formatCurrency(
+                                    detail_pengadaan_barang.harga
+                                  )
+                                )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "pull-right" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary btn-sm",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": "#form-tambah-ubah"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openForm("UBAH", index)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-pencil" }),
+                                _vm._v(" Ubah")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteDetailPengadaanBarang(
+                                      detail_pengadaan_barang.id
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-trash" }),
+                                _vm._v(" Hapus")
+                              ]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.showForm == true
+        ? _c("form-tambah-ubah", {
+            attrs: {
+              "id-pengadaan-barang": _vm.id,
+              "form-action": _vm.formAction,
+              "selected-detail-pengadaan-barang":
+                _vm.selectedDetailPengadaanBarang
+            },
+            on: { close: _vm.closeForm }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("section", { staticClass: "content-header" }, [
+      _c("h1", [_vm._v("Detail Pengadaan Barang")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-sm-4" }, [
+      _c("b", [_vm._v("Supplier")]),
+      _c("br"),
+      _vm._v(" "),
+      _c("b", [_vm._v("Tanggal Transaksi")]),
+      _c("br"),
+      _vm._v(" "),
+      _c("b", [_vm._v("Status")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Kode Spareparts")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Jumlah Pesan")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Jumlah Datang")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Harga")]),
+        _vm._v(" "),
+        _c("th")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8&":
+/*!*************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8& ***!
+  \*************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      ref: "modal",
+      staticClass: "modal fade",
+      attrs: { id: "form-tambah-ubah" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Tambah Transaksi")
+                ])
+              : _vm.formAction == "UBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Ubah Transaksi")
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.response.error == true
+              ? _c(
+                  "div",
+                  { staticClass: "alert alert-danger alert-dismissible" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [_vm._v("×")]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(1),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.response.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("form", { staticClass: "form-horizontal" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.kode_spareparts
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Spareparts")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.detailPengadaanBarang.kode_spareparts,
+                            expression: "detailPengadaanBarang.kode_spareparts"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { disabled: _vm.formAction == "UBAH" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.detailPengadaanBarang,
+                              "kode_spareparts",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "option",
+                          { attrs: { value: "null", disabled: "" } },
+                          [_vm._v("Pilih spareparts")]
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.listSpareparts, function(spareparts, index) {
+                          return _c(
+                            "option",
+                            {
+                              key: index,
+                              domProps: { value: spareparts.kode }
+                            },
+                            [_vm._v(_vm._s(spareparts.nama))]
+                          )
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.kode_spareparts
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.kode_spareparts[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.jumlah_pesan
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Jumlah Pesan")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.detailPengadaanBarang.jumlah_pesan,
+                          expression: "detailPengadaanBarang.jumlah_pesan"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "number", placeholder: "Jumlah Pesan" },
+                      domProps: {
+                        value: _vm.detailPengadaanBarang.jumlah_pesan
+                      },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.detailPengadaanBarang,
+                            "jumlah_pesan",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.jumlah_pesan
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.jumlah_pesan[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Batal")]
+            ),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addDetailPengadaanBarang()
+                      }
+                    }
+                  },
+                  [_vm._v("Tambah")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.formAction == "UBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updateDetailPengadaanBarang()
+                      }
+                    }
+                  },
+                  [_vm._v("Ubah")]
+                )
+              : _vm._e()
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [
+      _c("i", { staticClass: "icon fa fa-ban" }),
+      _vm._v(" Terjadi Kesalahan")
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a&":
+/*!******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a& ***!
+  \******************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      ref: "modal",
+      staticClass: "modal fade",
+      attrs: { id: "form-tambah-ubah" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Tambah Transaksi")
+                ])
+              : _vm.formAction == "UBAH"
+              ? _c("h4", { staticClass: "modal-title" }, [
+                  _vm._v("Ubah Transaksi")
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.response.error == true
+              ? _c(
+                  "div",
+                  { staticClass: "alert alert-danger alert-dismissible" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [_vm._v("×")]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(1),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.response.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("form", { staticClass: "form-horizontal" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group",
+                  class: {
+                    "has-error":
+                      _vm.response.error &&
+                      _vm.response.data &&
+                      _vm.response.data.id_supplier
+                  }
+                },
+                [
+                  _c("label", { staticClass: "col-sm-3 control-label" }, [
+                    _vm._v("Supplier")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-sm-9" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.pengadaan_barang.supplier.id,
+                            expression: "pengadaan_barang.supplier.id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.pengadaan_barang.supplier,
+                              "id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "option",
+                          { attrs: { value: "null", disabled: "" } },
+                          [_vm._v("Pilih supplier")]
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.listSupplier, function(supplier, index) {
+                          return _c(
+                            "option",
+                            { key: index, domProps: { value: supplier.id } },
+                            [_vm._v(_vm._s(supplier.nama))]
+                          )
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _vm.response.error &&
+                    _vm.response.data &&
+                    _vm.response.data.id_supplier
+                      ? _c("span", { staticClass: "help-block" }, [
+                          _vm._v(_vm._s(_vm.response.data.id_supplier[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Batal")]
+            ),
+            _vm._v(" "),
+            _vm.formAction == "TAMBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addPengadaanBarang()
+                      }
+                    }
+                  },
+                  [_vm._v("Tambah")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.formAction == "UBAH"
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updatePengadaanBarang()
+                      }
+                    }
+                  },
+                  [_vm._v("Ubah")]
+                )
+              : _vm._e()
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [
+      _c("i", { staticClass: "icon fa fa-ban" }),
+      _vm._v(" Terjadi Kesalahan")
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "content-wrapper" },
+    [
+      _c("section", { staticClass: "content-header" }, [
+        _c("h1", [_vm._v("Pengadaan Barang")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "pull-right",
+            staticStyle: {
+              "margin-top": "0",
+              "margin-bottom": "0",
+              position: "absolute",
+              top: "11px",
+              right: "15px"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-block btn-success",
+                attrs: {
+                  type: "button",
+                  "data-toggle": "modal",
+                  "data-target": "#form-tambah-ubah"
+                },
+                on: {
+                  click: function($event) {
+                    return _vm.openForm("TAMBAH")
+                  }
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus" }), _vm._v(" Tambah")]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("section", { staticClass: "content" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-xs-12" }, [
+            _c("div", { staticClass: "box" }, [
+              _c("div", { staticClass: "box-body" }, [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered table-hover",
+                    attrs: { id: "mytable" }
+                  },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.listPengadaanBarang, function(
+                        pengadaan_barang,
+                        index
+                      ) {
+                        return _c("tr", { key: index }, [
+                          _c("td", [_vm._v(_vm._s(index + 1))]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(_vm._s(pengadaan_barang.supplier.nama))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              "Rp" +
+                                _vm._s(_vm.formatNum(pengadaan_barang.total))
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(_vm._s(pengadaan_barang.tgl_transaksi))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(_vm.getStatus(pengadaan_barang.status))
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "pull-right" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-warning btn-sm",
+                                attrs: {
+                                  href:
+                                    "/admin/transaksi/pengadaan_barang/detail/" +
+                                    pengadaan_barang.id
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-eye" }),
+                                _vm._v(" Detail")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary btn-sm",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": "#form-tambah-ubah"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openForm("UBAH", index)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-pencil" }),
+                                _vm._v(" Ubah")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deletePengadaanBarang(
+                                      pengadaan_barang.id
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-trash" }),
+                                _vm._v(" Hapus")
+                              ]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.showForm == true
+        ? _c("form-tambah-ubah", {
+            attrs: {
+              "form-action": _vm.formAction,
+              "selected-pengadaan-barang": _vm.selectedPengadaanBarang
+            },
+            on: { close: _vm.closeForm }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Supplier")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Tanggal Transaksi")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
         _vm._v(" "),
         _c("th")
       ])
@@ -52245,6 +55019,8 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.component('admin-kelola-pegawai', __webpack_require__(/*! ./components/admin/kelola/pegawai/index.vue */ "./resources/js/components/admin/kelola/pegawai/index.vue")["default"]);
 Vue.component('admin-kelola-spareparts', __webpack_require__(/*! ./components/admin/kelola/spareparts/index.vue */ "./resources/js/components/admin/kelola/spareparts/index.vue")["default"]);
 Vue.component('admin-kelola-cabang', __webpack_require__(/*! ./components/admin/kelola/cabang/index.vue */ "./resources/js/components/admin/kelola/cabang/index.vue")["default"]);
+Vue.component('admin-pengadaan-barang', __webpack_require__(/*! ./components/admin/pengadaan_barang/index.vue */ "./resources/js/components/admin/pengadaan_barang/index.vue")["default"]);
+Vue.component('admin-pengadaan-barang-detail', __webpack_require__(/*! ./components/admin/pengadaan_barang/detail.vue */ "./resources/js/components/admin/pengadaan_barang/detail.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -52735,6 +55511,282 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_fedb6be4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_fedb6be4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/detail.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/detail.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./detail.vue?vue&type=template&id=7858ee48& */ "./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48&");
+/* harmony import */ var _detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./detail.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/pengadaan_barang/detail.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./detail.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./detail.vue?vue&type=template&id=7858ee48& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/detail.vue?vue&type=template&id=7858ee48&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_detail_vue_vue_type_template_id_7858ee48___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8& */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8&");
+/* harmony import */ var _form_tambah_ubah_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-tambah-ubah-detail.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _form_tambah_ubah_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah-detail.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_detail_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8&":
+/*!*******************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8& ***!
+  \*******************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue?vue&type=template&id=1d6c03d8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_detail_vue_vue_type_template_id_1d6c03d8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=template&id=3d0e749a& */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a&");
+/* harmony import */ var _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a& ***!
+  \************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-tambah-ubah.vue?vue&type=template&id=3d0e749a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue?vue&type=template&id=3d0e749a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/index.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/index.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=81528cd2& */ "./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/pengadaan_barang/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=81528cd2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_81528cd2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
