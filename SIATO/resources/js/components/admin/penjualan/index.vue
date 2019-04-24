@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Kelola Data Kendaraan</h1>
+            <h1>Penjualan</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
                 <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
             </div>
@@ -15,25 +15,26 @@
                             <table id="mytable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No.</th>
-                                        <th>Nomor Polisi</th>
-                                        <th>Merk</th>
-                                        <th>Tipe</th>
-                                        <th>Pemilik</th>
+                                        <th>No. Transaksi</th>
+                                        <th>Konsumen</th>
+                                        <th>Telepon</th>
+                                        <th>Tanggal Transaksi</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
-                                    <tr v-for="(kendaraan, index) in listKendaraan" v-bind:key="index">
-                                        <td>{{ index+1 }}</td>
-                                        <td>{{ kendaraan.nomor_polisi }}</td>
-                                        <td>{{ kendaraan.merk }}</td>
-                                        <td>{{ kendaraan.tipe }}</td>
-                                        <td>{{ kendaraan.pemilik.nama }}</td>
+                                    <tr v-for="(penjualan, index) in listPenjualan" v-bind:key="index">
+                                        <td>{{ penjualan.jenis + '|' + penjualan.tgl_transaksi + '|' + penjualan.id | nomorTransaksi }}</td>
+                                        <td>{{ penjualan.konsumen.nama }}</td>
+                                        <td>{{ penjualan.konsumen.nomor_telepon }}</td>
+                                        <td>{{ penjualan.tgl_transaksi }}</td>
+                                        <td>{{ penjualan.status | statusTransaksi }}</td>
                                         <td class="pull-right">
+                                            <a :href="'/admin/transaksi/penjualan/detail/' + penjualan.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
                                             <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
-                                            <button @click="deleteKendaraan(kendaraan.nomor_polisi)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
+                                            <button @click="deletePenjualan(penjualan.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -47,7 +48,7 @@
         <form-tambah-ubah 
         v-if="showForm == true" 
         v-bind:form-action="formAction" 
-        v-bind:selected-kendaraan="selectedKendaraan" 
+        v-bind:selected-penjualan="selectedPenjualan" 
         v-on:close="closeForm">
         </form-tambah-ubah>
     </div>
@@ -55,28 +56,28 @@
 
 <script>
 import formTambahUbah from './form-tambah-ubah.vue';
+import moment from 'moment'
 
 export default {
     components: {
-      formTambahUbah,
+      formTambahUbah
     },
     data: function() {
         return {
-            listKendaraan: null,
-            listKonsumen:null,
+            listPenjualan: null,
             formAction: null,
-            selectedKendaraan: null,
+            selectedPenjualan: null,
             showForm: false,
         }
     },
     methods: {
-        getAllKendaraan() {
-            axios.post(this.$root.app.url + 'api/data/kendaraan/index', {
+        getAllPenjualan() {
+            axios.post(this.$root.app.url + 'api/transaksi/penjualan/index', {
                 api_key: this.$root.api_key,
             })
             .then(response => {
                 if(response.data.error == false) {
-                    this.listKendaraan = response.data.data
+                    this.listPenjualan = response.data.data
 
                     if($.fn.dataTable.isDataTable( '#mytable')) {
                         $('#mytable').DataTable().destroy()
@@ -84,9 +85,9 @@ export default {
                 }
             })
         },
-        deleteKendaraan(kode) {
-            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus kendaraan ini?")) {
-                axios.delete(this.$root.app.url + 'api/data/kendaraan/' + kode, { 
+        deletePenjualan(id) {
+            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus penjualan ini?")) {
+                axios.delete(this.$root.app.url + 'api/transaksi/penjualan/data/' + id, { 
                     data: {
                         api_key: this.$root.api_key
                     } 
@@ -94,7 +95,7 @@ export default {
                 .then(response => {
                     if(response.data.error == false) {
                         alert(response.data.message)
-                        this.getAllKendaraan()
+                        this.getAllPenjualan()
                     }
                 })
             }
@@ -102,22 +103,41 @@ export default {
         openForm(action, index = null) {
             this.formAction = action
             if(index != null) {
-                this.selectedKendaraan = this.listKendaraan[index]
+                this.selectedPenjualan = this.listPenjualan[index]
             }
-            this.showForm = true
+            this.showForm = true 
         },
         closeForm(reloadList) {
             this.formAction = null
-            this.selectedKendaraan = null
+            this.selectedPenjualan = null
             this.showForm = false
 
             if(reloadList) {
-                this.getAllKendaraan()
+                this.getAllPenjualan()
             }
         },
     },
+    filters: {
+        nomorTransaksi: function (value) {
+            var temp = value.split("|")
+            return temp[0] + "-" + moment(String(temp[1])).format('DDMMYY') + "-" + temp[2]
+        },
+        statusTransaksi: function (value) {
+            switch(value) {
+                case 1:
+                    return "Terbuka"
+                    break
+                case 2:
+                    return "Menunggu pembayaran"
+                    break
+                case 3:
+                    return "Selesai"
+                    break
+            }
+        }
+    },
     created() {
-        this.getAllKendaraan()
+        this.getAllPenjualan()
     },
     updated() {
         this.$nextTick(function () {
@@ -126,13 +146,11 @@ export default {
                     'autoWidth'   : true,
                     'info'        : true,
                     'lengthChange': true,
-                    'ordering'    : true,
+                    'ordering'    : false,
                     'paging'      : true,
                     'searching'   : true,
-                    'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4]},
-                        {"searchable": false, "targets": [0, 2, 3, 4]}
+                        {"searchable": false, "targets": [1, 2, 3, 4, 5]}
                     ],
                 })
             }

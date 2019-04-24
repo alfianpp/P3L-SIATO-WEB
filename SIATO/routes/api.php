@@ -18,30 +18,41 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('data')->group(function () {
+    // PEGAWAI
     Route::apiResource('pegawai', 'API\PegawaiController')->except(['index', 'show']);
     Route::post('pegawai/index', 'API\PegawaiController@index');
     Route::post('pegawai/{pegawai}', 'API\PegawaiController@show');
 
+    Route::post('pegawai/index/{column}/{value}', 'API\PegawaiController@indexWhere');
+
+    // SPAREPARTS
     Route::apiResource('spareparts', 'API\SparepartsController')->except(['index', 'show']);
     Route::post('spareparts/index', 'API\SparepartsController@index');
     Route::post('spareparts/{spareparts}', 'API\SparepartsController@show');
 
+    // SUPPLIER
     Route::apiResource('supplier', 'API\SupplierController')->except(['index', 'show']);
     Route::post('supplier/index', 'API\SupplierController@index');
     Route::post('supplier/{supplier}', 'API\SupplierController@show');
 
+    // JASA SERVICE
     Route::apiResource('jasaservice', 'API\JasaServiceController')->except(['index', 'show']);
     Route::post('jasaservice/index', 'API\JasaServiceController@index');
     Route::post('jasaservice/{jasaservice}', 'API\JasaServiceController@show');
 
+    // KONSUMEN
     Route::apiResource('konsumen', 'API\KonsumenController')->except(['index', 'show']);
     Route::post('konsumen/index', 'API\KonsumenController@index');
     Route::post('konsumen/{konsumen}', 'API\KonsumenController@show');
 
+    // KENDARAAN
     Route::apiResource('kendaraan', 'API\KendaraanController')->except(['index', 'show']);
     Route::post('kendaraan/index', 'API\KendaraanController@index');
     Route::post('kendaraan/{kendaraan}', 'API\KendaraanController@show');
 
+    Route::post('kendaraan/index/{column}/{value}', 'API\KendaraanController@indexWhere');
+
+    // CABANG
     Route::apiResource('cabang', 'API\CabangController')->except(['index', 'show']);
     Route::post('cabang/index', 'API\CabangController@index');
     Route::post('cabang/{cabang}', 'API\CabangController@show');
@@ -64,5 +75,11 @@ Route::prefix('transaksi')->group(function () {
 
         Route::apiResource('detail', 'API\DetailPenjualanController')->except(['index', 'show']);
         Route::post('detail/{penjualan}', 'API\DetailPenjualanController@show');
+
+        Route::apiResource('detail/spareparts/data', 'API\DetailPenjualanSparepartsController')->except(['index', 'show']);
+        Route::post('detail/spareparts/{id_detail_penjualan}', 'API\DetailPenjualanSparepartsController@show');
+
+        Route::apiResource('detail/jasaservice/data', 'API\DetailPenjualanJasaServiceController')->except(['index', 'show']);
+        Route::post('detail/jasaservice/{id_detail_penjualan}', 'API\DetailPenjualanJasaServiceController@show');
     });
 });

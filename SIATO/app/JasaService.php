@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class JasaService extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($jasa_service) {
+            foreach($jasa_service->detail_penjualan_jasaservice as $detail_penjualan_jasaservice) {
+                $detail_penjualan_jasaservice->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -40,4 +50,9 @@ class JasaService extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function detail_penjualan_jasaservice()
+    {
+        return $this->hasMany('App\DetailPenjualanJasaService', 'id_jasaservice');
+    }
 }

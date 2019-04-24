@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($supplier) {
+            foreach($supplier->pengadaan_barang as $pengadaan_barang) {
+                $pengadaan_barang->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -40,4 +50,9 @@ class Supplier extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function pengadaan_barang()
+    {
+        return $this->hasMany('App\PengadaanBarang', 'id_supplier');
+    }
 }

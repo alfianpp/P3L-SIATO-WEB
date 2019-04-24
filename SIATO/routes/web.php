@@ -41,6 +41,11 @@ Route::prefix('admin')->group(function () {
             Route::get('/', 'AdminController@pengadaanBarang')->name('admin.transaksi.pengadaan_barang');
             Route::get('/detail/{id}', 'AdminController@pengadaanBarangDetail')->name('admin.transaksi.pengadaan_barang.detail');
         });
+
+        Route::prefix('penjualan')->group(function() {
+            Route::get('/', 'AdminController@penjualan')->name('admin.transaksi.penjualan');
+            Route::get('/detail/{id}', 'AdminController@penjualanDetail')->name('admin.transaksi.penjualan.detail');
+        });
     });
 });
 

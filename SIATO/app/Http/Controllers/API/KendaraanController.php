@@ -50,6 +50,21 @@ class KendaraanController extends Controller
         return APIHelper::JSONResponse($this->response);
     }
 
+    public function indexWhere(Request $request, $column, $value)
+    {
+        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
+            $this->response['data'] = KendaraanResource::collection(
+                Kendaraan::where($column, '=', $value)->get()
+            );
+        }
+        else {
+            $this->response['error'] = true;
+            $this->response['message'] = 'Aksi tidak diizinkan.';
+        }
+
+        return APIHelper::JSONResponse($this->response);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Penjualan extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($penjualan) {
+            foreach($penjualan->detail_penjualan as $detail_penjualan) {
+                $detail_penjualan->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -41,8 +51,33 @@ class Penjualan extends Model
      */
     protected $hidden = [];
 
+    public function detail_penjualan()
+    {
+        return $this->hasMany('App\DetailPenjualan', 'id_penjualan');
+    }
+
     public function detail()
     {
         return $this->hasMany('App\DetailPenjualan', 'id_penjualan');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo('App\Cabang', 'id_cabang');
+    }
+
+    public function konsumen()
+    {
+        return $this->belongsTo('App\Konsumen', 'id_konsumen');
+    }
+
+    public function cs()
+    {
+        return $this->belongsTo('App\Pegawai', 'id_cs');
+    }
+
+    public function kasir()
+    {
+        return $this->belongsTo('App\Pegawai', 'id_kasir');
     }
 }

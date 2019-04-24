@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\Partially\Spareparts as SparepartsResource;
+
 class DetailPenjualanSpareparts extends JsonResource
 {
     /**
@@ -17,7 +19,7 @@ class DetailPenjualanSpareparts extends JsonResource
         return [
             'id' => $this->id,
             'id_detail_penjualan' => $this->id_detail_penjualan,
-            'kode_spareparts' => $this->kode_spareparts,
+            'spareparts' => new SparepartsResource($this->spareparts),
             'jumlah' => $this->jumlah,
             'harga' => $this->harga,
         ];

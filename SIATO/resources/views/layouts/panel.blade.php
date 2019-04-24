@@ -61,6 +61,9 @@
                     <li class="{{ Route::currentRouteName() == 'admin.transaksi.pengadaan_barang' ? 'active' : '' }}">
                         <a href="{{ route('admin.transaksi.pengadaan_barang') }}"><i class="fa fa-database"></i> <span>Pengadaan Barang</span></a>
                     </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.transaksi.penjualan' ? 'active' : '' }}">
+                        <a href="{{ route('admin.transaksi.penjualan') }}"><i class="fa fa-database"></i> <span>Penjualan</span></a>
+                    </li>
                 </ul>
             </section>
         </aside>

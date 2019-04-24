@@ -16,7 +16,7 @@ class DetailPenjualanController extends Controller
 {
     var $permitted_role = ['0', '1'];
 
-    var $nullable = ['nomor_polisi_kendaraan', 'id_montir'];
+    var $nullable = ['nomor_polisi', 'id_montir'];
     var $uneditable = ['id_penjualan'];
 
     var $response = [
@@ -27,7 +27,7 @@ class DetailPenjualanController extends Controller
 
     var $rules = [
         'id_penjualan' => 'integer|exists:penjualan,id',
-        'nomor_polisi_kendaraan' => 'alpha_num|max:12|exists:kendaraan,nomor_polisi',
+        'nomor_polisi' => 'alpha_num|max:12|exists:kendaraan,nomor_polisi',
         'id_montir' => 'integer|exists:pegawai,id'
     ];
 

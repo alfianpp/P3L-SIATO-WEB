@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kendaraan extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($kendaraan) {
+            foreach($kendaraan->detail_penjualan as $detail_penjualan) {
+                $detail_penjualan->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -61,6 +71,11 @@ class Kendaraan extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function detail_penjualan()
+    {
+        return $this->hasMany('App\DetailPenjualan', 'nomor_polisi');
+    }
 
     public function konsumen()
     {

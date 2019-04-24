@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\DetailPenjualanSpareparts as DetailPenjualanSparepartsResource;
-use App\Http\Resources\DetailPenjualanJasaService as DetailPenjualanJasaServiceResource;
-
 use Illuminate\Http\Resources\Json\JsonResource;
+
+use App\Http\Resources\Partially\Kendaraan as KendaraanResource;
+use App\Http\Resources\Partially\Pegawai as PegawaiResource;
 
 class DetailPenjualan extends JsonResource
 {
@@ -20,10 +20,8 @@ class DetailPenjualan extends JsonResource
         return [
             'id' => $this->id,
             'id_penjualan' => $this->id_penjualan,
-            'nomor_polisi' => $this->nomor_polisi,
-            'id_montir' => $this->id_montir,
-            'spareparts' => DetailPenjualanSparepartsResource::collection($this->detailSpareparts),
-            'jasa_service' => DetailPenjualanJasaServiceResource::collection($this->detailJasaService),
+            'kendaraan' => new KendaraanResource($this->kendaraan),
+            'montir' => new PegawaiResource($this->montir),
         ];
     }
 }

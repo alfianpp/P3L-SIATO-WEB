@@ -43,7 +43,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.id_pemilik}">
                             <label for="pemilik" class="col-sm-3 control-label">Pemilik</label>
                             <div class="col-sm-9">
-                                <select v-model="kendaraan.id_pemilik" class="form-control" id="pemilik">
+                                <select v-model="kendaraan.pemilik.id" class="form-control" id="pemilik">
                                     <option v-for="(konsumen, index) in listKonsumen" v-bind:key="index" v-bind:value="konsumen.id" >{{ konsumen.nama }}</option>
                                 </select>
                                 <span v-if="response.error && response.data && response.data.id_pemilik" class="help-block">{{ response.data.id_pemilik[0] }}</span>
@@ -68,15 +68,19 @@ export default {
     components: {
       formTambahUbah,
     },
-    props: ['formAction', 'selectedkendaraan','fromTambahUbah'],
+    props: ['formAction', 'selectedKendaraan'],
     data: function() {
         return {
             kendaraan: {
-                id: null,
                 nomor_polisi: null,
                 merk: null,
                 tipe: null,
-                id_pemilik:null,
+                pemilik: {
+                    id: null,
+                    nama: null,
+                    nomor_telepon: null,
+                    alamat: null
+                },
             },
             response: {
                 error: false,
@@ -107,7 +111,7 @@ export default {
                 nomor_polisi: this.kendaraan.nomor_polisi,
                 merk: this.kendaraan.merk,
                 tipe: this.kendaraan.tipe,
-                id_pemilik: this.kendaraan.id_pemilik,
+                id_pemilik: this.kendaraan.pemilik.id,
                 api_key: this.$root.api_key,
             })
             .then(response => {
@@ -123,10 +127,9 @@ export default {
         },
         updatekendaraan() {
             axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.id, {
-                nomor_polisi: this.kendaraan.nomor_polisi,
                 merk: this.kendaraan.merk,
                 tipe: this.kendaraan.tipe,
-                id_pemilik: this.kendaraan.id_pemilik,
+                id_pemilik: this.kendaraan.pemilik.id,
                 api_key: this.$root.api_key,
             })
             .then(response => {
@@ -145,7 +148,10 @@ export default {
             this.kendaraan.nomor_polisi = null
             this.kendaraan.merk = null
             this.kendaraan.tipe = null
-            this.kendaraan.id_pemilik = null
+            this.kendaraan.pemilik.id = null
+            this.kendaraan.pemilik.nama = null
+            this.kendaraan.pemilik.nomor_telepon = null
+            this.kendaraan.pemilik.alamat = null
             
             this.response.error = false
             this.response.message = ''
@@ -157,12 +163,14 @@ export default {
     },
     created() {
         this.getAllKonsumen()
-        if(this.selectedkendaraan != null) {
-            this.kendaraan.id = this.selectedkendaraan.id
+        if(this.selectedKendaraan != null) {
             this.kendaraan.nomor_polisi = this.selectedkendaraan.nomor_polisi
             this.kendaraan.merk = this.selectedkendaraan.merk
             this.kendaraan.tipe = this.selectedkendaraan.tipe
-            this.kendaraan.id_pemilik = this.selectedkendaraan.id_pemilik
+            this.kendaraan.pemilik.id = this.selectedkendaraan.pemilik.id
+            this.kendaraan.pemilik.nama = this.selectedkendaraan.pemilik.nama
+            this.kendaraan.pemilik.nomor_telepon = this.selectedkendaraan.pemilik.nomor_telepon
+            this.kendaraan.pemilik.alamat = this.selectedkendaraan.pemilik.alamat
         }
     },
     mounted() {

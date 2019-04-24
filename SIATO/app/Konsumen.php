@@ -6,6 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Konsumen extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($konsumen) {
+            foreach($konsumen->kendaraan as $kendaraan) {
+                $kendaraan->delete();
+            }
+
+            foreach($konsumen->penjualan as $penjualan) {
+                $penjualan->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -40,4 +54,14 @@ class Konsumen extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function kendaraan()
+    {
+        return $this->hasMany('App\Kendaraan', 'id_pemilik');
+    }
+
+    public function penjualan()
+    {
+        return $this->hasMany('App\Penjualan', 'id_konsumen');
+    }
 }

@@ -26,7 +26,7 @@ class DetailPenjualanJasaService extends Model
      * @var array
      */
     protected $fillable = [
-        'id_detail_penjualan', 'id_jasaservice', 'jumlah',
+        'id_detail_penjualan', 'id_jasaservice',
     ];
 
     public function getFillable()
@@ -40,4 +40,9 @@ class DetailPenjualanJasaService extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function jasa_service()
+    {
+        return $this->belongsTo('App\JasaService', 'id_jasaservice');
+    }
 }

@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Spareparts extends Model
 {
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($spareparts) {
+            foreach($spareparts->detail_pengadaan_barang as $detail_pengadaan_barang) {
+                $detail_pengadaan_barang->delete();
+            }
+
+            foreach($spareparts->histori_barang as $histori_barang) {
+                $histori_barang->delete();
+            }
+
+            foreach($spareparts->detail_penjualan_spareparts as $detail_penjualan_spareparts) {
+                $detail_penjualan_spareparts->delete();
+            }
+        });
+    }
+
     /**
      * The table associated with the model.
      *
@@ -61,4 +79,19 @@ class Spareparts extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function detail_pengadaan_barang()
+    {
+        return $this->hasMany('App\DetailPengadaanBarang', 'kode_spareparts');
+    }
+
+    public function histori_barang()
+    {
+        return $this->hasMany('App\HistoriBarang', 'kode_spareparts');
+    }
+
+    public function detail_penjualan_spareparts()
+    {
+        return $this->hasMany('App\DetailPenjualanSpareparts', 'kode_spareparts');
+    }
 }

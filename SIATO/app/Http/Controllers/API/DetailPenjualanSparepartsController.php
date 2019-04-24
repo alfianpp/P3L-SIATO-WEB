@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Spareparts;
+use App\DetailPenjualan;
 use App\DetailPenjualanSpareparts;
+use App\Http\Resources\DetailPenjualanSpareparts as DetailPenjualanSparepartsResource;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -90,12 +92,29 @@ class DetailPenjualanSparepartsController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
+            $detail_penjualan = DetailPenjualan::find($id);
+
+            if($detail_penjualan) {
+                $this->response['data'] = DetailPenjualanSparepartsResource::collection($detail_penjualan->detailSpareparts);
+            }
+            else {
+                $this->response['error'] = true;
+                $this->response['message'] = 'Data detail penjualan tidak ditemukan.';
+            }
+        }
+        else {
+            $this->response['error'] = true;
+            $this->response['message'] = 'Aksi tidak diizinkan.';
+        }
+
+        return APIHelper::JSONResponse($this->response);
     }
 
     /**

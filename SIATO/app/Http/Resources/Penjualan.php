@@ -4,6 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\Partially\Cabang as CabangResource;
+use App\Http\Resources\Konsumen as KonsumenResource;
+use App\Http\Resources\Partially\Pegawai as PegawaiResource;
+
 class Penjualan extends JsonResource
 {
     /**
@@ -16,15 +20,15 @@ class Penjualan extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_cabang' => $this->id_cabang,
+            'cabang' =>  new CabangResource($this->cabang),
             'jenis' => $this->jenis,
-            'id_konsumen' => $this->id_konsumen,
+            'konsumen' => new KonsumenResource($this->konsumen),
             'subtotal' => $this->subtotal,
             'diskon' => $this->diskon,
             'total' => $this->total,
             'uang_diterima' => $this->uang_diterima,
-            'id_cs' => $this->id_cs,
-            'id_kasir' => $this->id_kasir,
+            'id_cs' => new PegawaiResource($this->cs),
+            'id_kasir' => new PegawaiResource($this->kasir),
             'status' => $this->status,
             'tgl_transaksi' => $this->tgl_transaksi,
         ];

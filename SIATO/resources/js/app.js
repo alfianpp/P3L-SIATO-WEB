@@ -9,6 +9,33 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import numeral from 'numeral'
+
+/**
+ * Numeral
+ */
+
+numeral.register('locale', 'id', {
+    delimiters: {
+        thousands: '.',
+        decimal: ','
+    },
+    abbreviations: {
+        thousand: 'k',
+        million: 'm',
+        billion: 'b',
+        trillion: 't'
+    },
+    ordinal : function (number) {
+        return '';
+    },
+    currency: {
+        symbol: 'Rp'
+    }
+});
+
+numeral.locale('id');
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -28,6 +55,17 @@ Vue.component('admin-kelola-kendaraan', require('./components/admin/kelola/kenda
 
 Vue.component('admin-pengadaan-barang', require('./components/admin/pengadaan_barang/index.vue').default);
 Vue.component('admin-pengadaan-barang-detail', require('./components/admin/pengadaan_barang/detail.vue').default);
+
+Vue.component('admin-penjualan', require('./components/admin/penjualan/index.vue').default);
+Vue.component('admin-penjualan-detail', require('./components/admin/penjualan/detail.vue').default);
+
+/**
+ * Filters
+ */
+
+Vue.filter('toCurrency', function (value) {
+    return numeral(value).format('$0,0.00')
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

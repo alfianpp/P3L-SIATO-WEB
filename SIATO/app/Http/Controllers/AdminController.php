@@ -52,6 +52,16 @@ class AdminController extends Controller
         return view('admin.pengadaan_barang.detail', ['id' => $id]);
     }
 
+    public function penjualan()
+    {
+        return view('admin.penjualan.index');
+    }
+
+    public function penjualanDetail($id)
+    {
+        return view('admin.penjualan.detail', ['id' => $id]);
+    }
+
     public function kelolaKendaraan()
     {
         return view('admin.kelola.kendaraan');

@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\Partially\JasaService as JasaServiceResource;
+
 class DetailPenjualanJasaService extends JsonResource
 {
     /**
@@ -17,7 +19,7 @@ class DetailPenjualanJasaService extends JsonResource
         return [
             'id' => $this->id,
             'id_detail_penjualan' => $this->id_detail_penjualan,
-            'id_jasaservice' => $this->id_jasaservice,
+            'jasa_service' => new JasaServiceResource($this->jasa_service),
             'jumlah' => $this->jumlah,
             'harga' => $this->harga,
         ];

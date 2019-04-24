@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Pegawai;
 use App\Penjualan;
+use App\DetailPenjualan;
 use App\Http\Resources\Penjualan as PenjualanResource;
 
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ class PenjualanController extends Controller
 {
     var $permitted_role = ['0', '1'];
 
-    var $nullable = ['diskon', 'uang_diterima', 'id_kasir'];
+    var $nullable = ['diskon', 'uang_diterima', 'id_cs', 'id_kasir'];
     var $uneditable = [];
 
     var $response = [
@@ -70,9 +72,22 @@ class PenjualanController extends Controller
                 if($validation['isValid']) {
                     $penjualan->fill($request->only($penjualan->getFillable()));
     
+                    if($request->has('id_cs')) {
+                        $penjualan->id_cs = $request->id_cs;
+                    }
+                    else {
+                        $pegawai = Pegawai::where('api_key', '=', $request->api_key)->first();
+                        $penjualan->id_cs = $pegawai->id;
+                    }
                     $penjualan->status = 1;
     
                     if($penjualan->save()) {
+                        if($request->jenis == 'SP') {
+                            $detail_penjualan = new DetailPenjualan;
+                            $detail_penjualan->id_penjualan = $penjualan->id;
+                            $detail_penjualan->save();
+                        }
+
                         $this->response['message'] = 'Berhasil menambah data penjualan.';
                     }
                     else {

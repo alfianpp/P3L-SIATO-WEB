@@ -40,4 +40,9 @@ class DetailPenjualanSpareparts extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function spareparts()
+    {
+        return $this->belongsTo('App\Spareparts', 'kode_spareparts');
+    }
 }

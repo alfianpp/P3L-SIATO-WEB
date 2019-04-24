@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\JasaService;
+use App\DetailPenjualan;
 use App\DetailPenjualanJasaService;
+use App\Http\Resources\DetailPenjualanJasaService as DetailPenjualanJasaServiceResource;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +29,6 @@ class DetailPenjualanJasaServiceController extends Controller
     var $rules = [
         'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
         'id_jasaservice' => 'integer|exists:jasa_service,id',
-        'jumlah' => 'integer|min:1'
     ];
 
     /**
@@ -57,6 +58,8 @@ class DetailPenjualanJasaServiceController extends Controller
                 if($validation['isValid']) {
                     $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
                     
+                    $detail_penjualan_jasaservice->jumlah = 1;
+
                     $jasa_service = JasaService::find($request->id_jasaservice);
                     $detail_penjualan_jasaservice->harga = $jasa_service->harga_jual;
     
@@ -90,12 +93,29 @@ class DetailPenjualanJasaServiceController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
+            $detail_penjualan = DetailPenjualan::find($id);
+
+            if($detail_penjualan) {
+                $this->response['data'] = DetailPenjualanJasaServiceResource::collection($detail_penjualan->detailJasaService);
+            }
+            else {
+                $this->response['error'] = true;
+                $this->response['message'] = 'Data detail penjualan tidak ditemukan.';
+            }
+        }
+        else {
+            $this->response['error'] = true;
+            $this->response['message'] = 'Aksi tidak diizinkan.';
+        }
+
+        return APIHelper::JSONResponse($this->response);
     }
 
     /**
