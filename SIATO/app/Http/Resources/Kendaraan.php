@@ -3,7 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Konsumen as KonsumenResource;
+
+use App\Http\Resources\Partially\Konsumen as KonsumenResource;
 
 class Kendaraan extends JsonResource
 {

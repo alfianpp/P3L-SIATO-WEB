@@ -27,7 +27,7 @@ class DetailPengadaanBarang extends Model
      * @var array
      */
     protected $fillable = [
-        'id_pengadaan_barang', 'kode_spareparts', 'jumlah_pesan', 'jumlah_datang',
+        'id_pengadaan_barang', 'kode_spareparts', 'jumlah_pesan', 'jumlah_datang', 'harga'
     ];
 
     public function getFillable()
@@ -41,4 +41,9 @@ class DetailPengadaanBarang extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function spareparts()
+    {
+        return $this->belongsTo('App\Spareparts', 'kode_spareparts');
+    }
 }

@@ -28,12 +28,13 @@
                                     <tr v-for="(pengadaan_barang, index) in listPengadaanBarang" v-bind:key="index">
                                         <td>{{ index+1 }}</td>
                                         <td>{{ pengadaan_barang.supplier.nama }}</td>
-                                        <td>Rp{{ formatNum(pengadaan_barang.total) }}</td>
+                                        <td>{{ pengadaan_barang.total | toCurrency }}</td>
                                         <td>{{ pengadaan_barang.tgl_transaksi }}</td>
-                                        <td>{{ getStatus(pengadaan_barang.status) }}</td>
+                                        <td>{{ pengadaan_barang.status | statusTransaksi }}</td>
                                         <td class="pull-right">
+                                            <button @click="print(index)" type="button" class="btn btn-default btn-sm"><i class="fa fa-print"></i> Print</button>
                                             <a :href="'/admin/transaksi/pengadaan_barang/detail/' + pengadaan_barang.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button v-if="pengadaan_barang.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deletePengadaanBarang(pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -116,8 +117,24 @@ export default {
                 this.getAllPengadaanBarang()
             }
         },
-        getStatus(id) {
-            switch(id) {
+        print(index) {
+            if(this.listPengadaanBarang[index].status == 1) {
+                axios.put(this.$root.app.url + 'api/transaksi/pengadaan/data/' + this.listPengadaanBarang[index].id, {
+                    status: 2,
+                    api_key: this.$root.api_key,
+                })
+                .then(response => {
+                    if(response.data.error == false) {
+                        this.getAllPengadaanBarang()
+                    }
+                })
+            }
+            
+        },
+    },
+    filters: {
+        statusTransaksi: function (value) {
+            switch(value) {
                 case 1:
                     return "Terbuka"
                     break
@@ -129,9 +146,6 @@ export default {
                     break
             }
         },
-        formatNum(val) {
-            return numeral(val).format('0,0.00')
-        }
     },
     created() {
         this.getAllPengadaanBarang()

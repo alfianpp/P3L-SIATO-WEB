@@ -19,7 +19,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_polisi}">
                             <label class="col-sm-3 control-label">Nomor Polisi</label>
                             <div class="col-sm-9">
-                                <input v-model="kendaraan.nomor_polisi" type="text" class="form-control" placeholder="Nomor Polisi">
+                                <input v-model="kendaraan.nomor_polisi" :disabled="formAction == 'UBAH'" type="text" class="form-control" placeholder="Nomor Polisi">
                                 <span v-if="response.error && response.data && response.data.nomor_polisi" class="help-block">{{ response.data.nomor_polisi[0] }}</span>
                             </div>
                         </div>
@@ -44,6 +44,7 @@
                             <label for="pemilik" class="col-sm-3 control-label">Pemilik</label>
                             <div class="col-sm-9">
                                 <select v-model="kendaraan.pemilik.id" class="form-control" id="pemilik">
+                                    <option value="null" disabled>Pilih pemilik</option>
                                     <option v-for="(konsumen, index) in listKonsumen" v-bind:key="index" v-bind:value="konsumen.id" >{{ konsumen.nama }}</option>
                                 </select>
                                 <span v-if="response.error && response.data && response.data.id_pemilik" class="help-block">{{ response.data.id_pemilik[0] }}</span>
@@ -78,17 +79,15 @@ export default {
                 pemilik: {
                     id: null,
                     nama: null,
-                    nomor_telepon: null,
-                    alamat: null
                 },
             },
+            listKonsumen: null,
             response: {
                 error: false,
                 message: '',
                 data: null
             },
             reloadList: false,
-            listKonsumen: null,
         }
     },
     methods: {
@@ -126,7 +125,7 @@ export default {
             })
         },
         updatekendaraan() {
-            axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.id, {
+            axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.nomor_polisi, {
                 merk: this.kendaraan.merk,
                 tipe: this.kendaraan.tipe,
                 id_pemilik: this.kendaraan.pemilik.id,
@@ -144,14 +143,11 @@ export default {
             })
         },
         close() {
-            this.kendaraan.id = null
             this.kendaraan.nomor_polisi = null
             this.kendaraan.merk = null
             this.kendaraan.tipe = null
             this.kendaraan.pemilik.id = null
             this.kendaraan.pemilik.nama = null
-            this.kendaraan.pemilik.nomor_telepon = null
-            this.kendaraan.pemilik.alamat = null
             
             this.response.error = false
             this.response.message = ''
@@ -164,13 +160,11 @@ export default {
     created() {
         this.getAllKonsumen()
         if(this.selectedKendaraan != null) {
-            this.kendaraan.nomor_polisi = this.selectedkendaraan.nomor_polisi
-            this.kendaraan.merk = this.selectedkendaraan.merk
-            this.kendaraan.tipe = this.selectedkendaraan.tipe
-            this.kendaraan.pemilik.id = this.selectedkendaraan.pemilik.id
-            this.kendaraan.pemilik.nama = this.selectedkendaraan.pemilik.nama
-            this.kendaraan.pemilik.nomor_telepon = this.selectedkendaraan.pemilik.nomor_telepon
-            this.kendaraan.pemilik.alamat = this.selectedkendaraan.pemilik.alamat
+            this.kendaraan.nomor_polisi = this.selectedKendaraan.nomor_polisi
+            this.kendaraan.merk = this.selectedKendaraan.merk
+            this.kendaraan.tipe = this.selectedKendaraan.tipe
+            this.kendaraan.pemilik.id = this.selectedKendaraan.pemilik.id
+            this.kendaraan.pemilik.nama = this.selectedKendaraan.pemilik.nama
         }
     },
     mounted() {

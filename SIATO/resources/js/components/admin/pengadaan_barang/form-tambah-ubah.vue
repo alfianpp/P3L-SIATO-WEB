@@ -44,7 +44,6 @@ export default {
     props: ['formAction', 'selectedPengadaanBarang'],
     data: function() {
         return {
-            listSupplier: null,
             pengadaan_barang: {
                 id: null,
                 supplier: {
@@ -58,6 +57,7 @@ export default {
                 status: null,
                 tgl_transaksi: null
             },
+            listSupplier: null,
             response: {
                 error: false,
                 message: '',

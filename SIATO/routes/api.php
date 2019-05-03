@@ -30,6 +30,8 @@ Route::prefix('data')->group(function () {
     Route::post('spareparts/index', 'API\SparepartsController@index');
     Route::post('spareparts/{spareparts}', 'API\SparepartsController@show');
 
+    Route::post('spareparts/index/stokminimal', 'API\SparepartsController@indexStokMinimal');
+
     // SUPPLIER
     Route::apiResource('supplier', 'API\SupplierController')->except(['index', 'show']);
     Route::post('supplier/index', 'API\SupplierController@index');
@@ -66,6 +68,7 @@ Route::prefix('transaksi')->group(function () {
 
         Route::apiResource('detail', 'API\DetailPengadaanBarangController')->except(['index', 'show']);
         Route::post('detail/{pengadaan}', 'API\DetailPengadaanBarangController@show');
+        Route::post('verifikasi', 'API\DetailPengadaanBarangController@verifikasi');
     });
 
     Route::prefix('penjualan')->group(function () {

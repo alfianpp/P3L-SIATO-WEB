@@ -2135,6 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2149,18 +2150,16 @@ __webpack_require__.r(__webpack_exports__);
         tipe: null,
         pemilik: {
           id: null,
-          nama: null,
-          nomor_telepon: null,
-          alamat: null
+          nama: null
         }
       },
+      listKonsumen: null,
       response: {
         error: false,
         message: '',
         data: null
       },
-      reloadList: false,
-      listKonsumen: null
+      reloadList: false
     };
   },
   methods: {
@@ -2203,7 +2202,7 @@ __webpack_require__.r(__webpack_exports__);
     updatekendaraan: function updatekendaraan() {
       var _this3 = this;
 
-      axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.id, {
+      axios.put(this.$root.app.url + 'api/data/kendaraan/' + this.kendaraan.nomor_polisi, {
         merk: this.kendaraan.merk,
         tipe: this.kendaraan.tipe,
         id_pemilik: this.kendaraan.pemilik.id,
@@ -2221,14 +2220,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     close: function close() {
-      this.kendaraan.id = null;
       this.kendaraan.nomor_polisi = null;
       this.kendaraan.merk = null;
       this.kendaraan.tipe = null;
       this.kendaraan.pemilik.id = null;
       this.kendaraan.pemilik.nama = null;
-      this.kendaraan.pemilik.nomor_telepon = null;
-      this.kendaraan.pemilik.alamat = null;
       this.response.error = false;
       this.response.message = '';
       this.response.data = null;
@@ -2240,13 +2236,11 @@ __webpack_require__.r(__webpack_exports__);
     this.getAllKonsumen();
 
     if (this.selectedKendaraan != null) {
-      this.kendaraan.nomor_polisi = this.selectedkendaraan.nomor_polisi;
-      this.kendaraan.merk = this.selectedkendaraan.merk;
-      this.kendaraan.tipe = this.selectedkendaraan.tipe;
-      this.kendaraan.pemilik.id = this.selectedkendaraan.pemilik.id;
-      this.kendaraan.pemilik.nama = this.selectedkendaraan.pemilik.nama;
-      this.kendaraan.pemilik.nomor_telepon = this.selectedkendaraan.pemilik.nomor_telepon;
-      this.kendaraan.pemilik.alamat = this.selectedkendaraan.pemilik.alamat;
+      this.kendaraan.nomor_polisi = this.selectedKendaraan.nomor_polisi;
+      this.kendaraan.merk = this.selectedKendaraan.merk;
+      this.kendaraan.tipe = this.selectedKendaraan.tipe;
+      this.kendaraan.pemilik.id = this.selectedKendaraan.pemilik.id;
+      this.kendaraan.pemilik.nama = this.selectedKendaraan.pemilik.nama;
     }
   },
   mounted: function mounted() {
@@ -3565,8 +3559,17 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _form_tambah_ubah_detail_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah-detail.vue */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah-detail.vue");
-/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! numeral */ "./node_modules/numeral/numeral.js");
-/* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(numeral__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _form_verifikasi_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-verifikasi.vue */ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3646,12 +3649,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    formTambahUbah: _form_tambah_ubah_detail_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    formTambahUbah: _form_tambah_ubah_detail_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    formVerifikasi: _form_verifikasi_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   props: ['id'],
   data: function data() {
     return {
-      PengadaanBarang: null,
+      pengadaanBarang: null,
       listDetailPengadaanBarang: null,
       formAction: null,
       selectedDetailPengadaanBarang: null,
@@ -3666,7 +3670,7 @@ __webpack_require__.r(__webpack_exports__);
         api_key: this.$root.api_key
       }).then(function (response) {
         if (response.data.error == false) {
-          _this.PengadaanBarang = response.data.data;
+          _this.pengadaanBarang = response.data.data;
         }
       });
     },
@@ -3720,9 +3724,11 @@ __webpack_require__.r(__webpack_exports__);
       if (reloadList) {
         this.getDetailPengadaanBarang();
       }
-    },
-    getStatus: function getStatus(id) {
-      switch (id) {
+    }
+  },
+  computed: {
+    statusTransaksi: function statusTransaksi() {
+      switch (this.pengadaanBarang.status) {
         case 1:
           return "Terbuka";
           break;
@@ -3736,11 +3742,19 @@ __webpack_require__.r(__webpack_exports__);
           break;
       }
     },
-    formatNum: function formatNum(val) {
-      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0');
+    isOpen: function isOpen() {
+      if (this.pengadaanBarang.status == 1) {
+        return true;
+      } else {
+        return false;
+      }
     },
-    formatCurrency: function formatCurrency(val) {
-      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0.00');
+    isWaitingForVerification: function isWaitingForVerification() {
+      if (this.pengadaanBarang.status == 2) {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
   created: function created() {
@@ -3760,10 +3774,10 @@ __webpack_require__.r(__webpack_exports__);
           'order': [[0, 'asc']],
           'columnDefs': [{
             "orderable": false,
-            "targets": [0, 2, 3, 4, 5]
+            "targets": [0, 2, 3, 4, 5, 6, 7]
           }, {
             "searchable": false,
-            "targets": [0, 2, 3, 4, 5]
+            "targets": [0, 2, 3, 4, 5, 6, 7]
           }]
         });
       }
@@ -3838,7 +3852,11 @@ __webpack_require__.r(__webpack_exports__);
       detailPengadaanBarang: {
         id: null,
         id_pengadaan_barang: null,
-        kode_spareparts: null,
+        spareparts: {
+          kode: null,
+          nama: null,
+          merk: null
+        },
         jumlah_pesan: null,
         jumlah_datang: null,
         harga: null
@@ -3853,30 +3871,25 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    addDetailPengadaanBarang: function addDetailPengadaanBarang() {
+    getSpareparts: function getSpareparts() {
       var _this = this;
 
-      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail', {
-        id_pengadaan_barang: this.idPengadaanBarang,
-        kode_spareparts: this.detailPengadaanBarang.kode_spareparts,
-        jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
+      axios.post(this.$root.app.url + 'api/data/spareparts/index', {
         api_key: this.$root.api_key
       }).then(function (response) {
         _this.response = response.data;
 
         if (_this.response.error == false) {
-          alert(_this.response.message);
-          _this.reloadList = true;
-          $('#form-tambah-ubah').modal('hide');
-          $('body').removeClass('modal-open');
-          $('.modal-backdrop').remove();
+          _this.listSpareparts = _this.response.data;
         }
       });
     },
-    updateDetailPengadaanBarang: function updateDetailPengadaanBarang() {
+    addDetailPengadaanBarang: function addDetailPengadaanBarang() {
       var _this2 = this;
 
-      axios.put(this.$root.app.url + 'api/transaksi/pengadaan/detail/' + this.detailPengadaanBarang.id, {
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail', {
+        id_pengadaan_barang: this.idPengadaanBarang,
+        kode_spareparts: this.detailPengadaanBarang.spareparts.kode,
         jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
         api_key: this.$root.api_key
       }).then(function (response) {
@@ -3891,23 +3904,30 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getSpareparts: function getSpareparts() {
+    updateDetailPengadaanBarang: function updateDetailPengadaanBarang() {
       var _this3 = this;
 
-      axios.post(this.$root.app.url + 'api/data/spareparts/index', {
+      axios.put(this.$root.app.url + 'api/transaksi/pengadaan/detail/' + this.detailPengadaanBarang.id, {
+        jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
         api_key: this.$root.api_key
       }).then(function (response) {
         _this3.response = response.data;
 
         if (_this3.response.error == false) {
-          _this3.listSpareparts = _this3.response.data;
+          alert(_this3.response.message);
+          _this3.reloadList = true;
+          $('#form-tambah-ubah').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
         }
       });
     },
     close: function close() {
       this.detailPengadaanBarang.id = null;
       this.detailPengadaanBarang.id_pengadaan_barang = null;
-      this.detailPengadaanBarang.kode_spareparts = null;
+      this.detailPengadaanBarang.spareparts.kode = null;
+      this.detailPengadaanBarang.spareparts.nama = null;
+      this.detailPengadaanBarang.spareparts.merk = null;
       this.detailPengadaanBarang.jumlah_pesan = null;
       this.detailPengadaanBarang.jumlah_datang = null;
       this.detailPengadaanBarang.harga = null;
@@ -3925,7 +3945,9 @@ __webpack_require__.r(__webpack_exports__);
     if (this.selectedDetailPengadaanBarang != null) {
       this.detailPengadaanBarang.id = this.selectedDetailPengadaanBarang.id;
       this.detailPengadaanBarang.id_pengadaan_barang = this.selectedDetailPengadaanBarang.id_pengadaan_barang;
-      this.detailPengadaanBarang.kode_spareparts = this.selectedDetailPengadaanBarang.kode_spareparts;
+      this.detailPengadaanBarang.spareparts.kode = this.selectedDetailPengadaanBarang.spareparts.kode;
+      this.detailPengadaanBarang.spareparts.nama = this.selectedDetailPengadaanBarang.spareparts.nama;
+      this.detailPengadaanBarang.spareparts.merk = this.selectedDetailPengadaanBarang.spareparts.merk;
       this.detailPengadaanBarang.jumlah_pesan = this.selectedDetailPengadaanBarang.jumlah_pesan;
       this.detailPengadaanBarang.jumlah_datang = this.selectedDetailPengadaanBarang.jumlah_datang;
       this.detailPengadaanBarang.harga = this.selectedDetailPengadaanBarang.harga;
@@ -3992,7 +4014,6 @@ __webpack_require__.r(__webpack_exports__);
   props: ['formAction', 'selectedPengadaanBarang'],
   data: function data() {
     return {
-      listSupplier: null,
       pengadaan_barang: {
         id: null,
         supplier: {
@@ -4006,6 +4027,7 @@ __webpack_require__.r(__webpack_exports__);
         status: null,
         tgl_transaksi: null
       },
+      listSupplier: null,
       response: {
         error: false,
         message: '',
@@ -4103,6 +4125,139 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['idPengadaanBarang'],
+  data: function data() {
+    return {
+      listDetailPengadaanBarang: null,
+      response: {
+        error: false,
+        message: '',
+        data: null
+      },
+      reloadList: false
+    };
+  },
+  methods: {
+    getDetailPengadaanBarang: function getDetailPengadaanBarang() {
+      var _this = this;
+
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail/' + this.idPengadaanBarang, {
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        if (response.data.error == false) {
+          _this.listDetailPengadaanBarang = response.data.data;
+        }
+      });
+    },
+    verifikasiPengadaanBarang: function verifikasiPengadaanBarang() {
+      var _this2 = this;
+
+      var test = [];
+      this.listDetailPengadaanBarang.forEach(function (detailPengadaanBarang) {
+        var abc = {
+          id: detailPengadaanBarang.id,
+          jumlah_datang: detailPengadaanBarang.jumlah_datang,
+          harga: detailPengadaanBarang.harga
+        };
+        test.push(abc);
+      });
+      console.log(test);
+      axios.post(this.$root.app.url + 'api/transaksi/pengadaan/verifikasi', {
+        id_pengadaan_barang: this.idPengadaanBarang,
+        detail_pengadaan_barang: test,
+        api_key: this.$root.api_key
+      }).then(function (response) {
+        _this2.response = response.data;
+
+        if (_this2.response.error == false) {// alert(this.response.message)
+          // this.reloadList = true
+          // $('#form-tambah-ubah').modal('hide');
+          // $('body').removeClass('modal-open');
+          // $('.modal-backdrop').remove();
+        }
+      });
+    },
+    close: function close() {
+      this.listDetailPengadaanBarang = null;
+      this.response.error = false;
+      this.response.message = '';
+      this.response.data = null;
+      this.$emit('close', this.reloadList);
+      this.reloadList = false;
+    }
+  },
+  created: function created() {
+    this.getDetailPengadaanBarang();
+  },
+  mounted: function mounted() {
+    $(this.$refs.modal).on("hidden.bs.modal", this.close);
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=script&lang=js& ***!
@@ -4115,6 +4270,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _form_tambah_ubah_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-tambah-ubah.vue */ "./resources/js/components/admin/pengadaan_barang/form-tambah-ubah.vue");
 /* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! numeral */ "./node_modules/numeral/numeral.js");
 /* harmony import */ var numeral__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(numeral__WEBPACK_IMPORTED_MODULE_1__);
+//
 //
 //
 //
@@ -4237,8 +4393,24 @@ __webpack_require__.r(__webpack_exports__);
         this.getAllPengadaanBarang();
       }
     },
-    getStatus: function getStatus(id) {
-      switch (id) {
+    print: function print(index) {
+      var _this3 = this;
+
+      if (this.listPengadaanBarang[index].status == 1) {
+        axios.put(this.$root.app.url + 'api/transaksi/pengadaan/data/' + this.listPengadaanBarang[index].id, {
+          status: 2,
+          api_key: this.$root.api_key
+        }).then(function (response) {
+          if (response.data.error == false) {
+            _this3.getAllPengadaanBarang();
+          }
+        });
+      }
+    }
+  },
+  filters: {
+    statusTransaksi: function statusTransaksi(value) {
+      switch (value) {
         case 1:
           return "Terbuka";
           break;
@@ -4251,9 +4423,6 @@ __webpack_require__.r(__webpack_exports__);
           return "Selesai";
           break;
       }
-    },
-    formatNum: function formatNum(val) {
-      return numeral__WEBPACK_IMPORTED_MODULE_1___default()(val).format('0,0.00');
     }
   },
   created: function created() {
@@ -59971,7 +60140,11 @@ var render = function() {
                         }
                       ],
                       staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Nomor Polisi" },
+                      attrs: {
+                        disabled: _vm.formAction == "UBAH",
+                        type: "text",
+                        placeholder: "Nomor Polisi"
+                      },
                       domProps: { value: _vm.kendaraan.nomor_polisi },
                       on: {
                         input: function($event) {
@@ -60153,14 +60326,22 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.listKonsumen, function(konsumen, index) {
-                        return _c(
+                      [
+                        _c(
                           "option",
-                          { key: index, domProps: { value: konsumen.id } },
-                          [_vm._v(_vm._s(konsumen.nama))]
-                        )
-                      }),
-                      0
+                          { attrs: { value: "null", disabled: "" } },
+                          [_vm._v("Pilih pemilik")]
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.listKonsumen, function(konsumen, index) {
+                          return _c(
+                            "option",
+                            { key: index, domProps: { value: konsumen.id } },
+                            [_vm._v(_vm._s(konsumen.nama))]
+                          )
+                        })
+                      ],
+                      2
                     ),
                     _vm._v(" "),
                     _vm.response.error &&
@@ -62634,184 +62815,239 @@ var render = function() {
     "div",
     { staticClass: "content-wrapper" },
     [
-      _vm._m(0),
+      _c("section", { staticClass: "content-header" }, [
+        _c("h1", [_vm._v("Detail Pengadaan Barang")]),
+        _vm._v(" "),
+        _vm.pengadaanBarang != null
+          ? _c(
+              "div",
+              {
+                staticClass: "pull-right",
+                staticStyle: {
+                  "margin-top": "0",
+                  "margin-bottom": "0",
+                  position: "absolute",
+                  top: "11px",
+                  right: "15px"
+                }
+              },
+              [
+                _vm.isOpen
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "pull-right btn btn-success",
+                        attrs: {
+                          type: "button",
+                          "data-toggle": "modal",
+                          "data-target": "#form-tambah-ubah"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.openForm("TAMBAH")
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fa fa-plus" }),
+                        _vm._v(" Tambah")
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isWaitingForVerification
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "pull-right btn btn-success",
+                        attrs: {
+                          type: "button",
+                          "data-toggle": "modal",
+                          "data-target": "#form-verifikasi"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.openForm("VERIFIKASI")
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fa fa-check" }),
+                        _vm._v(" Verifikasi")
+                      ]
+                    )
+                  : _vm._e()
+              ]
+            )
+          : _vm._e()
+      ]),
       _vm._v(" "),
       _c("section", { staticClass: "content" }, [
         _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "col-xs-12" }, [
+            _c(
+              "div",
+              { staticClass: "row", staticStyle: { "margin-bottom": "15px" } },
+              [
+                _c("div", { staticClass: "col-sm-6" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _vm.pengadaanBarang != null
+                      ? _c("div", { staticClass: "col-sm-8" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.pengadaanBarang.supplier.nama) +
+                              " "
+                          ),
+                          _c("br"),
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.pengadaanBarang.tgl_transaksi) +
+                              " "
+                          ),
+                          _c("br"),
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.statusTransaksi) +
+                              "\n                            "
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                ])
+              ]
+            ),
+            _vm._v(" "),
             _c("div", { staticClass: "box" }, [
               _c("div", { staticClass: "box-body" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "row",
-                    staticStyle: { "margin-bottom": "15px" }
-                  },
-                  [
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c("div", { staticClass: "row" }, [
+                _vm.pengadaanBarang != null
+                  ? _c(
+                      "table",
+                      {
+                        staticClass: "table table-bordered table-hover",
+                        attrs: { id: "mytable" }
+                      },
+                      [
                         _vm._m(1),
                         _vm._v(" "),
-                        _vm.PengadaanBarang != null
-                          ? _c("div", { staticClass: "col-sm-8" }, [
-                              _vm._v(
-                                "\n                                        " +
-                                  _vm._s(_vm.PengadaanBarang.supplier.nama) +
-                                  " "
-                              ),
-                              _c("br"),
-                              _vm._v(
-                                "\n                                        " +
-                                  _vm._s(_vm.PengadaanBarang.tgl_transaksi) +
-                                  " "
-                              ),
-                              _c("br"),
-                              _vm._v(
-                                "\n                                        " +
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.listDetailPengadaanBarang, function(
+                            detail_pengadaan_barang,
+                            index
+                          ) {
+                            return _c("tr", { key: index }, [
+                              _c("td", [_vm._v(_vm._s(index + 1))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
                                   _vm._s(
-                                    _vm.getStatus(_vm.PengadaanBarang.status)
-                                  ) +
-                                  "\n                                    "
-                              )
-                            ])
-                          : _vm._e()
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-sm-6" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "pull-right btn btn-success",
-                          attrs: {
-                            type: "button",
-                            "data-toggle": "modal",
-                            "data-target": "#form-tambah-ubah"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.openForm("TAMBAH")
-                            }
-                          }
-                        },
-                        [
-                          _c("i", { staticClass: "fa fa-plus" }),
-                          _vm._v(" Tambah")
-                        ]
-                      )
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "table",
-                  {
-                    staticClass: "table table-bordered table-hover",
-                    attrs: { id: "mytable" }
-                  },
-                  [
-                    _vm._m(2),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.listDetailPengadaanBarang, function(
-                        detail_pengadaan_barang,
-                        index
-                      ) {
-                        return _c("tr", { key: index }, [
-                          _c("td", [_vm._v(_vm._s(index + 1))]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(detail_pengadaan_barang.kode_spareparts)
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(
-                                _vm.formatNum(
-                                  detail_pengadaan_barang.jumlah_pesan
-                                )
-                              )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(
-                                _vm.formatNum(
-                                  detail_pengadaan_barang.jumlah_datang
-                                )
-                              )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              "Rp" +
-                                _vm._s(
-                                  _vm.formatCurrency(
-                                    detail_pengadaan_barang.harga
+                                    detail_pengadaan_barang.spareparts.kode
                                   )
                                 )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", { staticClass: "pull-right" }, [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary btn-sm",
-                                attrs: {
-                                  type: "button",
-                                  "data-toggle": "modal",
-                                  "data-target": "#form-tambah-ubah"
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.openForm("UBAH", index)
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", { staticClass: "fa fa-pencil" }),
-                                _vm._v(" Ubah")
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger btn-sm",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.deleteDetailPengadaanBarang(
-                                      detail_pengadaan_barang.id
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(
+                                    detail_pengadaan_barang.spareparts.nama
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(
+                                    detail_pengadaan_barang.spareparts.merk
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(detail_pengadaan_barang.jumlah_pesan)
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(detail_pengadaan_barang.jumlah_datang)
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm._f("toCurrency")(
+                                      detail_pengadaan_barang.harga
                                     )
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", { staticClass: "fa fa-trash" }),
-                                _vm._v(" Hapus")
-                              ]
-                            )
-                          ])
-                        ])
-                      }),
-                      0
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "pull-right" }, [
+                                _vm.isOpen
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-primary btn-sm",
+                                        attrs: {
+                                          type: "button",
+                                          "data-toggle": "modal",
+                                          "data-target": "#form-tambah-ubah"
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.openForm("UBAH", index)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-pencil"
+                                        }),
+                                        _vm._v(" Ubah")
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.isOpen
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger btn-sm",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.deleteDetailPengadaanBarang(
+                                              detail_pengadaan_barang.id
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", { staticClass: "fa fa-trash" }),
+                                        _vm._v(" Hapus")
+                                      ]
+                                    )
+                                  : _vm._e()
+                              ])
+                            ])
+                          }),
+                          0
+                        )
+                      ]
                     )
-                  ]
-                )
+                  : _vm._e()
               ])
             ])
           ])
         ])
       ]),
       _vm._v(" "),
-      _vm.showForm == true
+      (_vm.showForm == true && _vm.formAction == "TAMBAH") ||
+      _vm.formAction == "UBAH"
         ? _c("form-tambah-ubah", {
             attrs: {
               "id-pengadaan-barang": _vm.id,
@@ -62821,20 +63057,19 @@ var render = function() {
             },
             on: { close: _vm.closeForm }
           })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.showForm == true && _vm.formAction == "VERIFIKASI"
+        ? _c("form-verifikasi", {
+            attrs: { "id-pengadaan-barang": _vm.id },
+            on: { close: _vm.closeForm }
+          })
         : _vm._e()
     ],
     1
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("section", { staticClass: "content-header" }, [
-      _c("h1", [_vm._v("Detail Pengadaan Barang")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -62857,7 +63092,11 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("No.")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Kode Spareparts")]),
+        _c("th", [_vm._v("Kode")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nama")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Merk")]),
         _vm._v(" "),
         _c("th", [_vm._v("Jumlah Pesan")]),
         _vm._v(" "),
@@ -62969,8 +63208,8 @@ var render = function() {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.detailPengadaanBarang.kode_spareparts,
-                            expression: "detailPengadaanBarang.kode_spareparts"
+                            value: _vm.detailPengadaanBarang.spareparts.kode,
+                            expression: "detailPengadaanBarang.spareparts.kode"
                           }
                         ],
                         staticClass: "form-control",
@@ -62986,8 +63225,8 @@ var render = function() {
                                 return val
                               })
                             _vm.$set(
-                              _vm.detailPengadaanBarang,
-                              "kode_spareparts",
+                              _vm.detailPengadaanBarang.spareparts,
+                              "kode",
                               $event.target.multiple
                                 ? $$selectedVal
                                 : $$selectedVal[0]
@@ -63396,6 +63635,248 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      ref: "modal",
+      staticClass: "modal fade",
+      attrs: { id: "form-verifikasi" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog modal-lg" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm.response.error == true
+              ? _c(
+                  "div",
+                  { staticClass: "alert alert-danger alert-dismissible" },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [_vm._v("×")]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(1),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.response.message) +
+                        "\n                "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.listDetailPengadaanBarang, function(
+                    detail_pengadaan_barang,
+                    index
+                  ) {
+                    return _c("tr", { key: index }, [
+                      _c("td", [
+                        _vm._v(_vm._s(detail_pengadaan_barang.spareparts.kode))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(detail_pengadaan_barang.spareparts.nama))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(detail_pengadaan_barang.spareparts.merk))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(detail_pengadaan_barang.jumlah_pesan))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value:
+                                _vm.listDetailPengadaanBarang[index]
+                                  .jumlah_datang,
+                              expression:
+                                "listDetailPengadaanBarang[index].jumlah_datang"
+                            }
+                          ],
+                          staticStyle: { width: "100%", padding: "0px 5px" },
+                          attrs: { type: "number" },
+                          domProps: {
+                            value:
+                              _vm.listDetailPengadaanBarang[index].jumlah_datang
+                          },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.listDetailPengadaanBarang[index],
+                                "jumlah_datang",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.listDetailPengadaanBarang[index].harga,
+                              expression:
+                                "listDetailPengadaanBarang[index].harga"
+                            }
+                          ],
+                          staticStyle: { width: "100%", padding: "0px 5px" },
+                          attrs: { type: "number" },
+                          domProps: {
+                            value: _vm.listDetailPengadaanBarang[index].harga
+                          },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.listDetailPengadaanBarang[index],
+                                "harga",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Batal")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    return _vm.verifikasiPengadaanBarang()
+                  }
+                }
+              },
+              [_vm._v("Verifikasi")]
+            )
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      ),
+      _vm._v(" "),
+      _c("h4", { staticClass: "modal-title" }, [_vm._v("Verifikasi Barang")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", [
+      _c("i", { staticClass: "icon fa fa-ban" }),
+      _vm._v(" Terjadi Kesalahan")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Kode")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nama")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Merk")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Jumlah Pesan")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Jumlah Datang")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Harga Satuan")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2&":
 /*!*******************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/pengadaan_barang/index.vue?vue&type=template&id=81528cd2& ***!
@@ -63481,8 +63962,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", [
                             _vm._v(
-                              "Rp" +
-                                _vm._s(_vm.formatNum(pengadaan_barang.total))
+                              _vm._s(
+                                _vm._f("toCurrency")(pengadaan_barang.total)
+                              )
                             )
                           ]),
                           _vm._v(" "),
@@ -63492,11 +63974,32 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", [
                             _vm._v(
-                              _vm._s(_vm.getStatus(pengadaan_barang.status))
+                              _vm._s(
+                                _vm._f("statusTransaksi")(
+                                  pengadaan_barang.status
+                                )
+                              )
                             )
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "pull-right" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-default btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.print(index)
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-print" }),
+                                _vm._v(" Print")
+                              ]
+                            ),
+                            _vm._v(" "),
                             _c(
                               "a",
                               {
@@ -63513,26 +64016,28 @@ var render = function() {
                               ]
                             ),
                             _vm._v(" "),
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary btn-sm",
-                                attrs: {
-                                  type: "button",
-                                  "data-toggle": "modal",
-                                  "data-target": "#form-tambah-ubah"
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.openForm("UBAH", index)
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", { staticClass: "fa fa-pencil" }),
-                                _vm._v(" Ubah")
-                              ]
-                            ),
+                            pengadaan_barang.status == 1
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-primary btn-sm",
+                                    attrs: {
+                                      type: "button",
+                                      "data-toggle": "modal",
+                                      "data-target": "#form-tambah-ubah"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.openForm("UBAH", index)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("i", { staticClass: "fa fa-pencil" }),
+                                    _vm._v(" Ubah")
+                                  ]
+                                )
+                              : _vm._e(),
                             _vm._v(" "),
                             _c(
                               "button",
@@ -78870,6 +79375,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_tambah_ubah_vue_vue_type_template_id_3d0e749a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form-verifikasi.vue?vue&type=template&id=17fba57a& */ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a&");
+/* harmony import */ var _form_verifikasi_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form-verifikasi.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _form_verifikasi_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/pengadaan_barang/form-verifikasi.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_verifikasi_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-verifikasi.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_form_verifikasi_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./form-verifikasi.vue?vue&type=template&id=17fba57a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/pengadaan_barang/form-verifikasi.vue?vue&type=template&id=17fba57a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_form_verifikasi_vue_vue_type_template_id_17fba57a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

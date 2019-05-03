@@ -15,7 +15,7 @@ class PengadaanBarangController extends Controller
 {
     var $permitted_role = ['0'];
 
-    var $nullable = [];
+    var $nullable = ['status'];
     var $uneditable = [];
 
     var $response = [
@@ -25,7 +25,8 @@ class PengadaanBarangController extends Controller
     ];
 
     var $rules = [
-        'id_supplier' => 'integer|exists:supplier,id'
+        'id_supplier' => 'integer|exists:supplier,id',
+        'status' => 'integer'
     ];
 
     /**

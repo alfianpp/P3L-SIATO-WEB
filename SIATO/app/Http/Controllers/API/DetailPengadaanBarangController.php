@@ -16,7 +16,7 @@ class DetailPengadaanBarangController extends Controller
 {
     var $permitted_role = ['0'];
 
-    var $nullable = ['jumlah_datang'];
+    var $nullable = ['jumlah_datang', 'harga'];
     var $uneditable = ['id_pengadaan_barang', 'kode_spareparts'];
 
     var $response = [
@@ -29,7 +29,8 @@ class DetailPengadaanBarangController extends Controller
         'id_pengadaan_barang' => 'integer|exists:pengadaan_barang,id',
         'kode_spareparts' => 'alpha_dash|max:12|exists:spareparts,kode',
         'jumlah_pesan' => 'integer|min:1',
-        'jumlah_datang' => 'integer|min:1'
+        'jumlah_datang' => 'integer|min:1',
+        'harga' => 'numeric|digits_between:1,11'
     ];
 
     /**
@@ -185,6 +186,36 @@ class DetailPengadaanBarangController extends Controller
             else {
                 $this->response['error'] = true;
                 $this->response['message'] = 'Data detail pengadaan barang tidak ditemukan.';
+            }
+        }
+        else {
+            $this->response['error'] = true;
+            $this->response['message'] = 'Aksi tidak diizinkan.';
+        }
+
+        return APIHelper::JSONResponse($this->response);
+    }
+
+    public function verifikasi(Request $request) {
+        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
+
+            // Cek data kosong
+            foreach($request->detail_pengadaan_barang as $x) {
+                $x = (object) $x;
+                if(!$x->jumlah_datang || !$x->harga) {
+                    $this->response['error'] = true;
+                    $this->response['message'] = 'Data verifikasi pengadaan barang yang dimasukkan tidak lengkap.';
+                    break;
+                }
+            }
+
+            foreach($request->detail_pengadaan_barang as $x) {
+                $x = (object) $x;
+                $detail_pengadaan_barang = DetailPengadaanBarang::find($x->id);
+                $detail_pengadaan_barang->jumlah_datang = $x->jumlah_datang;
+                $detail_pengadaan_barang->harga = $x->harga;
+
+                $detail_pengadaan_barang->save();
             }
         }
         else {

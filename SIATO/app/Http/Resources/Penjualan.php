@@ -27,8 +27,8 @@ class Penjualan extends JsonResource
             'diskon' => $this->diskon,
             'total' => $this->total,
             'uang_diterima' => $this->uang_diterima,
-            'id_cs' => new PegawaiResource($this->cs),
-            'id_kasir' => new PegawaiResource($this->kasir),
+            'cs' => new PegawaiResource($this->cs),
+            'kasir' => new PegawaiResource($this->kasir),
             'status' => $this->status,
             'tgl_transaksi' => $this->tgl_transaksi,
         ];

@@ -19,7 +19,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.kode_spareparts}">
                             <label class="col-sm-3 control-label">Spareparts</label>
                             <div class="col-sm-9">
-                                <select v-model="detailPengadaanBarang.kode_spareparts" :disabled="formAction == 'UBAH'" class="form-control">
+                                <select v-model="detailPengadaanBarang.spareparts.kode" :disabled="formAction == 'UBAH'" class="form-control">
                                     <option value="null" disabled>Pilih spareparts</option>
                                     <option v-for="(spareparts, index) in listSpareparts" v-bind:key="index" v-bind:value="spareparts.kode">{{ spareparts.nama }}</option>
                                 </select>
@@ -55,7 +55,11 @@ export default {
             detailPengadaanBarang: {
                 id: null,
                 id_pengadaan_barang: null,
-                kode_spareparts: null,
+                spareparts: {
+                    kode: null,
+                    nama: null,
+                    merk: null
+                },
                 jumlah_pesan: null,
                 jumlah_datang: null,
                 harga: null
@@ -70,10 +74,21 @@ export default {
         }
     },
     methods: {
+        getSpareparts() {
+            axios.post(this.$root.app.url + 'api/data/spareparts/index', {
+                api_key: this.$root.api_key,
+            })
+            .then(response => {
+                this.response = response.data
+                if(this.response.error == false) {
+                    this.listSpareparts = this.response.data
+                }
+            })
+        },
         addDetailPengadaanBarang() {
             axios.post(this.$root.app.url + 'api/transaksi/pengadaan/detail', {
                 id_pengadaan_barang: this.idPengadaanBarang,
-                kode_spareparts: this.detailPengadaanBarang.kode_spareparts,
+                kode_spareparts: this.detailPengadaanBarang.spareparts.kode,
                 jumlah_pesan: this.detailPengadaanBarang.jumlah_pesan,
                 api_key: this.$root.api_key,
             })
@@ -104,21 +119,12 @@ export default {
                 }
             })
         },
-        getSpareparts() {
-            axios.post(this.$root.app.url + 'api/data/spareparts/index', {
-                api_key: this.$root.api_key,
-            })
-            .then(response => {
-                this.response = response.data
-                if(this.response.error == false) {
-                    this.listSpareparts = this.response.data
-                }
-            })
-        },
         close() {
             this.detailPengadaanBarang.id = null
             this.detailPengadaanBarang.id_pengadaan_barang = null
-            this.detailPengadaanBarang.kode_spareparts = null
+            this.detailPengadaanBarang.spareparts.kode = null
+            this.detailPengadaanBarang.spareparts.nama = null
+            this.detailPengadaanBarang.spareparts.merk = null
             this.detailPengadaanBarang.jumlah_pesan = null
             this.detailPengadaanBarang.jumlah_datang = null
             this.detailPengadaanBarang.harga = null
@@ -138,7 +144,9 @@ export default {
         if(this.selectedDetailPengadaanBarang != null) {
             this.detailPengadaanBarang.id = this.selectedDetailPengadaanBarang.id
             this.detailPengadaanBarang.id_pengadaan_barang = this.selectedDetailPengadaanBarang.id_pengadaan_barang
-            this.detailPengadaanBarang.kode_spareparts = this.selectedDetailPengadaanBarang.kode_spareparts
+            this.detailPengadaanBarang.spareparts.kode = this.selectedDetailPengadaanBarang.spareparts.kode
+            this.detailPengadaanBarang.spareparts.nama = this.selectedDetailPengadaanBarang.spareparts.nama
+            this.detailPengadaanBarang.spareparts.merk = this.selectedDetailPengadaanBarang.spareparts.merk
             this.detailPengadaanBarang.jumlah_pesan = this.selectedDetailPengadaanBarang.jumlah_pesan
             this.detailPengadaanBarang.jumlah_datang = this.selectedDetailPengadaanBarang.jumlah_datang
             this.detailPengadaanBarang.harga = this.selectedDetailPengadaanBarang.harga
