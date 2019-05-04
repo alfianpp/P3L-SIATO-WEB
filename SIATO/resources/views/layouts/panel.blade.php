@@ -56,6 +56,12 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.kendaraan' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.kendaraan') }}"><i class="fa fa-database"></i> <span>Kendaraan</span></a>
                     </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.supplier' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.supplier') }}"><i class="fa fa-database"></i> <span>Supplier</span></a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.jasaservice' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.jasaservice') }}"><i class="fa fa-database"></i> <span>Jasa Service</span></a>
+                    </li>
 
                     <li class="header">TRANSAKSI</li>
                     <li class="{{ Route::currentRouteName() == 'admin.transaksi.pengadaan_barang' ? 'active' : '' }}">
