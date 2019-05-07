@@ -47,6 +47,8 @@ numeral.locale('id');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
+Vue.component('konsumen', require('./components/konsumen/index.vue').default);
+
 Vue.component('admin-kelola-pegawai', require('./components/admin/kelola/pegawai/index.vue').default);
 Vue.component('admin-kelola-spareparts', require('./components/admin/kelola/spareparts/index.vue').default);
 Vue.component('admin-kelola-konsumen', require('./components/admin/kelola/konsumen/index.vue').default);
@@ -60,6 +62,7 @@ Vue.component('admin-pengadaan-barang-detail', require('./components/admin/penga
 
 Vue.component('admin-penjualan', require('./components/admin/penjualan/index.vue').default);
 Vue.component('admin-penjualan-detail', require('./components/admin/penjualan/detail.vue').default);
+
 
 /**
  * Filters

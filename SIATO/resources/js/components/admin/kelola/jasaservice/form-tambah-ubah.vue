@@ -38,8 +38,8 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button v-if="formAction == 'TAMBAH'" @click="addJasa Service()" type="button" class="btn btn-success">Tambah</button>
-                    <button v-if="formAction == 'UBAH'" @click="updateJasa Service()" type="button" class="btn btn-primary">Ubah</button>
+                    <button v-if="formAction == 'TAMBAH'" @click="addJasaService()" type="button" class="btn btn-success">Tambah</button>
+                    <button v-if="formAction == 'UBAH'" @click="updateJasaService()" type="button" class="btn btn-primary">Ubah</button>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@ export default {
         }
     },
     methods: {
-        addJasa Service() {
+        addJasaService() {
             axios.post(this.$root.app.url + 'api/data/jasaservice/', {
                 nama: this.jasaservice.nama,
                 harga_jual: this.jasaservice.harga_jual,
@@ -82,7 +82,7 @@ export default {
                 }
             })
         },
-        updateJasa Service() {
+        updateJasaService() {
             axios.put(this.$root.app.url + 'api/data/jasaservice/' + this.jasaservice.id, {
                 nama: this.jasaservice.nama,
                 harga_jual: this.jasaservice.harga_jual,
@@ -113,10 +113,10 @@ export default {
         },
     },
     created() {
-        if(this.selectedJasa Service != null) {
-            this.jasaservice.id = this.selectedJasa Service.id
-            this.jasaservice.nama = this.selectedJasa Service.nama
-            this.jasaservice.harga_jual = this.selectedJasa Service.harga_jual
+        if(this.selectedJasaService != null) {
+            this.jasaservice.id = this.selectedJasaService.id
+            this.jasaservice.nama = this.selectedJasaService.nama
+            this.jasaservice.harga_jual = this.selectedJasaService.harga_jual
         }
     },
     mounted() {
