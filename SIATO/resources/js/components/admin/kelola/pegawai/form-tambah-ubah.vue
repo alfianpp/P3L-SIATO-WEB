@@ -61,7 +61,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.gaji}">
                             <label class="col-sm-3 control-label">Gaji</label>
                             <div class="col-sm-9">
-                                <input v-model="pegawai.gaji" type="text" class="form-control" placeholder="Gaji">
+                                <input v-model="pegawai.gaji" type="number" class="form-control" placeholder="Gaji">
                                 <span v-if="response.error && response.data && response.data.gaji" class="help-block">{{ response.data.gaji[0] }}</span>
                             </div>
                         </div>

@@ -47,8 +47,11 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.spareparts' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.spareparts') }}"><i class="fa fa-database"></i> <span>Spareparts</span></a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == 'admin.kelola.cabang' ? 'active' : '' }}">
-                        <a href="{{ route('admin.kelola.cabang') }}"><i class="fa fa-database"></i> <span>Cabang</span></a>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.supplier' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.supplier') }}"><i class="fa fa-database"></i> <span>Supplier</span></a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.jasaservice' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.jasaservice') }}"><i class="fa fa-database"></i> <span>Jasa Service</span></a>
                     </li>
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.konsumen' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.konsumen') }}"><i class="fa fa-database"></i> <span>Konsumen</span></a>
@@ -56,11 +59,8 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.kendaraan' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.kendaraan') }}"><i class="fa fa-database"></i> <span>Kendaraan</span></a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == 'admin.kelola.supplier' ? 'active' : '' }}">
-                        <a href="{{ route('admin.kelola.supplier') }}"><i class="fa fa-database"></i> <span>Supplier</span></a>
-                    </li>
-                    <li class="{{ Route::currentRouteName() == 'admin.kelola.jasaservice' ? 'active' : '' }}">
-                        <a href="{{ route('admin.kelola.jasaservice') }}"><i class="fa fa-database"></i> <span>Jasa Service</span></a>
+                    <li class="{{ Route::currentRouteName() == 'admin.kelola.cabang' ? 'active' : '' }}">
+                        <a href="{{ route('admin.kelola.cabang') }}"><i class="fa fa-database"></i> <span>Cabang</span></a>
                     </li>
 
                     <li class="header">TRANSAKSI</li>

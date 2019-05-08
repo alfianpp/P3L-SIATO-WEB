@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Kendaraan;
-use App\Http\Resources\Kendaraan as KendaraanResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Kendaraan;
+
+use App\Http\Resources\Kendaraan as KendaraanResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class KendaraanController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = ['nomor_polisi'];
-
-    var $response;
 
     var $rules = [
         'nomor_polisi' => 'alpha_num|max:12|unique:kendaraan',
@@ -72,9 +70,9 @@ class KendaraanController extends Controller
         $kendaraan = new Kendaraan;
 
         if(AppHelper::isFillableFilled($request, $kendaraan->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $kendaraan->fill($request->only($kendaraan->getFillable()));
 
                 if($kendaraan->save()) {
@@ -88,7 +86,7 @@ class KendaraanController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -133,9 +131,9 @@ class KendaraanController extends Controller
         $kendaraan = Kendaraan::find($nomor_polisi);
 
         if($kendaraan) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $kendaraan->fill(array_filter(collect($request->only($kendaraan->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -151,7 +149,7 @@ class KendaraanController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Supplier;
-use App\Http\Resources\Supplier as SupplierResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Supplier;
+
+use App\Http\Resources\Supplier as SupplierResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class SupplierController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = [];
-
-    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
@@ -63,9 +61,9 @@ class SupplierController extends Controller
         $supplier = new Supplier;
 
         if(AppHelper::isFillableFilled($request, $supplier->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $supplier->fill($request->only($supplier->getFillable()));
 
                 if($supplier->save()) {
@@ -79,7 +77,7 @@ class SupplierController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -124,9 +122,9 @@ class SupplierController extends Controller
         $supplier = Supplier::find($id);
 
         if($supplier) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $supplier->fill(array_filter(collect($request->only($supplier->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -142,7 +140,7 @@ class SupplierController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

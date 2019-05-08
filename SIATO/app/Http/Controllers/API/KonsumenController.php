@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Konsumen;
-use App\Http\Resources\Konsumen as KonsumenResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Konsumen;
+
+use App\Http\Resources\Konsumen as KonsumenResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class KonsumenController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = [];
-
-    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
@@ -62,9 +60,9 @@ class KonsumenController extends Controller
         $konsumen = new Konsumen;
 
         if(AppHelper::isFillableFilled($request, $konsumen->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $konsumen->fill($request->only($konsumen->getFillable()));
 
                 if($konsumen->save()) {
@@ -78,7 +76,7 @@ class KonsumenController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -123,9 +121,9 @@ class KonsumenController extends Controller
         $konsumen = Konsumen::find($id);
 
         if($konsumen) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $konsumen->fill(array_filter(collect($request->only($konsumen->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -141,7 +139,7 @@ class KonsumenController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

@@ -32,9 +32,24 @@ class AdminController extends Controller
         return view('admin.kelola.spareparts');
     }
 
+    public function kelolaSupplier()
+    {
+        return view('admin.kelola.supplier');
+    }
+
+    public function kelolaJasaService()
+    {
+        return view('admin.kelola.jasaservice');
+    }
+
     public function kelolaKonsumen()
     {
         return view('admin.kelola.konsumen');
+    }
+
+    public function kelolaKendaraan()
+    {
+        return view('admin.kelola.kendaraan');
     }
 
     public function kelolaCabang()
@@ -60,10 +75,5 @@ class AdminController extends Controller
     public function penjualanDetail($id)
     {
         return view('admin.penjualan.detail', ['id' => $id]);
-    }
-
-    public function kelolaKendaraan()
-    {
-        return view('admin.kelola.kendaraan');
     }
 }

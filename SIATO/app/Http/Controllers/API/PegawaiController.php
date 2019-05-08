@@ -5,6 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 use App\Pegawai;
 
 use App\Http\Resources\Pegawai as PegawaiResource;
@@ -12,10 +16,6 @@ use App\Http\Resources\Pegawai as PegawaiResource;
 use App\Classes\APIResponse;
 
 use AppHelper;
-
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 
 class PegawaiController extends Controller
 {
@@ -78,12 +78,10 @@ class PegawaiController extends Controller
     {
         $pegawai = new Pegawai;
 
-        $this->checkFillable();
-
         if(AppHelper::isFillableFilled($request, $pegawai->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $pegawai->fill($request->only($pegawai->getFillable()));
 
                 $pegawai->password = Hash::make($request->password);
@@ -100,7 +98,7 @@ class PegawaiController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -145,9 +143,9 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::find($id);
 
         if($pegawai) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $pegawai->fill(array_filter(collect($request->only($pegawai->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -167,7 +165,7 @@ class PegawaiController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -226,9 +224,5 @@ class PegawaiController extends Controller
         }
 
         return $this->response->make();
-    }
-
-    public function checkFillable() {
-
     }
 }

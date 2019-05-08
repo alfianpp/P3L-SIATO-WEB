@@ -51,11 +51,11 @@ Vue.component('konsumen', require('./components/konsumen/index.vue').default);
 
 Vue.component('admin-kelola-pegawai', require('./components/admin/kelola/pegawai/index.vue').default);
 Vue.component('admin-kelola-spareparts', require('./components/admin/kelola/spareparts/index.vue').default);
-Vue.component('admin-kelola-konsumen', require('./components/admin/kelola/konsumen/index.vue').default);
-Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/index.vue').default);
-Vue.component('admin-kelola-kendaraan', require('./components/admin/kelola/kendaraan/index.vue').default);
 Vue.component('admin-kelola-supplier', require('./components/admin/kelola/supplier/index.vue').default);
 Vue.component('admin-kelola-jasaservice', require('./components/admin/kelola/jasaservice/index.vue').default);
+Vue.component('admin-kelola-konsumen', require('./components/admin/kelola/konsumen/index.vue').default);
+Vue.component('admin-kelola-kendaraan', require('./components/admin/kelola/kendaraan/index.vue').default);
+Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/index.vue').default);
 
 Vue.component('admin-pengadaan-barang', require('./components/admin/pengadaan_barang/index.vue').default);
 Vue.component('admin-pengadaan-barang-detail', require('./components/admin/pengadaan_barang/detail.vue').default);
@@ -71,7 +71,7 @@ Vue.component('siato-index', require('./components/index.vue').default);
  */
 
 Vue.filter('toCurrency', function (value) {
-    return numeral(value).format('$0,0.00')
+    return numeral(value).format('$0,0')
 });
 
 /**

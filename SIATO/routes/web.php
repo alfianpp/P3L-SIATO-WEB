@@ -37,7 +37,7 @@ Route::prefix('admin')->group(function () {
         Route::get('cabang', 'AdminController@kelolaCabang')->name('admin.kelola.cabang');
         Route::get('kendaraan', 'AdminController@kelolaKendaraan')->name('admin.kelola.kendaraan');
         Route::get('supplier', 'AdminController@kelolaSupplier')->name('admin.kelola.supplier');
-        Route::get('jasaservice', 'AdminController@kelolaJasaServicer')->name('admin.kelola.jasaservice');
+        Route::get('jasaservice', 'AdminController@kelolaJasaService')->name('admin.kelola.jasaservice');
     });
 
     Route::prefix('transaksi')->group(function () {

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Penjualan;
-use App\DetailPenjualan;
-use App\Http\Resources\DetailPenjualan as DetailPenjualanResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Penjualan;
+use App\DetailPenjualan;
+
+use App\Http\Resources\DetailPenjualan as DetailPenjualanResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class DetailPenjualanController extends Controller
 {

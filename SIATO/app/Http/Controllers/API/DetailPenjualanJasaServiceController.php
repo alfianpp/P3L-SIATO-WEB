@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use App\JasaService;
 use App\DetailPenjualan;
 use App\DetailPenjualanJasaService;
-use App\Http\Resources\DetailPenjualanJasaService as DetailPenjualanJasaServiceResource;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Resources\DetailPenjualanJasaService as DetailPenjualanJasaServiceResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class DetailPenjualanJasaServiceController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = ['id_detail_penjualan', 'id_jasaservice'];
-
-    var $response;
 
     var $rules = [
         'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
@@ -60,9 +58,9 @@ class DetailPenjualanJasaServiceController extends Controller
         $detail_penjualan_jasaservice = new DetailPenjualanJasaService;
 
         if(AppHelper::isFillableFilled($request, $detail_penjualan_jasaservice->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
                 
                 $detail_penjualan_jasaservice->jumlah = 1;
@@ -81,7 +79,7 @@ class DetailPenjualanJasaServiceController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -126,9 +124,9 @@ class DetailPenjualanJasaServiceController extends Controller
         $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
 
         if($detail_penjualan_jasaservice) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_penjualan_jasaservice->fill(array_filter(collect($request->only($detail_penjualan_jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -144,7 +142,7 @@ class DetailPenjualanJasaServiceController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

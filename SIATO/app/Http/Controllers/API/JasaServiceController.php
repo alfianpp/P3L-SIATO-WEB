@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\JasaService;
-use App\Http\Resources\JasaService as JasaServiceResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\JasaService;
+
+use App\Http\Resources\JasaService as JasaServiceResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class JasaServiceController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = [];
-
-    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64|unique:jasa_service',
@@ -61,9 +59,9 @@ class JasaServiceController extends Controller
         $jasaservice = new JasaService;
 
         if(AppHelper::isFillableFilled($request, $jasaservice->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $jasaservice->fill($request->only($jasaservice->getFillable()));
 
                 if($jasaservice->save()) {
@@ -77,7 +75,7 @@ class JasaServiceController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -122,9 +120,9 @@ class JasaServiceController extends Controller
         $jasaservice = JasaService::find($id);
 
         if($jasaservice) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $jasaservice->fill(array_filter(collect($request->only($jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -140,7 +138,7 @@ class JasaServiceController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

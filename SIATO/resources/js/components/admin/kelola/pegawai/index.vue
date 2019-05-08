@@ -33,8 +33,8 @@
                                         <td>{{ pegawai.username }}</td>
                                         <td>{{ pegawai.nomor_telepon }}</td>
                                         <td>{{ pegawai.alamat }}</td>
-                                        <td>{{ pegawai.gaji }}</td>
-                                        <td>{{ peranByID(pegawai.role) }}</td>
+                                        <td>{{ pegawai.gaji | toCurrency() }}</td>
+                                        <td>{{ pegawai.role | peranPegawai }}</td>
                                         <td class="pull-right">
                                             <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deletePegawai(pegawai.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
@@ -102,17 +102,6 @@ export default {
                 })
             }
         },
-        peranByID($id) {
-            if($id == 1) {
-                return "CS"
-            }
-            else if($id == 2) {
-                return "Kasir"
-            }
-            else if($id == 3) {
-                return "Montir"
-            }
-        },
         openForm(action, index = null) {
             this.formAction = action
             if(index != null) {
@@ -129,6 +118,21 @@ export default {
                 this.getAllPegawai()
             }
         },
+    },
+    filters: {
+        peranPegawai: function (value) {
+            switch(value) {
+                case 1:
+                    return "CS"
+                    break
+                case 2:
+                    return "Kasir"
+                    break
+                case 3:
+                    return "Montir"
+                    break
+            }
+        }
     },
     created() {
         this.getAllPegawai()

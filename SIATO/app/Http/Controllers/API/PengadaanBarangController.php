@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
-use App\PengadaanBarang;
-use App\Http\Resources\PengadaanBarang as PengadaanBarangResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\PengadaanBarang;
+
+use App\Http\Resources\PengadaanBarang as PengadaanBarangResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class PengadaanBarangController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = ['status'];
     var $uneditable = [];
-
-    var $response;
 
     var $rules = [
         'id_supplier' => 'integer|exists:supplier,id',
@@ -61,9 +59,9 @@ class PengadaanBarangController extends Controller
         $pengadaan_barang = new PengadaanBarang;
 
         if(AppHelper::isFillableFilled($request, $pengadaan_barang->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $pengadaan_barang->fill($request->only($pengadaan_barang->getFillable()));
 
                 $pengadaan_barang->status = 1;
@@ -79,7 +77,7 @@ class PengadaanBarangController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -124,9 +122,9 @@ class PengadaanBarangController extends Controller
         $pengadaan_barang = PengadaanBarang::find($id);
 
         if($pengadaan_barang) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $pengadaan_barang->fill(array_filter(collect($request->only($pengadaan_barang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -142,7 +140,7 @@ class PengadaanBarangController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

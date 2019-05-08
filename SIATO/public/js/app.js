@@ -3333,15 +3333,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    peranByID: function peranByID($id) {
-      if ($id == 1) {
-        return "CS";
-      } else if ($id == 2) {
-        return "Kasir";
-      } else if ($id == 3) {
-        return "Montir";
-      }
-    },
     openForm: function openForm(action) {
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.formAction = action;
@@ -3359,6 +3350,23 @@ __webpack_require__.r(__webpack_exports__);
 
       if (reloadList) {
         this.getAllPegawai();
+      }
+    }
+  },
+  filters: {
+    peranPegawai: function peranPegawai(value) {
+      switch (value) {
+        case 1:
+          return "CS";
+          break;
+
+        case 2:
+          return "Kasir";
+          break;
+
+        case 3:
+          return "Montir";
+          break;
       }
     }
   },
@@ -62829,7 +62837,7 @@ var render = function() {
                         }
                       ],
                       staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Gaji" },
+                      attrs: { type: "number", placeholder: "Gaji" },
                       domProps: { value: _vm.pegawai.gaji },
                       on: {
                         input: function($event) {
@@ -63098,10 +63106,12 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(pegawai.alamat))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(pegawai.gaji))]),
+                          _c("td", [
+                            _vm._v(_vm._s(_vm._f("toCurrency")(pegawai.gaji)))
+                          ]),
                           _vm._v(" "),
                           _c("td", [
-                            _vm._v(_vm._s(_vm.peranByID(pegawai.role)))
+                            _vm._v(_vm._s(_vm._f("peranPegawai")(pegawai.role)))
                           ]),
                           _vm._v(" "),
                           _c("td", { staticClass: "pull-right" }, [
@@ -80884,11 +80894,11 @@ numeral__WEBPACK_IMPORTED_MODULE_0___default.a.locale('id');
 Vue.component('konsumen', __webpack_require__(/*! ./components/konsumen/index.vue */ "./resources/js/components/konsumen/index.vue")["default"]);
 Vue.component('admin-kelola-pegawai', __webpack_require__(/*! ./components/admin/kelola/pegawai/index.vue */ "./resources/js/components/admin/kelola/pegawai/index.vue")["default"]);
 Vue.component('admin-kelola-spareparts', __webpack_require__(/*! ./components/admin/kelola/spareparts/index.vue */ "./resources/js/components/admin/kelola/spareparts/index.vue")["default"]);
-Vue.component('admin-kelola-konsumen', __webpack_require__(/*! ./components/admin/kelola/konsumen/index.vue */ "./resources/js/components/admin/kelola/konsumen/index.vue")["default"]);
-Vue.component('admin-kelola-cabang', __webpack_require__(/*! ./components/admin/kelola/cabang/index.vue */ "./resources/js/components/admin/kelola/cabang/index.vue")["default"]);
-Vue.component('admin-kelola-kendaraan', __webpack_require__(/*! ./components/admin/kelola/kendaraan/index.vue */ "./resources/js/components/admin/kelola/kendaraan/index.vue")["default"]);
 Vue.component('admin-kelola-supplier', __webpack_require__(/*! ./components/admin/kelola/supplier/index.vue */ "./resources/js/components/admin/kelola/supplier/index.vue")["default"]);
 Vue.component('admin-kelola-jasaservice', __webpack_require__(/*! ./components/admin/kelola/jasaservice/index.vue */ "./resources/js/components/admin/kelola/jasaservice/index.vue")["default"]);
+Vue.component('admin-kelola-konsumen', __webpack_require__(/*! ./components/admin/kelola/konsumen/index.vue */ "./resources/js/components/admin/kelola/konsumen/index.vue")["default"]);
+Vue.component('admin-kelola-kendaraan', __webpack_require__(/*! ./components/admin/kelola/kendaraan/index.vue */ "./resources/js/components/admin/kelola/kendaraan/index.vue")["default"]);
+Vue.component('admin-kelola-cabang', __webpack_require__(/*! ./components/admin/kelola/cabang/index.vue */ "./resources/js/components/admin/kelola/cabang/index.vue")["default"]);
 Vue.component('admin-pengadaan-barang', __webpack_require__(/*! ./components/admin/pengadaan_barang/index.vue */ "./resources/js/components/admin/pengadaan_barang/index.vue")["default"]);
 Vue.component('admin-pengadaan-barang-detail', __webpack_require__(/*! ./components/admin/pengadaan_barang/detail.vue */ "./resources/js/components/admin/pengadaan_barang/detail.vue")["default"]);
 Vue.component('admin-penjualan', __webpack_require__(/*! ./components/admin/penjualan/index.vue */ "./resources/js/components/admin/penjualan/index.vue")["default"]);
@@ -80899,7 +80909,7 @@ Vue.component('siato-index', __webpack_require__(/*! ./components/index.vue */ "
  */
 
 Vue.filter('toCurrency', function (value) {
-  return numeral__WEBPACK_IMPORTED_MODULE_0___default()(value).format('$0,0.00');
+  return numeral__WEBPACK_IMPORTED_MODULE_0___default()(value).format('$0,0');
 });
 /**
  * Next, we will create a fresh Vue application instance and attach it to

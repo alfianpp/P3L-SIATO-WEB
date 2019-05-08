@@ -2,33 +2,30 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use App\Pegawai;
 use App\Penjualan;
 use App\DetailPenjualan;
 use App\HistoriBarang;
 use App\Spareparts;
-use App\Http\Resources\Penjualan as PenjualanResource;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Resources\Penjualan as PenjualanResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
-
+use FCM;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
-use FCM;
 
 class PenjualanController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = ['diskon', 'uang_diterima', 'id_cs', 'id_kasir', 'status'];
     var $uneditable = [];
-
-    var $response;
 
     var $rules = [
         'id_cabang' => 'integer|exists:cabang,id',
@@ -75,9 +72,9 @@ class PenjualanController extends Controller
         $penjualan = new Penjualan;
 
         if(AppHelper::isFillableFilled($request, $penjualan->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $penjualan->fill($request->only($penjualan->getFillable()));
 
                 $pegawai = Pegawai::where('api_key', '=', $request->api_key)->first();
@@ -102,7 +99,7 @@ class PenjualanController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -147,9 +144,9 @@ class PenjualanController extends Controller
         $penjualan = Penjualan::find($id);
 
         if($penjualan) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $penjualan->fill(array_filter(collect($request->only($penjualan->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -188,7 +185,7 @@ class PenjualanController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

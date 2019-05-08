@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use App\Spareparts;
 use App\DetailPenjualan;
 use App\DetailPenjualanSpareparts;
-use App\Http\Resources\DetailPenjualanSpareparts as DetailPenjualanSparepartsResource;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Resources\DetailPenjualanSpareparts as DetailPenjualanSparepartsResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class DetailPenjualanSparepartsController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = ['id_detail_penjualan', 'kode_spareparts'];
-
-    var $response;
 
     var $rules = [
         'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
@@ -61,9 +59,9 @@ class DetailPenjualanSparepartsController extends Controller
         $detail_penjualan_spareparts = new DetailPenjualanSpareparts;
 
         if(AppHelper::isFillableFilled($request, $detail_penjualan_spareparts->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_penjualan_spareparts->fill($request->only($detail_penjualan_spareparts->getFillable()));
                 
                 $spareparts = Spareparts::find($request->kode_spareparts);
@@ -80,7 +78,7 @@ class DetailPenjualanSparepartsController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
@@ -125,9 +123,9 @@ class DetailPenjualanSparepartsController extends Controller
         $detail_penjualan_spareparts = DetailPenjualanSpareparts::find($id);
 
         if($detail_penjualan_spareparts) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_penjualan_spareparts->fill(array_filter(collect($request->only($detail_penjualan_spareparts->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -143,7 +141,7 @@ class DetailPenjualanSparepartsController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {

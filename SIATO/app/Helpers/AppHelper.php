@@ -22,6 +22,12 @@ class AppHelper
         }
     }
 
+    public static function isRequestValid(Request $request, $rules) {
+        return Validator::make(array_filter($request->all(), function($value) {
+            return ($value !== null);
+        }), $rules);
+    }
+
     public static function isValidRequest(Request $request, $rules) {
         $result = [
             'isValid' => true,

@@ -5,20 +5,19 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Carbon\Carbon;
+
 use App\Spareparts;
 use App\HistoriBarang;
 
 use App\Http\Resources\Spareparts as SparepartsResource;
 
-use Carbon\Carbon;
-use File;
-use Image;
-
-use EloquentBuilder;
-
 use App\Classes\APIResponse;
 
 use AppHelper;
+use File;
+use Image;
+use EloquentBuilder;
 
 class SparepartsController extends Controller
 {
@@ -83,9 +82,9 @@ class SparepartsController extends Controller
         $spareparts = new Spareparts;
 
         if(AppHelper::isFillableFilled($request, $spareparts->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {                    
+            if(!$validation->fails()) {
                 $spareparts->fill($request->only($spareparts->getFillable()));
 
                 if($request->filled('gambar')) {
@@ -112,7 +111,7 @@ class SparepartsController extends Controller
             else {
                 $this->response->error = true;
                 $this->response->message = 'Data spareparts yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->data = $validation->errors();
             }
         }
         else {
