@@ -8,6 +8,8 @@ use App\Http\Resources\Kendaraan as KendaraanResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,11 +20,7 @@ class KendaraanController extends Controller
     var $nullable = [];
     var $uneditable = ['nomor_polisi'];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'nomor_polisi' => 'alpha_num|max:12|unique:kendaraan',
@@ -32,6 +30,16 @@ class KendaraanController extends Controller
     ];
 
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -39,30 +47,18 @@ class KendaraanController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = KendaraanResource::collection(Kendaraan::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = KendaraanResource::collection(Kendaraan::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     public function indexWhere(Request $request, $column, $value)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = KendaraanResource::collection(
-                Kendaraan::where($column, '=', $value)->get()
-            );
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = KendaraanResource::collection(
+            Kendaraan::where($column, '=', $value)->get()
+        );
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -73,40 +69,34 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $kendaraan = new Kendaraan;
+        $kendaraan = new Kendaraan;
 
-            if(AppHelper::isFillableFilled($request, $kendaraan->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $kendaraan->fill($request->only($kendaraan->getFillable()));
-    
-                    if($kendaraan->save()) {
-                        $this->response['message'] = 'Berhasil menambah data kendaraan.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data kendaraan.';
-                    }
+        if(AppHelper::isFillableFilled($request, $kendaraan->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $kendaraan->fill($request->only($kendaraan->getFillable()));
+
+                if($kendaraan->save()) {
+                    $this->response->message = 'Berhasil menambah data kendaraan.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data kendaraan yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data kendaraan.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data kendaraan yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data kendaraan yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -118,23 +108,17 @@ class KendaraanController extends Controller
      */
     public function show(Request $request, $nomor_polisi)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $kendaraan = Kendaraan::find($nomor_polisi);
+        $kendaraan = Kendaraan::find($nomor_polisi);
 
-            if($kendaraan) {
-                $this->response['data'] = new KendaraanResource($kendaraan);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Kendaraan tidak ditemukan.';
-            }
+        if($kendaraan) {
+            $this->response->data = new KendaraanResource($kendaraan);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Kendaraan tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -146,42 +130,36 @@ class KendaraanController extends Controller
      */
     public function update(Request $request, $nomor_polisi)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $kendaraan = Kendaraan::find($nomor_polisi);
+        $kendaraan = Kendaraan::find($nomor_polisi);
 
-            if($kendaraan) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $kendaraan->fill(array_filter(collect($request->only($kendaraan->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($kendaraan->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data kendaraan.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data kendaraan.';
-                    }
+        if($kendaraan) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $kendaraan->fill(array_filter(collect($request->only($kendaraan->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($kendaraan->save()) {
+                    $this->response->message = 'Berhasil memperbarui data kendaraan.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data kendaraan yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data kendaraan.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Kendaraan tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Kendaraan tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -193,28 +171,22 @@ class KendaraanController extends Controller
      */
     public function destroy(Request $request, $nomor_polisi)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $kendaraan = Kendaraan::find($nomor_polisi);
-            
-            if($kendaraan) {
-                if($kendaraan->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data kendaraan.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data kendaraan.';
-                }
+        $kendaraan = Kendaraan::find($nomor_polisi);
+        
+        if($kendaraan) {
+            if($kendaraan->delete()) {
+                $this->response->message = 'Berhasil menghapus data kendaraan.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Kendaraan tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data kendaraan.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Kendaraan tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

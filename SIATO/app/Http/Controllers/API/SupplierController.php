@@ -8,6 +8,8 @@ use App\Http\Resources\Supplier as SupplierResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,11 +20,7 @@ class SupplierController extends Controller
     var $nullable = [];
     var $uneditable = [];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
@@ -32,6 +30,16 @@ class SupplierController extends Controller
     ];
 
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -39,15 +47,9 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = SupplierResource::collection(Supplier::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = SupplierResource::collection(Supplier::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -58,40 +60,34 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $supplier = new Supplier;
+        $supplier = new Supplier;
 
-            if(AppHelper::isFillableFilled($request, $supplier->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $supplier->fill($request->only($supplier->getFillable()));
-    
-                    if($supplier->save()) {
-                        $this->response['message'] = 'Berhasil menambah data supplier.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data supplier.';
-                    }
+        if(AppHelper::isFillableFilled($request, $supplier->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $supplier->fill($request->only($supplier->getFillable()));
+
+                if($supplier->save()) {
+                    $this->response->message = 'Berhasil menambah data supplier.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data supplier yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data supplier.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data supplier yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data supplier yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -103,23 +99,17 @@ class SupplierController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $supplier = Supplier::find($id);
+        $supplier = Supplier::find($id);
 
-            if($supplier) {
-                $this->response['data'] = new SupplierResource($supplier);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Supplier tidak ditemukan.';
-            }
+        if($supplier) {
+            $this->response->data = new SupplierResource($supplier);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Supplier tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -131,42 +121,36 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $supplier = Supplier::find($id);
+        $supplier = Supplier::find($id);
 
-            if($supplier) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $supplier->fill(array_filter(collect($request->only($supplier->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($supplier->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data supplier.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data supplier.';
-                    }
+        if($supplier) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $supplier->fill(array_filter(collect($request->only($supplier->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($supplier->save()) {
+                    $this->response->message = 'Berhasil memperbarui data supplier.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data supplier yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data supplier.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Supplier tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Supplier tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -178,28 +162,22 @@ class SupplierController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $supplier = Supplier::find($id);
-            
-            if($supplier) {
-                if($supplier->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data supplier.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data supplier.';
-                }
+        $supplier = Supplier::find($id);
+        
+        if($supplier) {
+            if($supplier->delete()) {
+                $this->response->message = 'Berhasil menghapus data supplier.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Supplier tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data supplier.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Supplier tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

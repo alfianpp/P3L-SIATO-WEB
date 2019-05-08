@@ -51,8 +51,16 @@ class Cabang extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function penjualan()
     {
         return $this->hasMany('App\Penjualan', 'id_cabang');
     }
+
+    // belongsTo
 }

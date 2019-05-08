@@ -29,6 +29,7 @@ Route::prefix('data')->group(function () {
     Route::apiResource('spareparts', 'API\SparepartsController')->except(['index', 'show']);
     Route::post('spareparts/index', 'API\SparepartsController@index');
     Route::post('spareparts/{spareparts}', 'API\SparepartsController@show');
+    Route::get('spareparts/index/search', 'API\SparepartsController@search');
 
     Route::post('spareparts/index/stokminimal', 'API\SparepartsController@indexStokMinimal');
 
@@ -85,4 +86,8 @@ Route::prefix('transaksi')->group(function () {
         Route::apiResource('detail/jasaservice/data', 'API\DetailPenjualanJasaServiceController')->except(['index', 'show']);
         Route::post('detail/jasaservice/{id_detail_penjualan}', 'API\DetailPenjualanJasaServiceController@show');
     });
+});
+
+Route::prefix('riwayat')->group(function () {
+    Route::post('login', 'API\RiwayatTransaksiKonsumenController@login');
 });

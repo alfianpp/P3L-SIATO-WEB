@@ -166,6 +166,9 @@ return [
          * Package Service Providers...
          */
         Intervention\Image\ImageServiceProvider::class,
+        LaravelFCM\FCMServiceProvider::class,
+        Fouladgar\EloquentBuilder\ServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -228,6 +231,8 @@ return [
         'AppHelper' => App\Helpers\AppHelper::class,
         'APIHelper' => App\Helpers\APIHelper::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'FCM'      => LaravelFCM\Facades\FCM::class,
+        "EloquentBuilder" => Fouladgar\EloquentBuilder\Facade::class,
         
     ],
 

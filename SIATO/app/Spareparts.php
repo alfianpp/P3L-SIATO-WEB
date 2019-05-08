@@ -80,6 +80,12 @@ class Spareparts extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function detail_pengadaan_barang()
     {
         return $this->hasMany('App\DetailPengadaanBarang', 'kode_spareparts');
@@ -94,4 +100,6 @@ class Spareparts extends Model
     {
         return $this->hasMany('App\DetailPenjualanSpareparts', 'kode_spareparts');
     }
+
+    // belongsTo
 }

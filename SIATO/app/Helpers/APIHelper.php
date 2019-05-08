@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Pegawai;
 
+use App\Classes\Response;
+
 class APIHelper
 {
     public static function isPermitted($api_key, $permitted_role) {
@@ -27,6 +29,15 @@ class APIHelper
             'error' => $response['error'],
             'message' => $response['message'],
             'data' => $response['data']
+        ]);
+    }
+
+    public static function JSONResponse2(Response $response)
+    {
+        return response()->json([
+            'error' => $response->error,
+            'message' => $response->message,
+            'data' => $response->data
         ]);
     }
 }

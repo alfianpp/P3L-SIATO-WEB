@@ -12,8 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+
+Route::get('/riwayat', 'RiwayatController@view');
 
 Auth::routes();
 

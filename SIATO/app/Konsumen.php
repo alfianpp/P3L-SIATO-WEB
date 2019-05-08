@@ -55,6 +55,12 @@ class Konsumen extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function kendaraan()
     {
         return $this->hasMany('App\Kendaraan', 'id_pemilik');
@@ -64,4 +70,6 @@ class Konsumen extends Model
     {
         return $this->hasMany('App\Penjualan', 'id_konsumen');
     }
+
+    // belongsTo
 }

@@ -64,6 +64,8 @@ Vue.component('admin-penjualan', require('./components/admin/penjualan/index.vue
 Vue.component('admin-penjualan-detail', require('./components/admin/penjualan/detail.vue').default);
 
 
+Vue.component('siato-index', require('./components/index.vue').default);
+
 /**
  * Filters
  */

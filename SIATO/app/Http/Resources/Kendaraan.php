@@ -21,7 +21,7 @@ class Kendaraan extends JsonResource
             'nomor_polisi' => $this->nomor_polisi,
             'merk' => $this->merk,
             'tipe' => $this->tipe,
-            'pemilik' => new KonsumenResource($this->konsumen),
+            'pemilik' => new KonsumenResource($this->pemilik),
         ];
     }
 }

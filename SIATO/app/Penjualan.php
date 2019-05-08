@@ -10,7 +10,7 @@ class Penjualan extends Model
         parent::boot();
 
         static::deleting(function($penjualan) {
-            foreach($penjualan->detail_penjualan as $detail_penjualan) {
+            foreach($penjualan->detail as $detail_penjualan) {
                 $detail_penjualan->delete();
             }
         });
@@ -36,7 +36,7 @@ class Penjualan extends Model
      * @var array
      */
     protected $fillable = [
-        'id_cabang', 'jenis', 'id_konsumen', 'diskon', 'uang_diterima', 'id_cs', 'id_kasir',
+        'id_cabang', 'jenis', 'id_konsumen', 'diskon', 'uang_diterima', 'id_cs', 'id_kasir', 'status',
     ];
 
     public function getFillable()
@@ -51,15 +51,18 @@ class Penjualan extends Model
      */
     protected $hidden = [];
 
-    public function detail_penjualan()
-    {
-        return $this->hasMany('App\DetailPenjualan', 'id_penjualan');
-    }
+    /**
+     * Relationship
+     */
+
+    // hasMany
 
     public function detail()
     {
         return $this->hasMany('App\DetailPenjualan', 'id_penjualan');
     }
+
+    // belongsTo
 
     public function cabang()
     {

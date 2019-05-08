@@ -10,11 +10,11 @@ class DetailPenjualan extends Model
         parent::boot();
 
         static::deleting(function($detail_penjualan) {
-            foreach($detail_penjualan->detail_penjualan_spareparts as $detail_penjualan_spareparts) {
+            foreach($detail_penjualan->spareparts as $detail_penjualan_spareparts) {
                 $detail_penjualan_spareparts->delete();
             }
 
-            foreach($detail_penjualan->detail_penjualan_jasaservice as $detail_penjualan_jasaservice) {
+            foreach($detail_penjualan->jasa_service as $detail_penjualan_jasaservice) {
                 $detail_penjualan_jasaservice->delete();
             }
         });
@@ -55,24 +55,27 @@ class DetailPenjualan extends Model
      */
     protected $hidden = [];
 
-    public function detail_penjualan_spareparts()
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
+    public function spareparts()
     {
         return $this->hasMany('App\DetailPenjualanSpareparts', 'id_detail_penjualan');
     }
 
-    public function detail_penjualan_jasaservice()
+    public function jasa_service()
     {
         return $this->hasMany('App\DetailPenjualanJasaService', 'id_detail_penjualan');
     }
+    
+    // belongsTo
 
-    public function detailSpareparts()
+    public function penjualan()
     {
-        return $this->hasMany('App\DetailPenjualanSpareparts', 'id_detail_penjualan');
-    }
-
-    public function detailJasaService()
-    {
-        return $this->hasMany('App\DetailPenjualanJasaService', 'id_detail_penjualan');
+        return $this->belongsTo('App\Penjualan', 'id_penjualan');
     }
 
     public function kendaraan()

@@ -10,6 +10,8 @@ use App\Http\Resources\DetailPenjualanJasaService as DetailPenjualanJasaServiceR
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -20,16 +22,22 @@ class DetailPenjualanJasaServiceController extends Controller
     var $nullable = [];
     var $uneditable = ['id_detail_penjualan', 'id_jasaservice'];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
         'id_jasaservice' => 'integer|exists:jasa_service,id',
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -49,45 +57,39 @@ class DetailPenjualanJasaServiceController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_jasaservice = new DetailPenjualanJasaService;
+        $detail_penjualan_jasaservice = new DetailPenjualanJasaService;
 
-            if(AppHelper::isFillableFilled($request, $detail_penjualan_jasaservice->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
-                    
-                    $detail_penjualan_jasaservice->jumlah = 1;
+        if(AppHelper::isFillableFilled($request, $detail_penjualan_jasaservice->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
 
-                    $jasa_service = JasaService::find($request->id_jasaservice);
-                    $detail_penjualan_jasaservice->harga = $jasa_service->harga_jual;
-    
-                    if($detail_penjualan_jasaservice->save()) {
-                        $this->response['message'] = 'Berhasil menambah data penjualan jasa service.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data penjualan jasa service.';
-                    }
+            if($validation['isValid']) {
+                $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
+                
+                $detail_penjualan_jasaservice->jumlah = 1;
+
+                $jasa_service = JasaService::find($request->id_jasaservice);
+                $detail_penjualan_jasaservice->harga = $jasa_service->harga_jual;
+
+                if($detail_penjualan_jasaservice->save()) {
+                    $this->response->message = 'Berhasil menambah data penjualan jasa service.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data penjualan jasa service.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -99,23 +101,17 @@ class DetailPenjualanJasaServiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan = DetailPenjualan::find($id);
+        $detail_penjualan = DetailPenjualan::find($id);
 
-            if($detail_penjualan) {
-                $this->response['data'] = DetailPenjualanJasaServiceResource::collection($detail_penjualan->detailJasaService);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data detail penjualan tidak ditemukan.';
-            }
+        if($detail_penjualan) {
+            $this->response->data = DetailPenjualanJasaServiceResource::collection($detail_penjualan->jasa_service);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data detail penjualan tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -127,42 +123,36 @@ class DetailPenjualanJasaServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
+        $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
 
-            if($detail_penjualan_jasaservice) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $detail_penjualan_jasaservice->fill(array_filter(collect($request->only($detail_penjualan_jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($detail_penjualan_jasaservice->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data penjualan jasa service.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data penjualan jasa service.';
-                    }
+        if($detail_penjualan_jasaservice) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $detail_penjualan_jasaservice->fill(array_filter(collect($request->only($detail_penjualan_jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($detail_penjualan_jasaservice->save()) {
+                    $this->response->message = 'Berhasil memperbarui data penjualan jasa service.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data penjualan jasa service yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data penjualan jasa service.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan jasa service tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan jasa service tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -174,28 +164,22 @@ class DetailPenjualanJasaServiceController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
+        $detail_penjualan_jasaservice = DetailPenjualanJasaService::find($id);
 
-            if($detail_penjualan_jasaservice) {
-                if($detail_penjualan_jasaservice->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data penjualan jasa service.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data penjualan jasa service.';
-                }
+        if($detail_penjualan_jasaservice) {
+            if($detail_penjualan_jasaservice->delete()) {
+                $this->response->message = 'Berhasil menghapus data penjualan jasa service.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan jasa service tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data penjualan jasa service.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan jasa service tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

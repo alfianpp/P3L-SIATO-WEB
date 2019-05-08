@@ -42,6 +42,19 @@ class DetailPengadaanBarang extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
+    // belongsTo
+
+    public function pengadaan_barang()
+    {
+        return $this->belongsTo('App\PengadaanBarang', 'id_pengadaan_barang');
+    }
+
     public function spareparts()
     {
         return $this->belongsTo('App\Spareparts', 'kode_spareparts');

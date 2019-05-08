@@ -41,6 +41,19 @@ class DetailPenjualanJasaService extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
+    // belongsTo
+
+    public function detail_penjualan()
+    {
+        return $this->belongsTo('App\DetailPenjualan', 'id_detail_penjualan');
+    }
+
     public function jasa_service()
     {
         return $this->belongsTo('App\JasaService', 'id_jasaservice');

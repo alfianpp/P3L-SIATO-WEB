@@ -51,8 +51,16 @@ class JasaService extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function detail_penjualan_jasaservice()
     {
         return $this->hasMany('App\DetailPenjualanJasaService', 'id_jasaservice');
     }
+
+    // belongsTo
 }

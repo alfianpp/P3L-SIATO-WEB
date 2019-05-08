@@ -8,6 +8,8 @@ use App\Http\Resources\JasaService as JasaServiceResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,16 +20,22 @@ class JasaServiceController extends Controller
     var $nullable = [];
     var $uneditable = [];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64|unique:jasa_service',
         'harga_jual' => 'numeric|digits_between:1,11'
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -37,15 +45,9 @@ class JasaServiceController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = JasaServiceResource::collection(JasaService::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = JasaServiceResource::collection(JasaService::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -56,40 +58,34 @@ class JasaServiceController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $jasaservice = new JasaService;
+        $jasaservice = new JasaService;
 
-            if(AppHelper::isFillableFilled($request, $jasaservice->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $jasaservice->fill($request->only($jasaservice->getFillable()));
-    
-                    if($jasaservice->save()) {
-                        $this->response['message'] = 'Berhasil menambah data jasa service.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data jasa service.';
-                    }
+        if(AppHelper::isFillableFilled($request, $jasaservice->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $jasaservice->fill($request->only($jasaservice->getFillable()));
+
+                if($jasaservice->save()) {
+                    $this->response->message = 'Berhasil menambah data jasa service.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data jasa service yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data jasa service.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data jasa service yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data jasa service yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -101,23 +97,17 @@ class JasaServiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $jasaservice = JasaService::find($id);
+        $jasaservice = JasaService::find($id);
 
-            if($jasaservice) {
-                $this->response['data'] = new JasaServiceResource($jasaservice);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Jasa service tidak ditemukan.';
-            }
+        if($jasaservice) {
+            $this->response->data = new JasaServiceResource($jasaservice);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Jasa service tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -129,42 +119,36 @@ class JasaServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $jasaservice = JasaService::find($id);
+        $jasaservice = JasaService::find($id);
 
-            if($jasaservice) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $jasaservice->fill(array_filter(collect($request->only($jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($jasaservice->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data jasa service.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data jasa service.';
-                    }
+        if($jasaservice) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $jasaservice->fill(array_filter(collect($request->only($jasaservice->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($jasaservice->save()) {
+                    $this->response->message = 'Berhasil memperbarui data jasa service.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data jasa service yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data jasa service.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Jasa service tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Jasa service tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -176,28 +160,22 @@ class JasaServiceController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $jasaservice = JasaService::find($id);
-            
-            if($jasaservice) {
-                if($jasaservice->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data jasa service.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data jasa service.';
-                }
+        $jasaservice = JasaService::find($id);
+        
+        if($jasaservice) {
+            if($jasaservice->delete()) {
+                $this->response->message = 'Berhasil menghapus data jasa service.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Jasa service tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data jasa service.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Jasa service tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

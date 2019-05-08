@@ -8,6 +8,8 @@ use App\Http\Resources\Cabang as CabangResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,17 +20,23 @@ class CabangController extends Controller
     var $nullable = ['nomor_telepon'];
     var $uneditable = [];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
         'nomor_telepon' => 'numeric|digits_between:10,13',
         'alamat' => ''
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -38,15 +46,9 @@ class CabangController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = CabangResource::collection(Cabang::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = CabangResource::collection(Cabang::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -57,40 +59,34 @@ class CabangController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $cabang = new Cabang;
+        $cabang = new Cabang;
 
-            if(AppHelper::isFillableFilled($request, $cabang->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $cabang->fill($request->only($cabang->getFillable()));
-    
-                    if($cabang->save()) {
-                        $this->response['message'] = 'Berhasil menambah data cabang.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data cabang.';
-                    }
+        if(AppHelper::isFillableFilled($request, $cabang->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $cabang->fill($request->only($cabang->getFillable()));
+
+                if($cabang->save()) {
+                    $this->response->message = 'Berhasil menambah data cabang.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data cabang yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data cabang.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data cabang yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data cabang yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data cabang yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -102,23 +98,17 @@ class CabangController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $cabang = Cabang::find($id);
+        $cabang = Cabang::find($id);
 
-            if($cabang) {
-                $this->response['data'] = new CabangResource($cabang);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
-            }
+        if($cabang) {
+            $this->response->data = new CabangResource($cabang);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -130,42 +120,36 @@ class CabangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $cabang = Cabang::find($id);
+        $cabang = Cabang::find($id);
 
-            if($cabang) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $cabang->fill(array_filter(collect($request->only($cabang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($cabang->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data cabang.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data cabang.';
-                    }
+        if($cabang) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $cabang->fill(array_filter(collect($request->only($cabang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($cabang->save()) {
+                    $this->response->message = 'Berhasil memperbarui data cabang.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data cabang yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data cabang.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data cabang yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -177,28 +161,22 @@ class CabangController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $cabang = Cabang::find($id);
-            
-            if($cabang) {
-                if($cabang->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data cabang.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data cabang.';
-                }
+        $cabang = Cabang::find($id);
+        
+        if($cabang) {
+            if($cabang->delete()) {
+                $this->response->message = 'Berhasil menghapus data cabang.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data cabang.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

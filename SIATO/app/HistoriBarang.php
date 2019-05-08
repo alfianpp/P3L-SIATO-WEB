@@ -40,4 +40,17 @@ class HistoriBarang extends Model
      * @var array
      */
     protected $hidden = [];
+
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
+    // belongsTo
+
+    public function spareparts()
+    {
+        return $this->belongsTo('App\Spareparts', 'kode_spareparts');
+    }
 }

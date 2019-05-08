@@ -2,33 +2,30 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use App\Spareparts;
 use App\HistoriBarang;
 
 use App\Http\Resources\Spareparts as SparepartsResource;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 use Carbon\Carbon;
 use File;
 use Image;
 
+use EloquentBuilder;
+
+use App\Classes\APIResponse;
+
 use AppHelper;
-use APIHelper;
 
 class SparepartsController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = ['kode', 'stok'];
-
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
 
     var $rules = [
         'kode' => 'alpha_dash|max:12|unique:spareparts',
@@ -44,6 +41,16 @@ class SparepartsController extends Controller
     ];
 
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -51,30 +58,18 @@ class SparepartsController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = SparepartsResource::collection(Spareparts::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = SparepartsResource::collection(Spareparts::all());
         
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     public function indexStokMinimal(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = SparepartsResource::collection(
-                Spareparts::whereColumn('stok', '<=', 'stok_minimal')->get()
-            );
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = SparepartsResource::collection(
+            Spareparts::whereColumn('stok', '<=', 'stok_minimal')->get()
+        );
         
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -85,53 +80,47 @@ class SparepartsController extends Controller
      */
     public function store(Request $request)
     {        
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $spareparts = new Spareparts;
+        $spareparts = new Spareparts;
 
-            if(AppHelper::isFillableFilled($request, $spareparts->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {                    
-                    $spareparts->fill($request->only($spareparts->getFillable()));
+        if(AppHelper::isFillableFilled($request, $spareparts->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
 
-                    if($request->filled('gambar')) {
-                        $imgName = Carbon::now()->timestamp . '_' . $request->kode . '.' . explode('/', explode(':', substr($request->gambar, 0, strpos($request->gambar, ';')))[1])[1];
-                        Image::make($request->gambar)->encode('jpg')->save(public_path('images/').$imgName);
-                        $spareparts->url_gambar = $imgName;
-                    }
-    
-                    if($spareparts->save()) {
-                        $histori_barang = new HistoriBarang;
+            if($validation['isValid']) {                    
+                $spareparts->fill($request->only($spareparts->getFillable()));
 
-                        $histori_barang->kode_spareparts = $request->kode;
-                        $histori_barang->keluar = 0;
-                        $histori_barang->masuk = $request->stok;
-                        $histori_barang->save();
-                        
-                        $this->response['message'] = 'Berhasil menambah data spareparts.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data spareparts.';
-                    }
+                if($request->filled('gambar')) {
+                    $imgName = Carbon::now()->timestamp . '_' . $request->kode . '.' . explode('/', explode(':', substr($request->gambar, 0, strpos($request->gambar, ';')))[1])[1];
+                    Image::make($request->gambar)->encode('jpg')->save(public_path('images/').$imgName);
+                    $spareparts->url_gambar = $imgName;
+                }
+
+                if($spareparts->save()) {
+                    $histori_barang = new HistoriBarang;
+
+                    $histori_barang->kode_spareparts = $request->kode;
+                    $histori_barang->keluar = 0;
+                    $histori_barang->masuk = $request->stok;
+                    $histori_barang->save();
+                    
+                    $this->response->message = 'Berhasil menambah data spareparts.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data spareparts yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data spareparts.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data spareparts yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data spareparts yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data spareparts yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -143,23 +132,17 @@ class SparepartsController extends Controller
      */
     public function show(Request $request, $kode)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $spareparts = Spareparts::find($kode);
+        $spareparts = Spareparts::find($kode);
 
-            if($spareparts) {
-                $this->response['data'] = new SparepartsResource($spareparts);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Spareparts tidak ditemukan.';
-            }
+        if($spareparts) {
+            $this->response->data = new SparepartsResource($spareparts);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Spareparts tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -171,51 +154,45 @@ class SparepartsController extends Controller
      */
     public function update(Request $request, $kode)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $spareparts = Spareparts::find($kode);
+        $spareparts = Spareparts::find($kode);
 
-            if($spareparts) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $spareparts->fill(array_filter(collect($request->only($spareparts->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
+        if($spareparts) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
 
-                    if($request->filled('gambar')) {
-                        $imgName = Carbon::now()->timestamp . '_' . $spareparts->kode . '.' . explode('/', explode(':', substr($request->gambar, 0, strpos($request->gambar, ';')))[1])[1];
-                        
-                        File::delete(public_path('images/').$spareparts->url_gambar);
-                        Image::make($request->gambar)->encode('jpg')->save(public_path('images/').$imgName);
+            if($validation['isValid']) {
+                $spareparts->fill(array_filter(collect($request->only($spareparts->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
 
-                        $spareparts->url_gambar = $imgName;
-                    }
-    
-                    if($spareparts->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data spareparts.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data spareparts.';
-                    }
+                if($request->filled('gambar')) {
+                    $imgName = Carbon::now()->timestamp . '_' . $spareparts->kode . '.' . explode('/', explode(':', substr($request->gambar, 0, strpos($request->gambar, ';')))[1])[1];
+                    
+                    File::delete(public_path('images/').$spareparts->url_gambar);
+                    Image::make($request->gambar)->encode('jpg')->save(public_path('images/').$imgName);
+
+                    $spareparts->url_gambar = $imgName;
+                }
+
+                if($spareparts->save()) {
+                    $this->response->message = 'Berhasil memperbarui data spareparts.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data spareparts yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data spareparts.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Spareparts tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data spareparts yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Spareparts tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -227,32 +204,30 @@ class SparepartsController extends Controller
      */
     public function destroy(Request $request, $kode)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $spareparts = Spareparts::find($kode);
+        $spareparts = Spareparts::find($kode);
 
-            if($spareparts) {
-                if($spareparts->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data spareparts.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data spareparts.';
-                }
+        if($spareparts) {
+            if($spareparts->delete()) {
+                $this->response->message = 'Berhasil menghapus data spareparts.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Spareparts tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data spareparts.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Spareparts tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
-    private function uploadImage() {
+    public function search(Request $request) {
+        $spareparts = EloquentBuilder::to(Spareparts::class, $request->all());
 
+        $this->response->data = $spareparts->get();
+
+        return $this->response->make();
     }
 }

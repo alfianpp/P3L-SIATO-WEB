@@ -41,6 +41,19 @@ class DetailPenjualanSpareparts extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
+    // belongsTo
+
+    public function detail_penjualan()
+    {
+        return $this->belongsTo('App\DetailPenjualan', 'id_detail_penjualan');
+    }
+
     public function spareparts()
     {
         return $this->belongsTo('App\Spareparts', 'kode_spareparts');

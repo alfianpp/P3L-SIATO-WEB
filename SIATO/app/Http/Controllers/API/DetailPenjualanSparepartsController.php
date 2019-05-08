@@ -10,6 +10,8 @@ use App\Http\Resources\DetailPenjualanSpareparts as DetailPenjualanSparepartsRes
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -20,17 +22,23 @@ class DetailPenjualanSparepartsController extends Controller
     var $nullable = [];
     var $uneditable = ['id_detail_penjualan', 'kode_spareparts'];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'id_detail_penjualan' => 'integer|exists:detail_penjualan,id',
         'kode_spareparts' => 'alpha_dash|exists:spareparts,kode',
         'jumlah' => 'integer|min:1'
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -50,43 +58,37 @@ class DetailPenjualanSparepartsController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_spareparts = new DetailPenjualanSpareparts;
+        $detail_penjualan_spareparts = new DetailPenjualanSpareparts;
 
-            if(AppHelper::isFillableFilled($request, $detail_penjualan_spareparts->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $detail_penjualan_spareparts->fill($request->only($detail_penjualan_spareparts->getFillable()));
-                    
-                    $spareparts = Spareparts::find($request->kode_spareparts);
-                    $detail_penjualan_spareparts->harga = $spareparts->harga_jual;
-    
-                    if($detail_penjualan_spareparts->save()) {
-                        $this->response['message'] = 'Berhasil menambah data penjualan spareparts.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data penjualan spareparts.';
-                    }
+        if(AppHelper::isFillableFilled($request, $detail_penjualan_spareparts->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $detail_penjualan_spareparts->fill($request->only($detail_penjualan_spareparts->getFillable()));
+                
+                $spareparts = Spareparts::find($request->kode_spareparts);
+                $detail_penjualan_spareparts->harga = $spareparts->harga_jual;
+
+                if($detail_penjualan_spareparts->save()) {
+                    $this->response->message = 'Berhasil menambah data penjualan spareparts.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data penjualan spareparts yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data penjualan spareparts.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan spareparts yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -98,23 +100,17 @@ class DetailPenjualanSparepartsController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan = DetailPenjualan::find($id);
+        $detail_penjualan = DetailPenjualan::find($id);
 
-            if($detail_penjualan) {
-                $this->response['data'] = DetailPenjualanSparepartsResource::collection($detail_penjualan->detailSpareparts);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data detail penjualan tidak ditemukan.';
-            }
+        if($detail_penjualan) {
+            $this->response->data = DetailPenjualanSparepartsResource::collection($detail_penjualan->spareparts);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data detail penjualan tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -126,42 +122,36 @@ class DetailPenjualanSparepartsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_spareparts = DetailPenjualanSpareparts::find($id);
+        $detail_penjualan_spareparts = DetailPenjualanSpareparts::find($id);
 
-            if($detail_penjualan_spareparts) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $detail_penjualan_spareparts->fill(array_filter(collect($request->only($detail_penjualan_spareparts->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($detail_penjualan_spareparts->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data penjualan spareparts.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data penjualan spareparts.';
-                    }
+        if($detail_penjualan_spareparts) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $detail_penjualan_spareparts->fill(array_filter(collect($request->only($detail_penjualan_spareparts->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($detail_penjualan_spareparts->save()) {
+                    $this->response->message = 'Berhasil memperbarui data penjualan spareparts.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data penjualan spareparts yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data penjualan spareparts.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan spareparts tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan spareparts tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -173,28 +163,22 @@ class DetailPenjualanSparepartsController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $detail_penjualan_spareparts = DetailPenjualanSpareparts::find($id);
+        $detail_penjualan_spareparts = DetailPenjualanSpareparts::find($id);
 
-            if($detail_penjualan_spareparts) {
-                if($detail_penjualan_spareparts->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data penjualan spareparts.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data penjualan spareparts.';
-                }
+        if($detail_penjualan_spareparts) {
+            if($detail_penjualan_spareparts->delete()) {
+                $this->response->message = 'Berhasil menghapus data penjualan spareparts.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data penjualan spareparts tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data penjualan spareparts.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data penjualan spareparts tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

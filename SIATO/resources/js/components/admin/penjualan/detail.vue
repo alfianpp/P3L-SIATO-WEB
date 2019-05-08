@@ -3,7 +3,8 @@
         <section class="content-header">
             <h1>Detail Penjualan {{ nomorTransaksi }}</h1>
             <div v-if="penjualan != null" class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button v-if="penjualan.jenis === 'SV' || penjualan.jenis === 'SS'" @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="verifikasi()" type="button" class="btn btn-default" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-check"></i> Verifikasi</button>
+                <button v-if="penjualan.jenis === 'SV' || penjualan.jenis === 'SS'" @click="openForm('TAMBAH')" type="button" class="btn btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -119,6 +120,19 @@ export default {
         }
     },
     methods: {
+        verifikasi() {
+            if(confirm("Selesaikan penjualan ini?")) {
+                axios.put(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.idPenjualan, {
+                    status: 2,
+                    api_key: this.$root.api_key,
+                })
+                .then(response => {
+                    if(response.data.error == false) {
+                        alert(response.data.message)
+                    }
+                })
+            }
+        },
         getPenjualan() {
             axios.post(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.idPenjualan, {
                 api_key: this.$root.api_key,

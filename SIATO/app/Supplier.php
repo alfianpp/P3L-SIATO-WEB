@@ -51,8 +51,16 @@ class Supplier extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function pengadaan_barang()
     {
         return $this->hasMany('App\PengadaanBarang', 'id_supplier');
     }
+
+    // belongsTo
 }

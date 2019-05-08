@@ -2,30 +2,27 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Pegawai;
-use App\Http\Resources\Pegawai as PegawaiResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Pegawai;
+
+use App\Http\Resources\Pegawai as PegawaiResource;
+
+use App\Classes\APIResponse;
+
 use AppHelper;
-use APIHelper;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 class PegawaiController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = [];
     var $uneditable = ['username'];
-
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
 
     var $rules = [
         'username' => 'alpha_num|max:12|unique:pegawai',
@@ -38,6 +35,16 @@ class PegawaiController extends Controller
     ];
 
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,32 +52,20 @@ class PegawaiController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = PegawaiResource::collection(
-                Pegawai::where('role', '!=', '0')->get()
-            );
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = PegawaiResource::collection(
+            Pegawai::where('role', '!=', '0')->get()
+        );
         
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     public function indexWhere(Request $request, $column, $value)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = PegawaiResource::collection(
-                Pegawai::where($column, '=', $value)->get()
-            );
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = PegawaiResource::collection(
+            Pegawai::where($column, '=', $value)->get()
+        );
         
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -81,43 +76,39 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pegawai = new Pegawai;
+        $pegawai = new Pegawai;
 
-            if(AppHelper::isFillableFilled($request, $pegawai->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
+        $this->checkFillable();
 
-                if($validation['isValid']) {
-                    $pegawai->fill($request->only($pegawai->getFillable()));
+        if(AppHelper::isFillableFilled($request, $pegawai->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
 
-                    $pegawai->password = Hash::make($request->password);
-                    $pegawai->api_key = Str::random(12);
+            if($validation['isValid']) {
+                $pegawai->fill($request->only($pegawai->getFillable()));
 
-                    if($pegawai->save()) {
-                        $this->response['message'] = 'Berhasil menambah data pegawai.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data pegawai.';
-                    }
+                $pegawai->password = Hash::make($request->password);
+                $pegawai->api_key = Str::random(12);
+
+                if($pegawai->save()) {
+                    $this->response->message = 'Berhasil menambah data pegawai.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data pegawai yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data pegawai.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data pegawai yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data pegawai yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -129,23 +120,17 @@ class PegawaiController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pegawai = Pegawai::find($id);
+        $pegawai = Pegawai::find($id);
 
-            if($pegawai) {
-                $this->response['data'] = new PegawaiResource($pegawai);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
-            }
+        if($pegawai) {
+            $this->response->data = new PegawaiResource($pegawai);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -157,46 +142,40 @@ class PegawaiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pegawai = Pegawai::find($id);
+        $pegawai = Pegawai::find($id);
 
-            if($pegawai) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $pegawai->fill(array_filter(collect($request->only($pegawai->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($request->has('password')) {
-                        $pegawai->password = Hash::make($request->password);
-                    }
-    
-                    if($pegawai->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data pegawai.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data pegawai.';
-                    }
+        if($pegawai) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $pegawai->fill(array_filter(collect($request->only($pegawai->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($request->has('password')) {
+                    $pegawai->password = Hash::make($request->password);
+                }
+
+                if($pegawai->save()) {
+                    $this->response->message = 'Berhasil memperbarui data pegawai.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data pegawai yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data pegawai.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -208,29 +187,23 @@ class PegawaiController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pegawai = Pegawai::find($id);
+        $pegawai = Pegawai::find($id);
 
-            if($pegawai) {
-                if($pegawai->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data pegawai.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data pegawai.';
-                }
+        if($pegawai) {
+            if($pegawai->delete()) {
+                $this->response->message = 'Berhasil menghapus data pegawai.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Pegawai tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data pegawai.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Pegawai tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     public function login(Request $request)
@@ -239,19 +212,23 @@ class PegawaiController extends Controller
 
         if($request->filled($credentials)) {
             if(Auth::guard('admin')->attempt($request->only($credentials))) {
-                $this->response['message'] = 'Login berhasil.';
-                $this->response['data'] = Pegawai::where('username', $request->username)->first();
+                $this->response->message = 'Login berhasil.';
+                $this->response->data = Pegawai::where('username', $request->username)->first();
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Username atau password salah.';
+                $this->response->error = true;
+                $this->response->message = 'Username atau password salah.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Data login tidak lengkap.';
+            $this->response->error = true;
+            $this->response->message = 'Data login tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
+    }
+
+    public function checkFillable() {
+
     }
 }

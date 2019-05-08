@@ -72,12 +72,20 @@ class Kendaraan extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Relationship
+     */
+
+    // hasMany
+
     public function detail_penjualan()
     {
         return $this->hasMany('App\DetailPenjualan', 'nomor_polisi');
     }
 
-    public function konsumen()
+    // belongsTo
+
+    public function pemilik()
     {
         return $this->belongsTo('App\Konsumen', 'id_pemilik');
     }

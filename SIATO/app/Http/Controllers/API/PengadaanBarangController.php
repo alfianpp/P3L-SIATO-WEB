@@ -8,6 +8,8 @@ use App\Http\Resources\PengadaanBarang as PengadaanBarangResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,16 +20,22 @@ class PengadaanBarangController extends Controller
     var $nullable = ['status'];
     var $uneditable = [];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'id_supplier' => 'integer|exists:supplier,id',
         'status' => 'integer'
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -37,15 +45,9 @@ class PengadaanBarangController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = PengadaanBarangResource::collection(PengadaanBarang::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = PengadaanBarangResource::collection(PengadaanBarang::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -56,42 +58,36 @@ class PengadaanBarangController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pengadaan_barang = new PengadaanBarang;
+        $pengadaan_barang = new PengadaanBarang;
 
-            if(AppHelper::isFillableFilled($request, $pengadaan_barang->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $pengadaan_barang->fill($request->only($pengadaan_barang->getFillable()));
-    
-                    $pengadaan_barang->status = 1;
-    
-                    if($pengadaan_barang->save()) {
-                        $this->response['message'] = 'Berhasil menambah data pengadaan barang.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data pengadaan barang.';
-                    }
+        if(AppHelper::isFillableFilled($request, $pengadaan_barang->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $pengadaan_barang->fill($request->only($pengadaan_barang->getFillable()));
+
+                $pengadaan_barang->status = 1;
+
+                if($pengadaan_barang->save()) {
+                    $this->response->message = 'Berhasil menambah data pengadaan barang.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data pengadaan barang yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data pengadaan barang.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data pengadaan barang yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data pengadaan barang yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -103,23 +99,17 @@ class PengadaanBarangController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pengadaan_barang = PengadaanBarang::find($id);
+        $pengadaan_barang = PengadaanBarang::find($id);
 
-            if($pengadaan_barang) {
-                $this->response['data'] = new PengadaanBarangResource($pengadaan_barang);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data pengadaan barang tidak ditemukan.';
-            }
+        if($pengadaan_barang) {
+            $this->response->data = new PengadaanBarangResource($pengadaan_barang);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -131,42 +121,36 @@ class PengadaanBarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pengadaan_barang = PengadaanBarang::find($id);
+        $pengadaan_barang = PengadaanBarang::find($id);
 
-            if($pengadaan_barang) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $pengadaan_barang->fill(array_filter(collect($request->only($pengadaan_barang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-                    
-                    if($pengadaan_barang->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data pengadaan barang.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data pengadaan barang.';
-                    }
+        if($pengadaan_barang) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $pengadaan_barang->fill(array_filter(collect($request->only($pengadaan_barang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+                
+                if($pengadaan_barang->save()) {
+                    $this->response->message = 'Berhasil memperbarui data pengadaan barang.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data pengadaan barang yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data pengadaan barang.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data pengadaan barang tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -178,28 +162,22 @@ class PengadaanBarangController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $pengadaan_barang = PengadaanBarang::find($id);
+        $pengadaan_barang = PengadaanBarang::find($id);
 
-            if($pengadaan_barang) {
-                if($pengadaan_barang->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data pengadaan barang.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data pengadaan barang.';
-                }
+        if($pengadaan_barang) {
+            if($pengadaan_barang->delete()) {
+                $this->response->message = 'Berhasil menghapus data pengadaan barang.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data pengadaan barang tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data pengadaan barang.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }

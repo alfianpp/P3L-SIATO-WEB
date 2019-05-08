@@ -8,6 +8,8 @@ use App\Http\Resources\Konsumen as KonsumenResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Classes\APIResponse;
+
 use AppHelper;
 use APIHelper;
 
@@ -18,17 +20,23 @@ class KonsumenController extends Controller
     var $nullable = [];
     var $uneditable = [];
 
-    var $response = [
-        'error' => false,
-        'message' => '',
-        'data' => null
-    ];
+    var $response;
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
         'nomor_telepon' => 'numeric|digits_between:10,13',
         'alamat' => ''
     ];
+
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->response = new APIResponse;
+    }
 
     /**
      * Display a listing of the resource.
@@ -38,15 +46,9 @@ class KonsumenController extends Controller
      */
     public function index(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $this->response['data'] = KonsumenResource::collection(Konsumen::all());
-        }
-        else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
-        }
+        $this->response->data = KonsumenResource::collection(Konsumen::all());
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -57,40 +59,34 @@ class KonsumenController extends Controller
      */
     public function store(Request $request)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = new Konsumen;
+        $konsumen = new Konsumen;
 
-            if(AppHelper::isFillableFilled($request, $konsumen->getFillable(), $this->nullable)) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $konsumen->fill($request->only($konsumen->getFillable()));
-    
-                    if($konsumen->save()) {
-                        $this->response['message'] = 'Berhasil menambah data konsumen.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal menambah data konsumen.';
-                    }
+        if(AppHelper::isFillableFilled($request, $konsumen->getFillable(), $this->nullable)) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $konsumen->fill($request->only($konsumen->getFillable()));
+
+                if($konsumen->save()) {
+                    $this->response->message = 'Berhasil menambah data konsumen.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data konsumen yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal menambah data konsumen.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Data konsumen yang dimasukkan tidak lengkap.';
+                $this->response->error = true;
+                $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Data konsumen yang dimasukkan tidak lengkap.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -102,23 +98,17 @@ class KonsumenController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
+        $konsumen = Konsumen::find($id);
 
-            if($konsumen) {
-                $this->response['data'] = new KonsumenResource($konsumen);
-            }
-            else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
-            }
+        if($konsumen) {
+            $this->response->data = new KonsumenResource($konsumen);
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Konsumen tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -130,42 +120,36 @@ class KonsumenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
+        $konsumen = Konsumen::find($id);
 
-            if($konsumen) {
-                $validation = AppHelper::isValidRequest($request, $this->rules);
-    
-                if($validation['isValid']) {
-                    $konsumen->fill(array_filter(collect($request->only($konsumen->getFillable()))->except($this->uneditable)->toArray(), function($value) {
-                        return ($value !== null);
-                    }));
-    
-                    if($konsumen->save()) {
-                        $this->response['message'] = 'Berhasil memperbarui data konsumen.';
-                    }
-                    else {
-                        $this->response['error'] = true;
-                        $this->response['message'] = 'Gagal memperbarui data konsumen.';
-                    }
+        if($konsumen) {
+            $validation = AppHelper::isValidRequest($request, $this->rules);
+
+            if($validation['isValid']) {
+                $konsumen->fill(array_filter(collect($request->only($konsumen->getFillable()))->except($this->uneditable)->toArray(), function($value) {
+                    return ($value !== null);
+                }));
+
+                if($konsumen->save()) {
+                    $this->response->message = 'Berhasil memperbarui data konsumen.';
                 }
                 else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Data konsumen yang dimasukkan tidak valid.';
-                    $this->response['data'] = $validation['errors'];
+                    $this->response->error = true;
+                    $this->response->message = 'Gagal memperbarui data konsumen.';
                 }
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
+                $this->response->data = $validation['errors'];
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Konsumen tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 
     /**
@@ -177,28 +161,22 @@ class KonsumenController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if(APIHelper::isPermitted($request->api_key, $this->permitted_role)) {
-            $konsumen = Konsumen::find($id);
-            
-            if($konsumen) {
-                if($konsumen->delete()) {
-                    $this->response['message'] = 'Berhasil menghapus data konsumen.';
-                }
-                else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Gagal menghapus data konsumen.';
-                }
+        $konsumen = Konsumen::find($id);
+        
+        if($konsumen) {
+            if($konsumen->delete()) {
+                $this->response->message = 'Berhasil menghapus data konsumen.';
             }
             else {
-                $this->response['error'] = true;
-                $this->response['message'] = 'Konsumen tidak ditemukan.';
+                $this->response->error = true;
+                $this->response->message = 'Gagal menghapus data konsumen.';
             }
         }
         else {
-            $this->response['error'] = true;
-            $this->response['message'] = 'Aksi tidak diizinkan.';
+            $this->response->error = true;
+            $this->response->message = 'Konsumen tidak ditemukan.';
         }
 
-        return APIHelper::JSONResponse($this->response);
+        return $this->response->make();
     }
 }
