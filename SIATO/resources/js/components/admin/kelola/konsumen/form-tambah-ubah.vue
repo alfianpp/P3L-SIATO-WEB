@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-konsumen" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,7 +27,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_telepon}">
                             <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
-                                <input v-model="konsumen.nomor_telepon" type="text" class="form-control" placeholder="Nomor telepon">
+                                <the-mask v-model="konsumen.nomor_telepon" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
                                 <span v-if="response.error && response.data && response.data.merk" class="help-block">{{ response.data.nomor_telepon[0] }}</span>
                             </div>
                         </div>
@@ -53,7 +53,10 @@
 </template>
 
 <script>
+import {TheMask} from 'vue-the-mask'
+
 export default {
+    components: {TheMask},
     props: ['formAction', 'selectedKonsumen'],
     data: function() {
         return {
@@ -84,7 +87,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-konsumen').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -102,7 +105,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-konsumen').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

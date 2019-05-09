@@ -1,9 +1,9 @@
 <template>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Kelola Data JasaService</h1>
+            <h1>Kelola Data Jasa Service</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-jasaservice"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -26,9 +26,9 @@
                                     <tr v-for="(jasaservice, index) in listJasaService" v-bind:key="index">
                                         <td>{{ index+1 }}</td>
                                         <td>{{ jasaservice.nama }}</td>
-                                        <td>{{ jasaservice.harga_jual }}</td>
+                                        <td>{{ jasaservice.harga_jual | toCurrency }}</td>
                                         <td class="pull-right">
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-jasaservice"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deleteJasaService(jasaservice.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -43,7 +43,7 @@
         <form-tambah-ubah 
         v-if="showForm == true" 
         v-bind:form-action="formAction" 
-        v-bind:selected-jasaservice="selectedJasaService" 
+        v-bind:selected-jasa-service="selectedJasaService" 
         v-on:close="closeForm">
         </form-tambah-ubah>
     </div>
@@ -79,9 +79,9 @@ export default {
                 }
             })
         },
-        deleteJasaService(kode) {
-            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus jasaservice ini?")) {
-                axios.delete(this.$root.app.url + 'api/data/jasaservice/' + kode, { 
+        deleteJasaService(id) {
+            if(confirm("Apakah Anda ingin melanjutkan untuk menghapus jasa service ini?")) {
+                axios.delete(this.$root.app.url + 'api/data/jasaservice/' + id, { 
                     data: {
                         api_key: this.$root.api_key
                     } 
@@ -126,8 +126,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4]},
-                        {"searchable": false, "targets": [0, 2, 3, 4]}
+                        {"orderable": false, "targets": [0, 3]},
+                        {"searchable": false, "targets": [0, 2, 3]}
                     ],
                 })
             }

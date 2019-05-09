@@ -8,8 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Konsumen;
 
 use App\Http\Resources\Konsumen as KonsumenResource;
+use App\Http\Resources\Partially\Konsumen as KonsumenPartiallyResource;
 
 use App\Classes\APIResponse;
+
+use EloquentBuilder;
 
 use AppHelper;
 
@@ -22,7 +25,7 @@ class KonsumenController extends Controller
 
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
-        'nomor_telepon' => 'numeric|digits_between:10,13',
+        'nomor_telepon' => 'string|digits_between:10,13',
         'alamat' => ''
     ];
 
@@ -75,13 +78,13 @@ class KonsumenController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data konsumen yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -138,7 +141,7 @@ class KonsumenController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data konsumen yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
@@ -174,6 +177,14 @@ class KonsumenController extends Controller
             $this->response->error = true;
             $this->response->message = 'Konsumen tidak ditemukan.';
         }
+
+        return $this->response->make();
+    }
+
+    public function search(Request $request) {
+        $this->response->data = KonsumenPartiallyResource::collection(
+            EloquentBuilder::to(Konsumen::class, $request->all())->get()
+        );
 
         return $this->response->make();
     }

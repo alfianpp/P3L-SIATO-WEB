@@ -61,6 +61,15 @@ class PenjualanController extends Controller
         return $this->response->make();
     }
 
+    public function indexWhere(Request $request, $column, $value)
+    {
+        $this->response->data = PenjualanResource::collection(
+            Penjualan::where($column, '=', $value)->get()
+        );
+
+        return $this->response->make();
+    }
+
     /**
      * Store a newly created resource in storage.
      *

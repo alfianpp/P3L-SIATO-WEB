@@ -5,7 +5,7 @@ namespace App\EloquentFilters\Spareparts;
 use Fouladgar\EloquentBuilder\Support\Foundation\Contracts\IFilter as Filter;
 use Illuminate\Database\Eloquent\Builder;
 
-class NameFilter implements Filter
+class NamaFilter implements Filter
 {
     /**
      * Undocumented function.

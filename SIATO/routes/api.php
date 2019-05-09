@@ -30,6 +30,7 @@ Route::prefix('data')->group(function () {
     Route::post('spareparts/index', 'API\SparepartsController@index');
     Route::post('spareparts/{spareparts}', 'API\SparepartsController@show');
     Route::get('spareparts/index/search', 'API\SparepartsController@search');
+    Route::get('spareparts/index/{column}', 'API\SparepartsController@indexColumn');
 
     Route::post('spareparts/index/stokminimal', 'API\SparepartsController@indexStokMinimal');
 
@@ -47,11 +48,13 @@ Route::prefix('data')->group(function () {
     Route::apiResource('konsumen', 'API\KonsumenController')->except(['index', 'show']);
     Route::post('konsumen/index', 'API\KonsumenController@index');
     Route::post('konsumen/{konsumen}', 'API\KonsumenController@show');
+    Route::get('konsumen/index/search', 'API\KonsumenController@search');
 
     // KENDARAAN
     Route::apiResource('kendaraan', 'API\KendaraanController')->except(['index', 'show']);
     Route::post('kendaraan/index', 'API\KendaraanController@index');
     Route::post('kendaraan/{kendaraan}', 'API\KendaraanController@show');
+    Route::get('kendaraan/index/{column}', 'API\KendaraanController@indexColumn');
 
     Route::post('kendaraan/index/{column}/{value}', 'API\KendaraanController@indexWhere');
 
@@ -90,4 +93,5 @@ Route::prefix('transaksi')->group(function () {
 
 Route::prefix('riwayat')->group(function () {
     Route::post('login', 'API\RiwayatTransaksiKonsumenController@login');
+    Route::post('index', 'API\RiwayatTransaksiKonsumenController@index');
 });

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-cabang" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -24,19 +24,19 @@
                             </div>
                         </div>
 
-                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.merk}">
+                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_telepon}">
                             <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
-                                <input v-model="cabang.nomor_telepon" type="text" class="form-control" placeholder="Nomor telepon">
-                                <span v-if="response.error && response.data && response.data.merk" class="help-block">{{ response.data.merk[0] }}</span>
+                                <the-mask v-model="cabang.nomor_telepon" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
+                                <span v-if="response.error && response.data && response.data.nomor_telepon" class="help-block">{{ response.data.nomor_telepon[0] }}</span>
                             </div>
                         </div>
 
-                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.tipe}">
+                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.alamat}">
                             <label class="col-sm-3 control-label">Alamat</label>
                             <div class="col-sm-9">
                                 <textarea v-model="cabang.alamat" type="text" class="form-control" rows="3" placeholder="Alamat"></textarea>
-                                <span v-if="response.error && response.data && response.data.tipe" class="help-block">{{ response.data.tipe[0] }}</span>
+                                <span v-if="response.error && response.data && response.data.alamat" class="help-block">{{ response.data.alamat[0] }}</span>
                             </div>
                         </div>
                     </form>
@@ -53,7 +53,10 @@
 </template>
 
 <script>
+import {TheMask} from 'vue-the-mask'
+
 export default {
+    components: {TheMask},
     props: ['formAction', 'selectedCabang'],
     data: function() {
         return {
@@ -84,7 +87,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-cabang').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -102,7 +105,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-cabang').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

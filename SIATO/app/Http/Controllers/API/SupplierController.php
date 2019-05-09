@@ -24,7 +24,7 @@ class SupplierController extends Controller
         'nama' => 'alpha_spaces|max:64',
         'alamat' => '',
         'nama_sales' => 'alpha_spaces|max:64',
-        'nomor_telepon_sales' => 'numeric|digits_between:10,13'
+        'nomor_telepon_sales' => 'string|digits_between:10,13'
     ];
 
     /**
@@ -76,13 +76,13 @@ class SupplierController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data supplier yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -139,7 +139,7 @@ class SupplierController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data supplier yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

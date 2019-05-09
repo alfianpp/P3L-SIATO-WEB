@@ -3,7 +3,7 @@
         <section class="content-header">
             <h1>Kelola Data Supplier</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-supplier"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -32,7 +32,7 @@
                                         <td>{{ supplier.nama_sales }}</td>
                                         <td>{{ supplier.nomor_telepon_sales }}</td>
                                         <td class="pull-right">
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-supplier"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deleteSupplier(supplier.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -83,9 +83,9 @@ export default {
                 }
             })
         },
-        deleteSupplier(kode) {
+        deleteSupplier(id) {
             if(confirm("Apakah Anda ingin melanjutkan untuk menghapus supplier ini?")) {
-                axios.delete(this.$root.app.url + 'api/data/supplier/' + kode, { 
+                axios.delete(this.$root.app.url + 'api/data/supplier/' + id, { 
                     data: {
                         api_key: this.$root.api_key
                     } 
@@ -130,8 +130,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4]},
-                        {"searchable": false, "targets": [0, 2, 3, 4]}
+                        {"orderable": false, "targets": [0, 2, 4, 5]},
+                        {"searchable": false, "targets": [0, 5]}
                     ],
                 })
             }

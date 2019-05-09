@@ -21,7 +21,7 @@ class JasaServiceController extends Controller
     var $uneditable = [];
 
     var $rules = [
-        'nama' => 'alpha_spaces|max:64|unique:jasa_service',
+        'nama' => 'alpha_spaces|max:64',
         'harga_jual' => 'numeric|digits_between:1,11'
     ];
 
@@ -74,13 +74,13 @@ class JasaServiceController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data jasa service yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -137,7 +137,7 @@ class JasaServiceController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data jasa service yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

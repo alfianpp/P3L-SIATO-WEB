@@ -3,7 +3,7 @@
         <section class="content-header">
             <h1>Kelola Data Spareparts</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-spareparts"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -19,8 +19,8 @@
                                         <th>Nama</th>
                                         <th>Merk</th>
                                         <th>Tipe</th>
-                                        <th>Harga Jual</th>
                                         <th>Harga Beli</th>
+                                        <th>Harga Jual</th>
                                         <th>Peletakan</th>
                                         <th></th>
                                     </tr>
@@ -32,11 +32,11 @@
                                         <td>{{ spareparts.nama }}</td>
                                         <td>{{ spareparts.merk }}</td>
                                         <td>{{ spareparts.tipe }}</td>
-                                        <td>{{ spareparts.harga_jual }}</td>
-                                        <td>{{ spareparts.harga_beli }}</td>
+                                        <td>{{ spareparts.harga_beli | toCurrency }}</td>
+                                        <td>{{ spareparts.harga_jual | toCurrency }}</td>
                                         <td>{{ spareparts.kode_peletakan }}</td>
                                         <td class="pull-right">
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-spareparts"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deleteSpareparts(spareparts.kode)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -134,8 +134,9 @@ export default {
                     'searching'   : true,
                     'order': [],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 4, 5, 6, 7]},
-                        {"searchable": false, "targets": [4, 5, 6, 7]}
+                        {"type": "num-fmt", "targets": [4, 5]},
+                        {"orderable": false, "targets": [0, 6, 7]},
+                        {"searchable": false, "targets": [4, 5, 7]}
                     ],
                 })
             }

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-spareparts" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -19,7 +19,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.kode}">
                             <label class="col-sm-3 control-label">Kode</label>
                             <div class="col-sm-9">
-                                <input v-model="spareparts.kode" v-mask="'XXXX-XXX-XXX'" :disabled="formAction == 'UBAH'" type="text" class="form-control" placeholder="Kode">
+                                <the-mask v-model="spareparts.kode" :disabled="formAction == 'UBAH'" mask="XXXX-XXX-XXX" :masked="true" type="text" class="form-control" placeholder="Kode"></the-mask>
                                 <span v-if="response.error && response.data && response.data.kode" class="help-block">{{ response.data.kode[0] }}</span>
                             </div>
                         </div>
@@ -35,7 +35,15 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.merk}">
                             <label class="col-sm-3 control-label">Merk</label>
                             <div class="col-sm-9">
-                                <input v-model="spareparts.merk" type="text" class="form-control" placeholder="Merk">
+                                <vue-simple-suggest 
+                                v-model="spareparts.merk"
+                                :list="availableMerk" 
+                                :max-suggestions="0"
+                                :styles="autoCompleteStyle" 
+                                :destyled=true 
+                                :filter-by-query="true"
+                                placeholder="Merk">
+                                </vue-simple-suggest>
                                 <span v-if="response.error && response.data && response.data.merk" class="help-block">{{ response.data.merk[0] }}</span>
                             </div>
                         </div>
@@ -43,7 +51,15 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.tipe}">
                             <label class="col-sm-3 control-label">Tipe</label>
                             <div class="col-sm-9">
-                                <input v-model="spareparts.tipe" type="text" class="form-control" placeholder="Tipe">
+                                <vue-simple-suggest 
+                                v-model="spareparts.tipe"
+                                :list="availableTipe" 
+                                :max-suggestions="0"
+                                :styles="autoCompleteStyle" 
+                                :destyled=true 
+                                :filter-by-query="true"
+                                placeholder="Tipe">
+                                </vue-simple-suggest>
                                 <span v-if="response.error && response.data && response.data.tipe" class="help-block">{{ response.data.tipe[0] }}</span>
                             </div>
                         </div>
@@ -80,19 +96,19 @@
                             </div>
                         </div>
 
-                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.harga_jual}">
-                            <label class="col-sm-3 control-label">Harga Jual</label>
-                            <div class="col-sm-9">
-                                <input v-model="spareparts.harga_jual" type="number" class="form-control" placeholder="Harga Jual">
-                                <span v-if="response.error && response.data && response.data.harga_jual" class="help-block">{{ response.data.harga_jual[0] }}</span>
-                            </div>
-                        </div>
-
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.harga_beli}">
                             <label class="col-sm-3 control-label">Harga Beli</label>
                             <div class="col-sm-9">
-                                <input v-model="spareparts.harga_beli" type="number" class="form-control" placeholder="Harga Beli">
+                                <money v-model="spareparts.harga_beli" v-bind="money" class="form-control"></money>
                                 <span v-if="response.error && response.data && response.data.harga_beli" class="help-block">{{ response.data.harga_beli[0] }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.harga_jual}">
+                            <label class="col-sm-3 control-label">Harga Jual</label>
+                            <div class="col-sm-9">
+                                <money v-model="spareparts.harga_jual" v-bind="money" class="form-control"></money>
+                                <span v-if="response.error && response.data && response.data.harga_jual" class="help-block">{{ response.data.harga_jual[0] }}</span>
                             </div>
                         </div>
 
@@ -134,10 +150,12 @@
 </template>
 
 <script>
-import {mask} from 'vue-the-mask'
+import VueSimpleSuggest from 'vue-simple-suggest'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 
 export default {
-    directives: {mask},
+    components: {VueSimpleSuggest, TheMask, Money},
     props: ['formAction', 'selectedSpareparts'],
     data: function() {
         return {
@@ -146,10 +164,11 @@ export default {
                 nama: null,
                 merk: null,
                 tipe: null,
-                harga_beli: null,
-                harga_jual: null,
+                harga_beli: 0,
+                harga_jual: 0,
                 stok: null,
                 stok_minimal: null,
+                url_gambar: null
             },
             peletakan: {
                 letak: null,
@@ -157,15 +176,38 @@ export default {
                 nomor: null
             },
             gambar: null,
+            availableMerk: null,
+            availableTipe: null,
             response: {
                 error: false,
                 message: '',
                 data: null
             },
             reloadList: false,
+            money: {
+                precision: 0,
+                decimal: ',',
+                thousands: '.',
+                prefix: 'Rp '
+            },
+            autoCompleteStyle: {
+                vueSimpleSuggest: "vue-simple-suggest designed",
+                defaultInput: "form-control"
+            },
         }
     },
     methods: {
+        getAvailableMerkAndTipe() {
+            axios.get(this.$root.app.url + 'api/data/spareparts/index/merk')
+            .then(response => {
+                this.availableMerk = response.data.data
+            })
+
+            axios.get(this.$root.app.url + 'api/data/spareparts/index/tipe')
+            .then(response => {
+                this.availableTipe = response.data.data
+            })
+        },
         addSpareparts() {
             axios.post(this.$root.app.url + 'api/data/spareparts/', {
                 kode: this.spareparts.kode,
@@ -185,7 +227,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-spareparts').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -208,7 +250,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-spareparts').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -223,6 +265,7 @@ export default {
             this.spareparts.harga_jual = null
             this.spareparts.stok = null
             this.spareparts.stok_minimal = null
+            this.spareparts.url_gambar = null
 
             this.peletakan.letak = null
             this.peletakan.ruang = null
@@ -237,8 +280,12 @@ export default {
         },
         onImageChange(e) {
             let files = e.target.files || e.dataTransfer.files;
-            if (!files.length)
+            let vm = this;
+            if (!files.length) {
+                vm.gambar = null;
                 return;
+            }
+
             this.createImage(files[0]);
         },
         createImage(file) {
@@ -251,6 +298,7 @@ export default {
         },
     },
     created() {
+        this.getAvailableMerkAndTipe()
         if(this.selectedSpareparts != null) {
             this.spareparts.kode = this.selectedSpareparts.kode
             this.spareparts.nama = this.selectedSpareparts.nama
@@ -260,6 +308,7 @@ export default {
             this.spareparts.harga_jual = this.selectedSpareparts.harga_jual
             this.spareparts.stok = this.selectedSpareparts.stok
             this.spareparts.stok_minimal = this.selectedSpareparts.stok_minimal
+            this.spareparts.url_gambar = this.selectedSpareparts.url_gambar
 
             var kode_peletakan = this.selectedSpareparts.kode_peletakan.split('-')
             this.peletakan.letak = kode_peletakan[0]
@@ -272,3 +321,56 @@ export default {
     }
 }
 </script>
+
+<style>
+.vue-simple-suggest > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vue-simple-suggest.designed {
+  position: relative;
+}
+
+.vue-simple-suggest.designed, .vue-simple-suggest.designed * {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.vue-simple-suggest.designed .suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  top: calc(100% + 5px);
+  border-radius: 3px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  opacity: 1;
+  z-index: 1000;
+}
+
+.vue-simple-suggest.designed .suggestions .suggest-item {
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.vue-simple-suggest.designed .suggestions .suggest-item,
+.vue-simple-suggest.designed .suggestions .misc-item {
+  padding: 5px 10px;
+}
+
+.vue-simple-suggest.designed .suggestions .suggest-item.hover {
+  background-color: #2874D5 !important;
+  color: #fff !important;
+}
+
+.vue-simple-suggest.designed .suggestions .suggest-item.selected {
+  background-color: #2832D5;
+  color: #fff;
+}
+</style>

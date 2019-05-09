@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Spareparts;
@@ -14,10 +15,11 @@ use App\Http\Resources\Spareparts as SparepartsResource;
 
 use App\Classes\APIResponse;
 
-use AppHelper;
 use File;
 use Image;
 use EloquentBuilder;
+
+use AppHelper;
 
 class SparepartsController extends Controller
 {
@@ -59,6 +61,13 @@ class SparepartsController extends Controller
     {
         $this->response->data = SparepartsResource::collection(Spareparts::all());
         
+        return $this->response->make();
+    }
+
+    public function indexColumn($column)
+    {
+        $this->response->data = DB::table('spareparts')->distinct()->pluck($column);
+
         return $this->response->make();
     }
 
@@ -110,13 +119,13 @@ class SparepartsController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data spareparts yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data spareparts yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -182,7 +191,7 @@ class SparepartsController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data spareparts yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation['errors'];
             }
         }
@@ -223,9 +232,7 @@ class SparepartsController extends Controller
     }
 
     public function search(Request $request) {
-        $spareparts = EloquentBuilder::to(Spareparts::class, $request->all());
-
-        $this->response->data = $spareparts->get();
+        $this->response->data = EloquentBuilder::to(Spareparts::class, $request->all())->get();
 
         return $this->response->make();
     }

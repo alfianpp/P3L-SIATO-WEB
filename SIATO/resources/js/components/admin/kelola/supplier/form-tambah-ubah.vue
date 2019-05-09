@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-supplier" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,28 +27,28 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.alamat}">
                             <label class="col-sm-3 control-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input v-model="supplier.alamat" type="text" class="form-control" placeholder="Alamat">
+                                <textarea v-model="supplier.alamat" class="form-control" rows="3" placeholder="Alamat"></textarea>
                                 <span v-if="response.error && response.data && response.data.alamat" class="help-block">{{ response.data.alamat[0] }}</span>
                             </div>
                         </div>
 
+                        <hr>
+
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nama_sales}">
                             <label class="col-sm-3 control-label">Nama Sales</label>
                             <div class="col-sm-9">
-                                <textarea v-model="supplier.nama_sales" type="text" class="form-control" rows="3" placeholder="Nama Sales"></textarea>
+                                <input v-model="supplier.nama_sales" type="text" class="form-control" placeholder="Nama Sales">
                                 <span v-if="response.error && response.data && response.data.nama_sales" class="help-block">{{ response.data.nama_sales[0] }}</span>
                             </div>
                         </div>
 
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_telepon_sales}">
-                            <label class="col-sm-3 control-label">Nomor Telepon Sales</label>
+                            <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
-                                <textarea v-model="supplier.nomor_telepon_sales" type="text" class="form-control" rows="3" placeholder="Nomor Telepon Sales"></textarea>
+                                <the-mask v-model="supplier.nomor_telepon_sales" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
                                 <span v-if="response.error && response.data && response.data.nomor_telepon_sales" class="help-block">{{ response.data.nomor_telepon_sales[0] }}</span>
                             </div>
                         </div>
-
-                        
                     </form>
                 </div>
                 
@@ -63,7 +63,10 @@
 </template>
 
 <script>
+import {TheMask} from 'vue-the-mask'
+
 export default {
+    components: {TheMask},
     props: ['formAction', 'selectedSupplier'],
     data: function() {
         return {
@@ -96,7 +99,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-supplier').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -115,7 +118,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-supplier').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

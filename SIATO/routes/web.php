@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/riwayat', 'RiwayatController@view');
+Route::get('/test', 'API\RiwayatTransaksiKonsumenController@index');
 
 Auth::routes();
 

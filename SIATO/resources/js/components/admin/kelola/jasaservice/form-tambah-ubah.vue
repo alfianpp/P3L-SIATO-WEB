@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-jasaservice" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,12 +27,10 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.harga_jual}">
                             <label class="col-sm-3 control-label">Harga Jual</label>
                             <div class="col-sm-9">
-                                <input v-model="jasaservice.harga_jual" type="text" class="form-control" placeholder="Harga Jual">
+                                <money v-model="jasaservice.harga_jual" v-bind="money" class="form-control"></money>
                                 <span v-if="response.error && response.data && response.data.harga_jual" class="help-block">{{ response.data.harga_jual[0] }}</span>
                             </div>
                         </div>
-
-                        
                     </form>
                 </div>
                 
@@ -47,14 +45,17 @@
 </template>
 
 <script>
+import {Money} from 'v-money'
+
 export default {
-    props: ['formAction', 'selectedJasa Service'],
+    components: {Money},
+    props: ['formAction', 'selectedJasaService'],
     data: function() {
         return {
             jasaservice: {
                 id: null,
                 nama: null,
-                harga_jual: null,
+                harga_jual: 0,
             },
             response: {
                 error: false,
@@ -62,6 +63,12 @@ export default {
                 data: null
             },
             reloadList: false,
+            money: {
+                precision: 0,
+                decimal: ',',
+                thousands: '.',
+                prefix: 'Rp '
+            }
         }
     },
     methods: {
@@ -76,7 +83,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-jasaservice').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -93,7 +100,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-jasaservice').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

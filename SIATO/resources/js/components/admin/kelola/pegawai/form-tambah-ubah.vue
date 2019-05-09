@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-pegawai" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -45,7 +45,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_telepon}">
                             <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
-                                <input v-model="pegawai.nomor_telepon" type="text" class="form-control" placeholder="Nomor telepon">
+                                <the-mask v-model="pegawai.nomor_telepon" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
                                 <span v-if="response.error && response.data && response.data.nomor_telepon" class="help-block">{{ response.data.nomor_telepon[0] }}</span>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.gaji}">
                             <label class="col-sm-3 control-label">Gaji</label>
                             <div class="col-sm-9">
-                                <input v-model="pegawai.gaji" type="number" class="form-control" placeholder="Gaji">
+                                <money v-model="pegawai.gaji" v-bind="money" class="form-control"></money>
                                 <span v-if="response.error && response.data && response.data.gaji" class="help-block">{{ response.data.gaji[0] }}</span>
                             </div>
                         </div>
@@ -92,7 +92,11 @@
 </template>
 
 <script>
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
+
 export default {
+    components: {TheMask, Money},
     props: ['formAction', 'selectedPegawai'],
     data: function() {
         return {
@@ -103,7 +107,7 @@ export default {
                 nama: null,
                 nomor_telepon: null,
                 alamat: null,
-                gaji: null,
+                gaji: 0,
                 role: null
             },
             response: {
@@ -112,6 +116,12 @@ export default {
                 data: null
             },
             reloadList: false,
+            money: {
+                precision: 0,
+                decimal: ',',
+                thousands: '.',
+                prefix: 'Rp '
+            }
         }
     },
     methods: {
@@ -131,7 +141,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-pegawai').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -152,7 +162,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-pegawai').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

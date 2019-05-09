@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Kendaraan;
 
 use App\Http\Resources\Kendaraan as KendaraanResource;
@@ -50,6 +52,13 @@ class KendaraanController extends Controller
         return $this->response->make();
     }
 
+    public function indexColumn($column)
+    {
+        $this->response->data = DB::table('kendaraan')->distinct()->pluck($column);
+
+        return $this->response->make();
+    }
+
     public function indexWhere(Request $request, $column, $value)
     {
         $this->response->data = KendaraanResource::collection(
@@ -85,13 +94,13 @@ class KendaraanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data kendaraan yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -148,7 +157,7 @@ class KendaraanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data kendaraan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

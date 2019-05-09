@@ -3,7 +3,7 @@
         <section class="content-header">
             <h1>Kelola Data Pegawai</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-pegawai"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -17,7 +17,6 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Nama</th>
-                                        <th>Username</th>
                                         <th>Nomor telepon</th>
                                         <th>Alamat</th>
                                         <th>Gaji</th>
@@ -30,13 +29,12 @@
                                     <tr v-for="(pegawai, index) in listPegawai" v-bind:key="index">
                                         <td>{{ index+1 }}</td>
                                         <td>{{ pegawai.nama }}</td>
-                                        <td>{{ pegawai.username }}</td>
                                         <td>{{ pegawai.nomor_telepon }}</td>
                                         <td>{{ pegawai.alamat }}</td>
-                                        <td>{{ pegawai.gaji | toCurrency() }}</td>
+                                        <td>{{ pegawai.gaji | toCurrency }}</td>
                                         <td>{{ pegawai.role | peranPegawai }}</td>
                                         <td class="pull-right">
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-pegawai"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deletePegawai(pegawai.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -149,8 +147,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4, 5, 6, 7]},
-                        {"searchable": false, "targets": [0, 2, 3, 4, 5, 6, 7]}
+                        {"orderable": false, "targets": [0, 2, 3, 6]},
+                        {"searchable": false, "targets": [0, 4, 5, 6]}
                     ],
                 })
             }

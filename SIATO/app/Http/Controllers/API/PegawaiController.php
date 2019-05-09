@@ -28,7 +28,7 @@ class PegawaiController extends Controller
         'username' => 'alpha_num|max:12|unique:pegawai',
         'password' => 'min:8',
         'nama' => 'alpha_spaces|max:64',
-        'nomor_telepon' => 'numeric|digits_between:10,13',
+        'nomor_telepon' => 'string|digits_between:10,13',
         'alamat' => '',
         'gaji' => 'numeric|digits_between:1,11',
         'role' => 'integer|digits:1'
@@ -42,6 +42,28 @@ class PegawaiController extends Controller
     public function __construct()
     {
         $this->response = new APIResponse;
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = ['username', 'password'];
+
+        if($request->filled($credentials)) {
+            if(Auth::guard('admin')->attempt($request->only($credentials))) {
+                $this->response->message = 'Berhasil login.';
+                $this->response->data = Pegawai::where('username', $request->username)->first();
+            }
+            else {
+                $this->response->error = true;
+                $this->response->message = 'Username atau password salah.';
+            }
+        }
+        else {
+            $this->response->error = true;
+            $this->response->message = 'Data yang dimasukan tidak lengkap.';
+        }
+
+        return $this->response->make();
     }
 
     /**
@@ -97,13 +119,13 @@ class PegawaiController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data pegawai yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -164,7 +186,7 @@ class PegawaiController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data pegawai yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
@@ -199,28 +221,6 @@ class PegawaiController extends Controller
         else {
             $this->response->error = true;
             $this->response->message = 'Pegawai tidak ditemukan.';
-        }
-
-        return $this->response->make();
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = ['username', 'password'];
-
-        if($request->filled($credentials)) {
-            if(Auth::guard('admin')->attempt($request->only($credentials))) {
-                $this->response->message = 'Login berhasil.';
-                $this->response->data = Pegawai::where('username', $request->username)->first();
-            }
-            else {
-                $this->response->error = true;
-                $this->response->message = 'Username atau password salah.';
-            }
-        }
-        else {
-            $this->response->error = true;
-            $this->response->message = 'Data login tidak lengkap.';
         }
 
         return $this->response->make();

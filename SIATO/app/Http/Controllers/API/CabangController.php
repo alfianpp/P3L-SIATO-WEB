@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Cabang;
-use App\Http\Resources\Cabang as CabangResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Cabang;
+
+use App\Http\Resources\Cabang as CabangResource;
 
 use App\Classes\APIResponse;
 
 use AppHelper;
-use APIHelper;
 
 class CabangController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = ['nomor_telepon'];
     var $uneditable = [];
 
-    var $response;
-
     var $rules = [
         'nama' => 'alpha_spaces|max:64',
-        'nomor_telepon' => 'numeric|digits_between:10,13',
+        'nomor_telepon' => 'string|digits_between:10,13',
         'alamat' => ''
     ];
 
@@ -77,13 +75,13 @@ class CabangController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data cabang yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation['errors'];
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data cabang yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -140,7 +138,7 @@ class CabangController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data cabang yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation['errors'];
             }
         }

@@ -3,7 +3,7 @@
         <section class="content-header">
             <h1>Kelola Data Kendaraan</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-kendaraan"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -32,7 +32,7 @@
                                         <td>{{ kendaraan.tipe }}</td>
                                         <td>{{ kendaraan.pemilik.nama }}</td>
                                         <td class="pull-right">
-                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-kendaraan"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button @click="deleteKendaraan(kendaraan.nomor_polisi)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -63,7 +63,6 @@ export default {
     data: function() {
         return {
             listKendaraan: null,
-            listKonsumen:null,
             formAction: null,
             selectedKendaraan: null,
             showForm: false,
@@ -131,8 +130,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4]},
-                        {"searchable": false, "targets": [0, 2, 3, 4]}
+                        {"orderable": false, "targets": [0, 1, 5]},
+                        {"searchable": false, "targets": [0, 5]}
                     ],
                 })
             }

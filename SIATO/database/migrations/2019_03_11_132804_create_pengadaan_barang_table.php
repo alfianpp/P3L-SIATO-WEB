@@ -18,8 +18,8 @@ class CreatePengadaanBarangTable extends Migration
             $table->unsignedBigInteger('id_supplier');
             $table->foreign('id_supplier')->references('id')->on('supplier');
             $table->double('total', 11, 2)->nullable();
-            $table->integer('status');
-            $table->timestamp('tgl_transaksi');
+            $table->integer('status')->default(1);
+            $table->timestamp('tgl_transaksi')->nullable();
         });
     }
 
