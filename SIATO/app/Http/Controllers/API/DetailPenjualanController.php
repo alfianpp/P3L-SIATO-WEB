@@ -16,12 +16,10 @@ use AppHelper;
 
 class DetailPenjualanController extends Controller
 {
-    var $permitted_role = ['0', '1'];
+    var $response;
 
     var $nullable = ['nomor_polisi', 'id_montir'];
     var $uneditable = ['id_penjualan'];
-
-    var $response;
 
     var $rules = [
         'id_penjualan' => 'integer|exists:penjualan,id',
@@ -75,13 +73,13 @@ class DetailPenjualanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data detail penjualan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation['errors'];
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail penjualan yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -139,7 +137,7 @@ class DetailPenjualanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data detail penjualan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation['errors'];
             }
         }

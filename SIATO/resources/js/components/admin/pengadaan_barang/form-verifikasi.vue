@@ -33,8 +33,8 @@
                                     <td>{{ detail_pengadaan_barang.spareparts.nama }}</td>
                                     <td>{{ detail_pengadaan_barang.spareparts.merk }}</td>
                                     <td>{{ detail_pengadaan_barang.jumlah_pesan }}</td>
-                                    <td><input v-model="listDetailPengadaanBarang[index].jumlah_datang" type="number" style="width:100%; padding:0px 5px"></td>
-                                    <td><input v-model="listDetailPengadaanBarang[index].harga" type="number" style="width:100%; padding:0px 5px"></td>
+                                    <td><input v-model="listDetailPengadaanBarang[index].jumlah_datang" type="number" style="width:100%; padding:0px 5px" placeholder="Jumlah datang"></td>
+                                    <td><money v-model="listDetailPengadaanBarang[index].harga" v-bind="money" style="width:100%; padding:0px 5px"></money></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -51,7 +51,10 @@
 </template>
 
 <script>
+import {Money} from 'v-money'
+
 export default {
+    components: {Money},
     props: ['idPengadaanBarang'],
     data: function() {
         return {
@@ -62,6 +65,12 @@ export default {
                 data: null
             },
             reloadList: false,
+            money: {
+                precision: 0,
+                decimal: ',',
+                thousands: '.',
+                prefix: 'Rp '
+            }
         }
     },
     methods: {
@@ -76,30 +85,29 @@ export default {
             })
         },
         verifikasiPengadaanBarang() {
-            var test = []
+            var _temp = []
             this.listDetailPengadaanBarang.forEach(detailPengadaanBarang => {
-                var abc = {
+                var detail = {
                     id: detailPengadaanBarang.id,
                     jumlah_datang: detailPengadaanBarang.jumlah_datang,
                     harga: detailPengadaanBarang.harga
                 }
-                test.push(abc)
+                _temp.push(detail)
             });
-            console.log(test)
             
             axios.post(this.$root.app.url + 'api/transaksi/pengadaan/verifikasi', {
                 id_pengadaan_barang: this.idPengadaanBarang,
-                detail_pengadaan_barang: test,
+                detail_pengadaan_barang: _temp,
                 api_key: this.$root.api_key,
             })
             .then(response => {
                 this.response = response.data
                 if(this.response.error == false) {
-                    // alert(this.response.message)
-                    // this.reloadList = true
-                    // $('#form-tambah-ubah').modal('hide');
-                    // $('body').removeClass('modal-open');
-                    // $('.modal-backdrop').remove();
+                    alert(this.response.message)
+                    this.reloadList = true
+                    $('#form-verifikasi').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
                 }
             })
             

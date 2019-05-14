@@ -17,12 +17,11 @@ class PengadaanBarangController extends Controller
 {
     var $response;
 
-    var $nullable = ['status'];
+    var $nullable = [];
     var $uneditable = [];
 
     var $rules = [
-        'id_supplier' => 'integer|exists:supplier,id',
-        'status' => 'integer'
+        'id_supplier' => 'integer|exists:supplier,id'
     ];
 
     /**
@@ -64,8 +63,6 @@ class PengadaanBarangController extends Controller
             if(!$validation->fails()) {
                 $pengadaan_barang->fill($request->only($pengadaan_barang->getFillable()));
 
-                $pengadaan_barang->status = 1;
-
                 if($pengadaan_barang->save()) {
                     $this->response->message = 'Berhasil menambah data pengadaan barang.';
                 }
@@ -76,13 +73,13 @@ class PengadaanBarangController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data pengadaan barang yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -139,7 +136,7 @@ class PengadaanBarangController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data pengadaan barang yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

@@ -7,7 +7,7 @@
 
             <div class="col-sm-6">
                 <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 4px; right: 15px;">
-                    <button @click="openForm('TAMBAH')" type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                    <button v-if="isOpen" @click="openForm('TAMBAH')" type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
                 </div>
             </div>
         </div>
@@ -32,8 +32,8 @@
                     <td>{{ penjualanSpareparts.jumlah }}</td>
                     <td>{{ penjualanSpareparts.harga | toCurrency }}</td>
                     <td class="pull-right">
-                        <button @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i></button>
-                        <button @click="deletePenjualanSpareparts(penjualanSpareparts.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                        <button v-if="isOpen" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i></button>
+                        <button v-if="isOpen" @click="deletePenjualanSpareparts(penjualanSpareparts.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
             </tbody>
@@ -56,7 +56,7 @@ export default {
     components: {
       formTambahUbahPenjualanSpareparts
     },
-    props: ['index', 'idDetailPenjualan'],
+    props: ['index', 'idDetailPenjualan', 'isOpen'],
     data: function() {
         return {
             listPenjualanSpareparts: null,

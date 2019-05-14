@@ -49,9 +49,6 @@ export default {
                 supplier: {
                     id: null,
                     nama: null,
-                    alamat: null,
-                    nama_sales: null,
-                    nomor_telepon_sales: null
                 },
                 total: null,
                 status: null,
@@ -114,9 +111,6 @@ export default {
             this.pengadaan_barang.id = null
             this.pengadaan_barang.supplier.id = null
             this.pengadaan_barang.supplier.nama = null
-            this.pengadaan_barang.supplier.alamat = null
-            this.pengadaan_barang.supplier.nama_sales = null
-            this.pengadaan_barang.supplier.nomor_telepon_sales = null
             this.pengadaan_barang.total = null
             this.pengadaan_barang.status = null
             this.pengadaan_barang.tgl_transaksi = null
@@ -135,9 +129,6 @@ export default {
             this.pengadaan_barang.id = this.selectedPengadaanBarang.id
             this.pengadaan_barang.supplier.id = this.selectedPengadaanBarang.supplier.id
             this.pengadaan_barang.supplier.nama = this.selectedPengadaanBarang.supplier.nama
-            this.pengadaan_barang.supplier.alamat = this.selectedPengadaanBarang.supplier.alamat
-            this.pengadaan_barang.supplier.nama_sales = this.selectedPengadaanBarang.supplier.nama_sales
-            this.pengadaan_barang.supplier.nomor_telepon_sales = this.selectedPengadaanBarang.supplier.nomor_telepon_sales
             this.pengadaan_barang.total = this.selectedPengadaanBarang.total
             this.pengadaan_barang.status = this.selectedPengadaanBarang.status
             this.pengadaan_barang.tgl_transaksi = this.selectedPengadaanBarang.tgl_transaksi

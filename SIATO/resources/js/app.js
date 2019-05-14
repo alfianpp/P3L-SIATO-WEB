@@ -61,6 +61,14 @@ Vue.component('admin-pengadaan-barang-detail', require('./components/admin/penga
 Vue.component('admin-penjualan', require('./components/admin/penjualan/index.vue').default);
 Vue.component('admin-penjualan-detail', require('./components/admin/penjualan/detail.vue').default);
 
+Vue.component('admin-pembayaran', require('./components/admin/pembayaran/index.vue').default);
+Vue.component('admin-pembayaran-detail', require('./components/admin/pembayaran/detail.vue').default);
+
+Vue.component('admin-laporan-spareparts-terlaris', require('./components/admin/laporan/spareparts_terlaris.vue').default);
+Vue.component('admin-laporan-pendapatan-bulanan', require('./components/admin/laporan/pendapatan_bulanan.vue').default);
+Vue.component('admin-laporan-pendapatan-tahunan', require('./components/admin/laporan/pendapatan_tahunan.vue').default);
+Vue.component('admin-laporan-sisa-stok', require('./components/admin/laporan/sisa_stok.vue').default);
+
 
 Vue.component('siato-index', require('./components/index.vue').default);
 
@@ -70,6 +78,10 @@ Vue.component('siato-index', require('./components/index.vue').default);
 
 Vue.filter('toCurrency', function (value) {
     return numeral(value).format('$0,0')
+});
+
+Vue.filter('toNumber', function (value) {
+    return numeral(value).format('0,0')
 });
 
 /**

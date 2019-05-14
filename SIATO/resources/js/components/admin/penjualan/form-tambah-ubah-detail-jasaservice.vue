@@ -110,14 +110,6 @@ export default {
     },
     created() {
         this.getJasaService()
-        if(this.selectedPenjualanJasaService != null) {
-            this.penjualanJasaService.id = this.selectedPenjualanJasaService.id
-            this.penjualanJasaService.id_detail_penjualan = this.selectedPenjualanJasaService.id_detail_penjualan
-            this.penjualanJasaService.jasa_service.id = this.selectedPenjualanJasaService.jasa_servce.id
-            this.penjualanJasaService.jasa_service.id = this.selectedPenjualanJasaService.jasa_servce.nama
-            this.penjualanJasaService.jumlah = this.selectedPenjualanJasaService.jumlah
-            this.penjualanJasaService.harga = this.selectedPenjualanJasaService.harga
-        }
     },
     mounted() {
         $(this.$refs.modal).on("hidden.bs.modal", this.close)

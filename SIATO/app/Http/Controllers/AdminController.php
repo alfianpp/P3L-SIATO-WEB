@@ -76,4 +76,44 @@ class AdminController extends Controller
     {
         return view('admin.penjualan.detail', ['id' => $id]);
     }
+
+    public function pembayaran()
+    {
+        return view('admin.pembayaran.index');
+    }
+
+    public function pembayaranDetail($id)
+    {
+        return view('admin.pembayaran.detail', ['id' => $id]);
+    }
+
+    public function laporan_spareparts_terlaris()
+    {
+        return view('admin.laporan.spareparts-terlaris');
+    }
+
+    public function laporan_pendapatan_bulanan()
+    {
+        return view('admin.laporan.pendapatan-bulanan');
+    }
+
+    public function laporan_pendapatan_tahunan()
+    {
+        return view('admin.laporan.pendapatan-tahunan');
+    }
+
+    public function laporan_pengeluaran_bulanan()
+    {
+        return view('admin.laporan.pengeluaran-bulanan');
+    }
+
+    public function laporan_penjualan_jasa()
+    {
+        return view('admin.laporan.penjualan-jasa');
+    }
+
+    public function laporan_sisa_stok()
+    {
+        return view('admin.laporan.sisa-stok');
+    }
 }

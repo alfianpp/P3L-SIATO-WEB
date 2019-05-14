@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Penjualan</h1>
+            <h1>Pembayaran</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
                 <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
             </div>
@@ -32,7 +32,7 @@
                                         <td>{{ penjualan.tgl_transaksi }}</td>
                                         <td>{{ penjualan.status | statusTransaksi }}</td>
                                         <td class="pull-right">
-                                            <a :href="'/admin/transaksi/penjualan/detail/' + penjualan.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
+                                            <a :href="'/admin/transaksi/pembayaran/detail/' + penjualan.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
                                             <button v-if="penjualan.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button v-if="penjualan.status == 1" @click="deletePenjualan(penjualan.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
@@ -44,24 +44,13 @@
                 </div>
             </div>
         </section>
-
-        <form-tambah-ubah 
-        v-if="showForm == true" 
-        v-bind:form-action="formAction" 
-        v-bind:selected-penjualan="selectedPenjualan" 
-        v-on:close="closeForm">
-        </form-tambah-ubah>
     </div>
 </template>
 
 <script>
-import formTambahUbah from './form-tambah-ubah.vue';
 import moment from 'moment'
 
 export default {
-    components: {
-      formTambahUbah
-    },
     data: function() {
         return {
             listPenjualan: null,
@@ -72,7 +61,7 @@ export default {
     },
     methods: {
         getAllPenjualan() {
-            axios.post(this.$root.app.url + 'api/transaksi/penjualan/index', {
+            axios.post(this.$root.app.url + 'api/transaksi/pembayaran/index', {
                 api_key: this.$root.api_key,
             })
             .then(response => {

@@ -19,7 +19,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.jenis}">
                             <label class="col-sm-3 control-label">Jenis Transaksi</label>
                             <div class="col-sm-9">
-                                <select v-model="penjualan.jenis" :disabled="formAction == 'UBAH'" class="form-control">
+                                <select v-model="penjualan.jenis" class="form-control">
                                     <option value="null" disabled>Pilih jenis transaksi</option>
                                     <option value="SV">Service</option>
                                     <option value="SP">Spareparts</option>
@@ -89,10 +89,7 @@ export default {
                     id: null,
                     nama: null
                 },
-                kasir: {
-                    id: null,
-                    nama: null
-                },
+                kasir: null,
                 status: null,
                 tgl_transaksi: null
             },
@@ -150,6 +147,7 @@ export default {
         updatePenjualan() {
             axios.put(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.penjualan.id, {
                 id_cabang: this.penjualan.cabang.id,
+                jenis: this.penjualan.jenis,
                 api_key: this.$root.api_key,
             })
             .then(response => {
@@ -178,8 +176,7 @@ export default {
             this.penjualan.uang_diterima = null
             this.penjualan.cs.id = null
             this.penjualan.cs.nama = null
-            this.penjualan.kasir.id = null
-            this.penjualan.kasir.nama = null
+            this.penjualan.kasir = null
             this.penjualan.status = null
             this.penjualan.tgl_transaksi = null
 
@@ -212,8 +209,7 @@ export default {
             this.penjualan.uang_diterima = this.selectedPenjualan.uang_diterima
             this.penjualan.cs.id = this.selectedPenjualan.cs.id
             this.penjualan.cs.nama = this.selectedPenjualan.cs.nama
-            this.penjualan.kasir.id = this.selectedPenjualan.kasir.id
-            this.penjualan.kasir.nama = this.selectedPenjualan.kasir.nama
+            this.penjualan.kasir = this.selectedPenjualan.kasir
             this.penjualan.status = this.selectedPenjualan.status
             this.penjualan.tgl_transaksi = this.selectedPenjualan.tgl_transaksi
         }

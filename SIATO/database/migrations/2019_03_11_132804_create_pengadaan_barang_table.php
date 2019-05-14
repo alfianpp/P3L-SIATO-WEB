@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -19,7 +20,7 @@ class CreatePengadaanBarangTable extends Migration
             $table->foreign('id_supplier')->references('id')->on('supplier');
             $table->double('total', 11, 2)->nullable();
             $table->integer('status')->default(1);
-            $table->timestamp('tgl_transaksi')->nullable();
+            $table->timestamp('tgl_transaksi')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

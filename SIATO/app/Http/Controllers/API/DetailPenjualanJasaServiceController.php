@@ -63,8 +63,6 @@ class DetailPenjualanJasaServiceController extends Controller
             if(!$validation->fails()) {
                 $detail_penjualan_jasaservice->fill($request->only($detail_penjualan_jasaservice->getFillable()));
                 
-                $detail_penjualan_jasaservice->jumlah = 1;
-
                 $jasa_service = JasaService::find($request->id_jasaservice);
                 $detail_penjualan_jasaservice->harga = $jasa_service->harga_jual;
 
@@ -78,13 +76,13 @@ class DetailPenjualanJasaServiceController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -106,7 +104,7 @@ class DetailPenjualanJasaServiceController extends Controller
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail penjualan tidak ditemukan.';
+            $this->response->message = 'Data penjualan jasa service tidak ditemukan.';
         }
 
         return $this->response->make();
@@ -141,7 +139,7 @@ class DetailPenjualanJasaServiceController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan jasa service yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

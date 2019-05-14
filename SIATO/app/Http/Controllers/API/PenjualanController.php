@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 use App\Pegawai;
 use App\Penjualan;
 use App\DetailPenjualan;
@@ -35,7 +38,7 @@ class PenjualanController extends Controller
         'uang_diterima' => 'numeric|digits_between:1,11',
         'id_cs' => 'integer|exists:pegawai,id',
         'id_kasir' => 'integer|exists:pegawai,id',
-        'status' => 'integer'
+        'status' => 'integer|digits:1'
     ];
 
     /**
@@ -56,8 +59,43 @@ class PenjualanController extends Controller
      */
     public function index(Request $request)
     {
-        $this->response->data = PenjualanResource::collection(Penjualan::all());
+        $pegawai = Pegawai::where('api_key', '=', $request->api_key)->first();
 
+        if($pegawai->role == 0) {
+            $this->response->data = PenjualanResource::collection(Penjualan::all());
+        }
+        else if($pegawai->role == 1) {
+            $this->response->data = PenjualanResource::collection(
+                Penjualan::where('status', '1')->get()
+            );
+        }
+        else if($pegawai->role == 2) {
+            $this->response->data = PenjualanResource::collection(
+                Penjualan::where('status', '2')->get()
+            );
+        }
+
+        return $this->response->make();
+    }
+
+    public function indexColumn($column)
+    {
+        $this->response->data = DB::table('penjualan')->distinct()->pluck($column);
+
+        if($column == 'tgl_transaksi') {
+            $_temp = [];
+
+            foreach($this->response->data as $tgl_transaksi) {
+                $tgl_transaksi = Carbon::parse($tgl_transaksi)->format('d-m-Y');
+
+                if(!in_array($tgl_transaksi, $_temp)) {
+                    array_push($_temp, $tgl_transaksi);
+                }
+            }
+
+            $this->response->data = $_temp;
+        }
+        
         return $this->response->make();
     }
 
@@ -89,7 +127,6 @@ class PenjualanController extends Controller
                 $pegawai = Pegawai::where('api_key', '=', $request->api_key)->first();
                 
                 $penjualan->id_cs = $pegawai->id;
-                $penjualan->status = 1;
 
                 if($penjualan->save()) {
                     if($request->jenis == 'SP') {
@@ -107,13 +144,13 @@ class PenjualanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data penjualan yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -161,26 +198,59 @@ class PenjualanController extends Controller
                 }));
 
                 if($request->filled('status') && $request->status == 2) {
+                    $subtotal = 0;
+                    $under = 0;
+
                     foreach ($penjualan->detail as $detail) {
-                        foreach ($detail->spareparts as $penjualan_spareparts) {
-                            $histori_barang = new HistoriBarang;
+                        if($penjualan->jenis == 'SV') {
+                            foreach($detail->spareparts as $detail_penjualan_spareparts) {
+                                $detail_penjualan_spareparts->delete();
+                            }
+                        }
+                        else if($penjualan->jenis == 'SP') {
+                            foreach($detail->jasa_service as $detail_penjualan_jasaservice) {
+                                $detail_penjualan_jasaservice->delete();
+                            }
 
-                            $histori_barang->kode_spareparts = $penjualan_spareparts->kode_spareparts;
-                            $histori_barang->keluar = $penjualan_spareparts->jumlah;
-                            $histori_barang->masuk = 0;
-                            $histori_barang->save();
+                            $detail->nomor_polisi = null;
+                            $detail->id_montir = null;
+                            $detail->save();
+                        }
 
-                            $spareparts = Spareparts::find($penjualan_spareparts->kode_spareparts);
-                            $spareparts->stok = $spareparts->stok - $penjualan_spareparts->jumlah;
-                            $spareparts->save();
+                        if($penjualan->jenis == 'SP' || $penjualan->jenis == 'SS') {
+                            foreach ($detail->spareparts as $penjualan_spareparts) {
+                                $histori_barang = new HistoriBarang;
+                                $histori_barang->kode_spareparts = $penjualan_spareparts->kode_spareparts;
+                                $histori_barang->keluar = $penjualan_spareparts->jumlah;
+                                $histori_barang->masuk = 0;
+                                $histori_barang->save();
+    
+                                $spareparts = Spareparts::find($penjualan_spareparts->kode_spareparts);
+                                $spareparts->stok = $spareparts->stok - $penjualan_spareparts->jumlah;
+                                $spareparts->save();
+    
+                                if($spareparts->stok <= $spareparts->stok_minimal) {
+                                    $under++;
+                                }
+    
+                                $subtotal = $subtotal + ($penjualan_spareparts->jumlah * $penjualan_spareparts->harga);
+                            }
+                        }
 
-                            if($spareparts->stok <= $spareparts->stok_minimal) {
-                                $title = 'Pemberitahuan Stok';
-                                $message = 'Stok ' . $spareparts->nama . ' sudah mencapai/dibawah stok minimal.';
-                                $this->sendPushNotification($title, $message);
+                        if($penjualan->jenis == 'SV' || $penjualan->jenis == 'SS') {
+                            foreach($detail->jasa_service as $penjualan_jasaservice) {
+                                $subtotal = $subtotal + ($penjualan_jasaservice->jumlah * $penjualan_jasaservice->harga);
                             }
                         }
                     }
+
+                    $penjualan->subtotal = $subtotal;
+
+                    // if($under > 0) {
+                    //     $title = 'Pemberitahuan Stok';
+                    //     $message = 'Ada ' . $under . ' spareparts yang sudah mencapai/dibawah stok minimal.';
+                    //     $this->sendPushNotification($title, $message);
+                    // }
                 }
                 
                 if($penjualan->save()) {
@@ -193,7 +263,7 @@ class PenjualanController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

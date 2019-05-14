@@ -205,8 +205,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 3, 4, 5, 6, 7]},
-                        {"searchable": false, "targets": [0, 2, 3, 4, 5, 6, 7]}
+                        {"orderable": false, "targets": [0, 1, 5, 7]},
+                        {"searchable": false, "targets": [0, 4, 5, 6, 7]}
                     ],
                 })
             }

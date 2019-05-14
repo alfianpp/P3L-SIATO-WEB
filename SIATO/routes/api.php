@@ -79,6 +79,7 @@ Route::prefix('transaksi')->group(function () {
         Route::apiResource('data', 'API\PenjualanController')->except(['index', 'show']);
         Route::post('index', 'API\PenjualanController@index');
         Route::post('data/{penjualan}', 'API\PenjualanController@show');
+        Route::get('index/{column}', 'API\PenjualanController@indexColumn');
 
         Route::apiResource('detail', 'API\DetailPenjualanController')->except(['index', 'show']);
         Route::post('detail/{penjualan}', 'API\DetailPenjualanController@show');
@@ -89,9 +90,25 @@ Route::prefix('transaksi')->group(function () {
         Route::apiResource('detail/jasaservice/data', 'API\DetailPenjualanJasaServiceController')->except(['index', 'show']);
         Route::post('detail/jasaservice/{id_detail_penjualan}', 'API\DetailPenjualanJasaServiceController@show');
     });
+
+    Route::prefix('pembayaran')->group(function () {
+        Route::post('index', 'API\PembayaranController@index');
+
+        Route::apiResource('detail', 'API\PembayaranController')->only(['update']);
+        Route::post('detail/{penjualan}', 'API\PembayaranController@show');
+    });
 });
 
 Route::prefix('riwayat')->group(function () {
     Route::post('login', 'API\RiwayatTransaksiKonsumenController@login');
     Route::post('index', 'API\RiwayatTransaksiKonsumenController@index');
+});
+
+Route::prefix('laporan')->group(function () {
+    Route::post('spareparts_terlaris', 'API\LaporanController@spareparts_terlaris');
+    Route::post('pendapatan_bulanan', 'API\LaporanController@pendapatan_bulanan');
+    Route::post('pendapatan_tahunan', 'API\LaporanController@pendapatan_tahunan');
+    Route::post('pengeluaran_bulanan', 'API\LaporanController@pengeluaran_bulanan');
+    Route::post('penjualan_jasa', 'API\LaporanController@penjualan_jasa');
+    Route::post('sisa_stok', 'API\LaporanController@sisa_stok');
 });

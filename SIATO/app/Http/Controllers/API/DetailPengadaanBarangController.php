@@ -2,35 +2,33 @@
 
 namespace App\Http\Controllers\API;
 
-use App\PengadaanBarang;
-use App\DetailPengadaanBarang;
-use App\HistoriBarang;
-use App\Spareparts;
-use App\Http\Resources\DetailPengadaanBarang as DetailPengadaanBarangResource;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Spareparts;
+use App\PengadaanBarang;
+use App\DetailPengadaanBarang;
+use App\HistoriBarang;
+
+use App\Http\Resources\DetailPengadaanBarang as DetailPengadaanBarangResource;
+
 use App\Classes\APIResponse;
 
+use Validator;
+
 use AppHelper;
-use APIHelper;
 
 class DetailPengadaanBarangController extends Controller
 {
-    var $permitted_role = ['0'];
+    var $response;
 
     var $nullable = ['jumlah_datang', 'harga'];
     var $uneditable = ['id_pengadaan_barang', 'kode_spareparts'];
 
-    var $response;
-
     var $rules = [
         'id_pengadaan_barang' => 'integer|exists:pengadaan_barang,id',
         'kode_spareparts' => 'alpha_dash|max:12|exists:spareparts,kode',
-        'jumlah_pesan' => 'integer|min:1',
-        'jumlah_datang' => 'integer|min:1',
-        'harga' => 'numeric|digits_between:1,11'
+        'jumlah_pesan' => 'integer|min:1'
     ];
 
     /**
@@ -64,28 +62,28 @@ class DetailPengadaanBarangController extends Controller
         $detail_pengadaan_barang = new DetailPengadaanBarang;
 
         if(AppHelper::isFillableFilled($request, $detail_pengadaan_barang->getFillable(), $this->nullable)) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_pengadaan_barang->fill($request->only($detail_pengadaan_barang->getFillable()));
 
                 if($detail_pengadaan_barang->save()) {
-                    $this->response->message = 'Berhasil menambah data detail pengadaan barang.';
+                    $this->response->message = 'Berhasil menambah data pengadaan barang.';
                 }
                 else {
                     $this->response->error = true;
-                    $this->response->message = 'Gagal menambah data detail pengadaan barang.';
+                    $this->response->message = 'Gagal menambah data pengadaan barang.';
                 }
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data detail pengadaan barang yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
+                $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail pengadaan barang yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -107,7 +105,7 @@ class DetailPengadaanBarangController extends Controller
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail pengadaan barang tidak ditemukan.';
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
         return $this->response->make();
@@ -125,9 +123,9 @@ class DetailPengadaanBarangController extends Controller
         $detail_pengadaan_barang = DetailPengadaanBarang::find($id);
 
         if($detail_pengadaan_barang) {
-            $validation = AppHelper::isValidRequest($request, $this->rules);
+            $validation = AppHelper::isRequestValid($request, $this->rules);
 
-            if($validation['isValid']) {
+            if(!$validation->fails()) {
                 $detail_pengadaan_barang->fill(array_filter(collect($request->only($detail_pengadaan_barang->getFillable()))->except($this->uneditable)->toArray(), function($value) {
                     return ($value !== null);
                 }));
@@ -146,22 +144,22 @@ class DetailPengadaanBarangController extends Controller
                         $spareparts->save();
                     }
 
-                    $this->response->message = 'Berhasil memperbarui data detail pengadaan barang.';
+                    $this->response->message = 'Berhasil memperbarui data pengadaan barang.';
                 }
                 else {
                     $this->response->error = true;
-                    $this->response->message = 'Gagal memperbarui data detail pengadaan barang.';
+                    $this->response->message = 'Gagal memperbarui data pengadaan barang.';
                 }
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data detail pengadaan barang yang dimasukkan tidak valid.';
-                $this->response->data = $validation['errors'];
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
+                $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail pengadaan barang tidak ditemukan.';
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
         return $this->response->make();
@@ -180,39 +178,75 @@ class DetailPengadaanBarangController extends Controller
 
         if($detail_pengadaan_barang) {
             if($detail_pengadaan_barang->delete()) {
-                $this->response->message = 'Berhasil menghapus data detail pengadaan barang.';
+                $this->response->message = 'Berhasil menghapus data pengadaan barang.';
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Gagal menghapus data detail pengadaan barang.';
+                $this->response->message = 'Gagal menghapus data pengadaan barang.';
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail pengadaan barang tidak ditemukan.';
+            $this->response->message = 'Data pengadaan barang tidak ditemukan.';
         }
 
         return $this->response->make();
     }
 
     public function verifikasi(Request $request) {
-        // Cek data kosong
-        foreach($request->detail_pengadaan_barang as $x) {
-            $x = (object) $x;
-            if(!$x->jumlah_datang || !$x->harga) {
-                $this->response->error = true;
-                $this->response->message = 'Data verifikasi pengadaan barang yang dimasukkan tidak lengkap.';
-                break;
-            }
+        $error = false;
+        $total = 0;
+
+        if(!$request->has(['id_pengadaan_barang', 'detail_pengadaan_barang']) || count($request->detail_pengadaan_barang) == 0) {
+            $this->response->error = true;
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
+        else {
+            foreach($request->detail_pengadaan_barang as $detail) {
+                if(!isset($detail['id']) || !isset($detail['jumlah_datang']) || !isset($detail['harga'])) {
+                    $this->response->error = $error = true;
+                    $this->response->message = 'Data yang dimasukkan tidak lengkap.';
+                    break;
+                }
 
-        foreach($request->detail_pengadaan_barang as $x) {
-            $x = (object) $x;
-            $detail_pengadaan_barang = DetailPengadaanBarang::find($x->id);
-            $detail_pengadaan_barang->jumlah_datang = $x->jumlah_datang;
-            $detail_pengadaan_barang->harga = $x->harga;
+                if(Validator::make($detail, [
+                    'id' => 'integer|exists:detail_pengadaan_barang,id',
+                    'jumlah_datang' => 'integer|min:1', 
+                    'harga' => 'numeric|digits_between:1,11'
+                    ])->fails()) {
+                    $this->response->error = $error = true;
+                    $this->response->message = 'Data yang dimasukkan tidak valid.';
+                    break;
+                }
+            }
 
-            $detail_pengadaan_barang->save();
+            if(!$error) {
+                foreach($request->detail_pengadaan_barang as $detail) {
+                    $detail_pengadaan_barang = DetailPengadaanBarang::find($detail['id']);
+                    $detail_pengadaan_barang->jumlah_datang = $detail['jumlah_datang'];
+                    $detail_pengadaan_barang->harga = $detail['harga'];
+                    $detail_pengadaan_barang->save();
+    
+                    $histori_barang = new HistoriBarang;
+                    $histori_barang->kode_spareparts = $detail_pengadaan_barang->kode_spareparts;
+                    $histori_barang->keluar = 0;
+                    $histori_barang->masuk = $detail['jumlah_datang'];
+                    $histori_barang->save();
+    
+                    $spareparts = Spareparts::find($detail_pengadaan_barang->kode_spareparts);
+                    $spareparts->stok = $spareparts->stok + $detail['jumlah_datang'];
+                    $spareparts->save();
+    
+                    $total = $total + ($detail['jumlah_datang'] * $detail['harga']);
+                }
+    
+                $pengadaan_barang = PengadaanBarang::find($request->id_pengadaan_barang);
+                $pengadaan_barang->total = $total;
+                $pengadaan_barang->status = 3;
+                $pengadaan_barang->save();
+
+                $this->response->message = 'Pengadaan barang berhasil diverifikasi.';
+            }
         }
 
         return $this->response->make();

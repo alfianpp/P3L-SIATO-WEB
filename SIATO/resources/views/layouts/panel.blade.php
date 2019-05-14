@@ -40,7 +40,9 @@
                         <a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
                     </li>
                     
+                    @if(Auth::user()->role == 0 || Auth::user()->role == 1)
                     <li class="header">PENGELOLAAN DATA</li>
+                    @if(Auth::user()->role == 0)
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.pegawai' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.pegawai') }}"><i class="fa fa-database"></i> <span>Pegawai</span></a>
                     </li>
@@ -53,22 +55,53 @@
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.jasaservice' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.jasaservice') }}"><i class="fa fa-database"></i> <span>Jasa Service</span></a>
                     </li>
+                    @endif
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.konsumen' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.konsumen') }}"><i class="fa fa-database"></i> <span>Konsumen</span></a>
                     </li>
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.kendaraan' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.kendaraan') }}"><i class="fa fa-database"></i> <span>Kendaraan</span></a>
                     </li>
+                    @if(Auth::user()->role == 0)
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.cabang' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.cabang') }}"><i class="fa fa-database"></i> <span>Cabang</span></a>
                     </li>
+                    @endif
+                    @endif
 
+                    @if(Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 2)
                     <li class="header">TRANSAKSI</li>
+                    @if(Auth::user()->role == 0)
                     <li class="{{ Route::currentRouteName() == 'admin.transaksi.pengadaan_barang' ? 'active' : '' }}">
                         <a href="{{ route('admin.transaksi.pengadaan_barang') }}"><i class="fa fa-database"></i> <span>Pengadaan Barang</span></a>
                     </li>
+                    @endif
+                    @if(Auth::user()->role == 0 || Auth::user()->role == 1)
                     <li class="{{ Route::currentRouteName() == 'admin.transaksi.penjualan' ? 'active' : '' }}">
                         <a href="{{ route('admin.transaksi.penjualan') }}"><i class="fa fa-database"></i> <span>Penjualan</span></a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->role == 0 || Auth::user()->role == 2)
+                    <li class="{{ Route::currentRouteName() == 'admin.transaksi.pembayaran' ? 'active' : '' }}">
+                        <a href="{{ route('admin.transaksi.pembayaran') }}"><i class="fa fa-database"></i> <span>Pembayaran</span></a>
+                    </li>
+                    @endif
+                    @endif
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-share"></i> <span>Laporan</span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="{{ route('admin.laporan.spareparts_terlaris') }}"><i class="fa fa-file-text"></i> Spareparts Terlaris</a></li>
+                            <li><a href="{{ route('admin.laporan.pendapatan_bulanan') }}"><i class="fa fa-file-text"></i> Pendapatan Bulanan</a></li>
+                            <li><a href="{{ route('admin.laporan.pendapatan_tahunan') }}"><i class="fa fa-file-text"></i> Pendapatan Tahunan</a></li>
+                            <li><a href="{{ route('admin.laporan.pengeluaran_bulanan') }}"><i class="fa fa-file-text"></i> Pengeluaran Bulanan</a></li>
+                            <li><a href="{{ route('admin.laporan.penjualan_jasa') }}"><i class="fa fa-file-text"></i> Penjualan Jasa</a></li>
+                            <li><a href="{{ route('admin.laporan.sisa_stok') }}"><i class="fa fa-file-text"></i> Sisa Stok</a></li>
+                        </ul>
                     </li>
                 </ul>
             </section>
@@ -76,7 +109,7 @@
 
         @yield('content')
 
-        <footer class="main-footer">
+        <footer class="main-footer no-print">
             Copyright &copy; 2019 {{ config('app.name') }}
         </footer>
     </div>

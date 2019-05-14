@@ -19,7 +19,7 @@ class CreateHistoriBarangTable extends Migration
             $table->foreign('kode_spareparts')->references('kode')->on('spareparts');
             $table->integer('keluar');
             $table->integer('masuk');
-            $table->timestamp('tgl_transaksi')->nullable();
+            $table->timestamp('tgl_transaksi')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

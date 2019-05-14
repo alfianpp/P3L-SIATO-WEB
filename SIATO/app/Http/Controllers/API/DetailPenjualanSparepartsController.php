@@ -77,13 +77,13 @@ class DetailPenjualanSparepartsController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak lengkap.';
+            $this->response->message = 'Data yang dimasukkan tidak lengkap.';
         }
 
         return $this->response->make();
@@ -105,7 +105,7 @@ class DetailPenjualanSparepartsController extends Controller
         }
         else {
             $this->response->error = true;
-            $this->response->message = 'Data detail penjualan tidak ditemukan.';
+            $this->response->message = 'Data penjualan spareparts tidak ditemukan.';
         }
 
         return $this->response->make();
@@ -140,7 +140,7 @@ class DetailPenjualanSparepartsController extends Controller
             }
             else {
                 $this->response->error = true;
-                $this->response->message = 'Data penjualan spareparts yang dimasukkan tidak valid.';
+                $this->response->message = 'Data yang dimasukkan tidak valid.';
                 $this->response->data = $validation->errors();
             }
         }

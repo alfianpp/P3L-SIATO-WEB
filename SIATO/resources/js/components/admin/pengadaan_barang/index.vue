@@ -32,10 +32,10 @@
                                         <td>{{ pengadaan_barang.tgl_transaksi }}</td>
                                         <td>{{ pengadaan_barang.status | statusTransaksi }}</td>
                                         <td class="pull-right">
-                                            <button @click="print(index)" type="button" class="btn btn-default btn-sm"><i class="fa fa-print"></i> Print</button>
+                                            <button v-if="pengadaan_barang.status != 3" @click="print(index)" type="button" class="btn btn-default btn-sm"><i class="fa fa-print"></i> Print</button>
                                             <a :href="'/admin/transaksi/pengadaan_barang/detail/' + pengadaan_barang.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
                                             <button v-if="pengadaan_barang.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
-                                            <button @click="deletePengadaanBarang(pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
+                                            <button v-if="pengadaan_barang.status != 3" @click="deletePengadaanBarang(pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -118,18 +118,7 @@ export default {
             }
         },
         print(index) {
-            if(this.listPengadaanBarang[index].status == 1) {
-                axios.put(this.$root.app.url + 'api/transaksi/pengadaan/data/' + this.listPengadaanBarang[index].id, {
-                    status: 2,
-                    api_key: this.$root.api_key,
-                })
-                .then(response => {
-                    if(response.data.error == false) {
-                        this.getAllPengadaanBarang()
-                    }
-                })
-            }
-            
+            alert("Belum bisa dipakai.")
         },
     },
     filters: {
@@ -162,8 +151,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 1, 2, 3, 4, 5]},
-                        {"searchable": false, "targets": [0, 1, 2, 3, 4, 5]}
+                        {"orderable": false, "targets": [0, 3, 5]},
+                        {"searchable": false, "targets": [0, 2, 5]}
                     ],
                 })
             }

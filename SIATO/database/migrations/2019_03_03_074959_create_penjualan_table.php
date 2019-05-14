@@ -29,7 +29,7 @@ class CreatePenjualanTable extends Migration
             $table->unsignedBigInteger('id_kasir')->nullable();
             $table->foreign('id_kasir')->references('id')->on('pegawai');
             $table->integer('status')->default(1);
-            $table->timestamp('tgl_transaksi')->nullable();
+            $table->timestamp('tgl_transaksi')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

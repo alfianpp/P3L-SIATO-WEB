@@ -19,7 +19,7 @@ class CreateDetailPenjualanJasaServiceTable extends Migration
             $table->foreign('id_detail_penjualan')->references('id')->on('detail_penjualan');
             $table->unsignedBigInteger('id_jasaservice');
             $table->foreign('id_jasaservice')->references('id')->on('jasa_service');
-            $table->integer('jumlah');
+            $table->integer('jumlah')->default(1);
             $table->double('harga', 11, 2);
         });
     }

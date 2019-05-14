@@ -51,6 +51,20 @@ Route::prefix('admin')->group(function () {
             Route::get('/', 'AdminController@penjualan')->name('admin.transaksi.penjualan');
             Route::get('/detail/{id}', 'AdminController@penjualanDetail')->name('admin.transaksi.penjualan.detail');
         });
+
+        Route::prefix('pembayaran')->group(function () {
+            Route::get('/', 'AdminController@pembayaran')->name('admin.transaksi.pembayaran');
+            Route::get('/detail/{id}', 'AdminController@pembayaranDetail')->name('admin.transaksi.pembayaran.detail');
+        });
+    });
+
+    Route::prefix('laporan')->group(function () {
+        Route::get('spareparts_terlaris', 'AdminController@laporan_spareparts_terlaris')->name('admin.laporan.spareparts_terlaris');
+        Route::get('pendapatan_bulanan', 'AdminController@laporan_pendapatan_bulanan')->name('admin.laporan.pendapatan_bulanan');
+        Route::get('pendapatan_tahunan', 'AdminController@laporan_pendapatan_tahunan')->name('admin.laporan.pendapatan_tahunan');
+        Route::get('pengeluaran_bulanan', 'AdminController@laporan_pengeluaran_bulanan')->name('admin.laporan.pengeluaran_bulanan');
+        Route::get('penjualan_jasa', 'AdminController@laporan_penjualan_jasa')->name('admin.laporan.penjualan_jasa');
+        Route::get('sisa_stok', 'AdminController@laporan_sisa_stok')->name('admin.laporan.sisa_stok');
     });
 });
 

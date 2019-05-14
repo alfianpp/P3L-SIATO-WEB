@@ -3,15 +3,15 @@
         <section class="content-header">
             <h1>Detail Penjualan {{ nomorTransaksi }}</h1>
             <div v-if="penjualan != null" class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="verifikasi()" type="button" class="btn btn-default" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-check"></i> Verifikasi</button>
-                <button v-if="penjualan.jenis === 'SV' || penjualan.jenis === 'SS'" @click="openForm('TAMBAH')" type="button" class="btn btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button v-if="isOpen" @click="verifikasiDetailPenjualan()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-check"></i> Verifikasi</button>
+                <button v-if="isOpen && (penjualan.jenis == 'SV' || penjualan.jenis == 'SS')" @click="openForm('TAMBAH')" type="button" class="btn btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="row" style="margin-bottom: 15px;">
+                    <div v-if="penjualan != null" class="row" style="margin-bottom: 15px;">
                         <div class="col-sm-6">
                             <div class="row">
                                 <div class="col-sm-4">
@@ -19,7 +19,7 @@
                                     <b>Telepon</b>
                                 </div>
 
-                                <div class="col-sm-8" v-if="penjualan != null">
+                                <div class="col-sm-8">
                                     {{ penjualan.konsumen.nama }}<br>
                                     {{ penjualan.konsumen.nomor_telepon }}<br>
                                 </div>
@@ -33,7 +33,7 @@
                                     <b>Status</b>
                                 </div>
 
-                                <div class="col-sm-8" v-if="penjualan != null">
+                                <div class="col-sm-8">
                                     {{ penjualan.tgl_transaksi }}<br>
                                     {{ statusTransaksi }}
                                 </div>
@@ -43,7 +43,7 @@
                 
                     <div v-for="(detail_penjualan, index) in detailPenjualan" v-bind:key="index" class="box">
                         <div class="box-body">
-                            <div v-if="penjualan != null && penjualan.jenis === 'SV' || penjualan.jenis === 'SS'" class="row" style="margin-bottom: 15px;">
+                            <div v-if="penjualan != null && penjualan.jenis == 'SV' || penjualan.jenis == 'SS'" class="row" style="margin-bottom: 15px;">
                                 <div class="col-sm-6">
                                     <div class="row">
                                         <div class="col-sm-4">
@@ -60,25 +60,28 @@
 
                                 <div class="col-sm-6">
                                     <div class="pull-right">
-                                        <button @click="openForm('UBAH', index)" type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
-                                        <button @click="deleteDetailPenjualan(detail_penjualan.id)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Hapus</button>
+                                        <button v-if="isOpen" @click="print()" type="button" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Print SPK</button>
+                                        <button v-if="isOpen" @click="openForm('UBAH', index)" type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                        <button v-if="isOpen" @click="deleteDetailPenjualan(detail_penjualan.id)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Hapus</button>
                                     </div>
                                     
                                 </div> 
                             </div>
 
-                            <div class="row">
-                                <div v-if="penjualan != null && penjualan.jenis === 'SP' || penjualan.jenis === 'SS'" :class="sparepartsClass">
+                            <div v-if="penjualan != null" class="row">
+                                <div v-if="penjualan.jenis == 'SP' || penjualan.jenis == 'SS'" :class="sparepartsClass">
                                     <detail-spareparts 
                                     v-bind:index="index+1"
-                                    v-bind:id-detail-penjualan="detail_penjualan.id">
+                                    v-bind:id-detail-penjualan="detail_penjualan.id"
+                                    v-bind:is-open="isOpen">
                                     </detail-spareparts>
                                 </div>
 
-                                <div v-if="penjualan != null && penjualan.jenis === 'SV' || penjualan.jenis === 'SS'" :class="jasaserviceClass">
+                                <div v-if="penjualan.jenis == 'SV' || penjualan.jenis == 'SS'" :class="jasaserviceClass">
                                     <detail-jasa-service
                                     v-bind:index="index+1"
-                                    v-bind:id-detail-penjualan="detail_penjualan.id">
+                                    v-bind:id-detail-penjualan="detail_penjualan.id"
+                                    v-bind:is-open="isOpen">
                                     </detail-jasa-service>
                                 </div>
                             </div>
@@ -120,19 +123,6 @@ export default {
         }
     },
     methods: {
-        verifikasi() {
-            if(confirm("Selesaikan penjualan ini?")) {
-                axios.put(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.idPenjualan, {
-                    status: 2,
-                    api_key: this.$root.api_key,
-                })
-                .then(response => {
-                    if(response.data.error == false) {
-                        alert(response.data.message)
-                    }
-                })
-            }
-        },
         getPenjualan() {
             axios.post(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.idPenjualan, {
                 api_key: this.$root.api_key,
@@ -168,6 +158,20 @@ export default {
                 })
             }
         },
+        verifikasiDetailPenjualan() {
+            if(confirm("Apakah Anda ingin melanjutkan untuk menyelesaikan penjualan ini?")) {
+                axios.put(this.$root.app.url + 'api/transaksi/penjualan/data/' + this.idPenjualan, {
+                    status: 2,
+                    api_key: this.$root.api_key,
+                })
+                .then(response => {
+                    if(response.data.error == false) {
+                        alert(response.data.message)
+                        window.location.replace(this.$root.app.url);
+                    }
+                })
+            }
+        },
         openForm(action, index = null) {
             this.formAction = action
             if(index != null) {
@@ -185,6 +189,9 @@ export default {
                 this.getDetailPenjualan()
             }
         },
+        print() {
+
+        },
     },
     computed: {
         nomorTransaksi: function () {
@@ -193,34 +200,36 @@ export default {
             }
         },
         statusTransaksi: function () {
-            if(this.penjualan != null) {
-                switch(this.penjualan.status) {
-                    case 1:
-                        return "Terbuka"
-                        break
-                    case 2:
-                        return "Menunggu pembayaran"
-                        break
-                    case 3:
-                        return "Selesai"
-                        break
-                }
+            switch(this.penjualan.status) {
+                case 1:
+                    return "Terbuka"
+                    break
+                case 2:
+                    return "Menunggu pembayaran"
+                    break
+                case 3:
+                    return "Selesai"
+                    break
             }
         },
         sparepartsClass: function () {
-            if(this.penjualan != null) {
-                return {
-                    'col-sm-6': this.penjualan.jenis === 'SS',
-                    'col-sm-12': this.penjualan.jenis === 'SP'
-                }
+            return {
+                'col-sm-6': this.penjualan.jenis === 'SS',
+                'col-sm-12': this.penjualan.jenis === 'SP'
             }
         },
         jasaserviceClass: function () {
-            if(this.penjualan != null) {
-                return {
-                    'col-sm-6': this.penjualan.jenis === 'SS',
-                    'col-sm-12': this.penjualan.jenis === 'SV'
-                }
+            return {
+                'col-sm-6': this.penjualan.jenis === 'SS',
+                'col-sm-12': this.penjualan.jenis === 'SV'
+            }
+        },
+        isOpen: function() {
+            if(this.penjualan.status == 1) {
+                return true
+            }
+            else {
+                return false
             }
         }
     },
