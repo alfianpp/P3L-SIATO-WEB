@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="box-body">
-                            <div id="hide" class="row">
+                            <div id="hide-in-view" class="row">
                                 <div class="col-xs-10 col-xs-offset-1">
                                     <div class="row">
                                         <div class="col-xs-4"><img :src="$root.app.url + 'images/logo.png'" class="img-responsive" alt="logo"></div>
@@ -33,10 +33,11 @@
                             <form class="form-inline" style="margin: 20px 0px 10px 0px;">
                                 <div class="form-group">
                                     <label>Tahun : </label>
-                                    <select v-model="tahun" class="no-print">
-                                        <option>2019</option>
+                                    <select v-model="tahun" @change="getLaporan" class="no-print">
+                                        <option value="null" disabled>Tahun</option>
+                                        <option v-for="(tahun, index) in availableTahun" v-bind:key="index">{{tahun}}</option>
                                     </select>
-                                    <p id="hide">2019</p>
+                                    <p id="hide-in-view">{{tahun}}</p>
                                 </div>
                             </form>
 
@@ -52,16 +53,17 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr v-for="(asd, index) in laporan" v-bind:key="index">
+                                    <tr v-for="(detail, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{asd.bulan | toNamaBulan}}</td>
-                                        <td>{{asd.nama_barang | textNull}}</td>
-                                        <td>{{asd.tipe_barang | textNull}}</td>
-                                        <td class="text-right">{{asd.jumlah_penjualan | toNumber}}</td>
+                                        <td>{{detail.bulan | toNamaBulan}}</td>
+                                        <td>{{detail.nama_barang | textNull}}</td>
+                                        <td>{{detail.tipe_barang | textNull}}</td>
+                                        <td class="text-right">{{detail.jumlah_penjualan | toNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <p id="hide" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
+
+                            <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
                         </div>
                     </div>
                 </div>
@@ -71,7 +73,6 @@
 </template>
 
 <script>
-import Chart from 'chart.js'
 import moment from 'moment'
 import 'moment/locale/id'
 moment.locale('id')
@@ -80,13 +81,30 @@ export default {
     data: function() {
         return {
             laporan: null,
-            tahun: 2019,
+            tahun: null,
+            availableTahun: null,
         }
     },
     methods: {
+        getAvailableTahun() {
+            axios.get(this.$root.app.url + 'api/transaksi/penjualan/index/tgl_transaksi')
+            .then(response => {
+                var _temp = []
+
+                response.data.data.forEach(function(tgl_transaksi) {
+                    var tahun = moment(tgl_transaksi, 'DD-MM-YYYY').format('YYYY')
+
+                    if(!_temp.includes(tahun)) {
+                        _temp.push(tahun)
+                    }
+                })
+
+                this.availableTahun = _temp
+            })
+        },
         getLaporan() {
             axios.post(this.$root.app.url + 'api/laporan/spareparts_terlaris', {
-                tahun: 2019,
+                tahun: this.tahun,
                 api_key: this.$root.api_key,
             })
             .then(response => {
@@ -108,27 +126,18 @@ export default {
         }
     },
     computed: {
-        totalPendapatan: function () {
-            var total = 0
-
-            this.laporan.forEach(function(pendapatan_bulanan) {
-                total += pendapatan_bulanan.total
-            });
-
-            return total
-        },
         dateNow: function () {
             return moment().format('DD MMMM YYYY')
         },
     },
     created() {
-        this.getLaporan()
+        this.getAvailableTahun();
     },
 }
 </script>
 
 <style>
-#hide {
+#hide-in-view {
     display: none;
 }
 
@@ -137,7 +146,7 @@ export default {
         border-top: none;
     }
 
-    #hide {
+    #hide-in-view {
         display: inline;
     }
 }

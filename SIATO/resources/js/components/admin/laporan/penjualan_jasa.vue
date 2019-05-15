@@ -28,7 +28,7 @@
                                 </div>
                             </div>
 
-                            <h4 class="text-center"><b>LAPORAN SISA STOK</b></h4>
+                            <h4 class="text-center"><b>LAPORAN PENJUALAN JASA</b></h4>
 
                             <form class="form-inline" style="margin: 20px 0px 10px 0px;">
                                 <div class="form-group">
@@ -41,12 +41,12 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Tipe Barang : </label>
-                                    <select v-model="tipe_barang" @change="getLaporan" class="no-print">
-                                        <option value="null" disabled>Tipe Barang</option>
-                                        <option v-for="(tipe, index) in availableTipe" v-bind:key="index">{{tipe}}</option>
+                                    <label>Bulan : </label>
+                                    <select v-model="bulan" @change="getLaporan" class="no-print">
+                                        <option value="null" disabled>Bulan</option>
+                                        <option v-for="(bulan, index) in availableBulan" v-bind:key="index" v-bind:value="bulan.id">{{bulan.nama}}</option>
                                     </select>
-                                    <p id="hide-in-view">{{tipe_barang}}</p>
+                                    <p id="hide-in-view">{{bulan | toMonthName}}</p>
                                 </div>
                             </form>
 
@@ -54,25 +54,25 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th class="text-center">Bulan</th>
-                                        <th class="text-center">Sisa Stok</th>
+                                        <th class="text-center">Merk</th>
+                                        <th class="text-center">Tipe Motor</th>
+                                        <th class="text-center">Nama Service</th>
+                                        <th class="text-center">Jumlah Penjualan</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr v-for="(detail, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{detail.bulan | toMonthName}}</td>
-                                        <td class="text-right">{{detail.sisa_stok | toNumber}}</td>
+                                        <td>{{detail.merk}}</td>
+                                        <td>{{detail.tipe}}</td>
+                                        <td>{{detail.nama_service}}</td>
+                                        <td class="text-right">{{detail.jumlah_penjualan | toNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>
 
                             <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
-                            
-                            <div v-if="laporan != null" class="chart" style="margin-top:25px;">
-                                <canvas id="myChart" style="height:300px"></canvas>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,38 +92,49 @@ export default {
         return {
             laporan: null,
             tahun: null,
-            tipe_barang: null,
+            bulan: null,
             availableTahun: null,
-            availableTipe: null,
+            availableBulan: null,
         }
     },
     methods: {
-        getAvailableTahunAndTipe() {
+        getAvailableTahunAndBulan() {
             axios.get(this.$root.app.url + 'api/transaksi/penjualan/index/tgl_transaksi')
             .then(response => {
-                var _temp = []
+                var _temp_tahun = []
+                var _temp_bulan = []
+                var _temp_nama_bulan = []
+                var _temp_nomor_bulan = []
 
                 response.data.data.forEach(function(tgl_transaksi) {
                     var tahun = moment(tgl_transaksi, 'DD-MM-YYYY').format('YYYY')
+                    var nama_bulan = moment(tgl_transaksi, 'DD-MM-YYYY').format('MMMM')
+                    var nomor_bulan = moment(tgl_transaksi, 'DD-MM-YYYY').format('M')
 
-                    if(!_temp.includes(tahun)) {
-                        _temp.push(tahun)
+                    if(!_temp_tahun.includes(tahun)) {
+                        _temp_tahun.push(tahun)
+                    }
+
+                    if(!_temp_nama_bulan.includes(nama_bulan) && !_temp_nomor_bulan.includes(nomor_bulan)) {
+                        _temp_nama_bulan.push(nama_bulan)
+                        _temp_nomor_bulan.push(nomor_bulan)
+                        var test = {
+                            'id': nomor_bulan,
+                            'nama': nama_bulan
+                        }
+                        _temp_bulan.push(test);
                     }
                 })
 
-                this.availableTahun = _temp
-            })
-
-            axios.get(this.$root.app.url + 'api/data/spareparts/index/tipe')
-            .then(response => {
-                this.availableTipe = response.data.data
+                this.availableTahun = _temp_tahun
+                this.availableBulan = _temp_bulan
             })
         },
         getLaporan() {
-            if(this.tahun != null && this.tipe_barang != null) {
-                axios.post(this.$root.app.url + 'api/laporan/sisa_stok', {
+            if(this.tahun != null && this.bulan != null) {
+                axios.post(this.$root.app.url + 'api/laporan/penjualan_jasa', {
                     tahun: this.tahun,
-                    tipe_barang: this.tipe_barang,
+                    bulan: this.bulan,
                     api_key: this.$root.api_key,
                 })
                 .then(response => {
@@ -151,55 +162,8 @@ export default {
         },
     },
     created() {
-        this.getAvailableTahunAndTipe()
+        this.getAvailableTahunAndBulan()
     },
-    updated() {
-        this.$nextTick(function () {
-            if(this.laporan != null) {
-                var sisa_stok = []
-
-                this.laporan.forEach(function(element) {
-                    sisa_stok.push((element.sisa_stok) ? element.sisa_stok : 0)
-                });
-
-                var chartData = {
-                    labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                    datasets: [
-                        {
-                            label: 'Sisa Stok',
-                            fill: false,
-                            backgroundColor: '#3498db',
-                            borderColor: '#2980b9',
-                            borderWidth: 2,
-                            data: sisa_stok
-                        }
-                    ]
-                }
-
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        legend: false,
-                        title: {
-                            display: true,
-                            text: 'Sisa Stok ' + this.tipe_barang + ' Tahun ' + this.tahun
-                        },
-                        tooltips: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        hover: {
-                            mode: 'nearest',
-                            intersect: true
-                        },
-                    }
-                })
-            }
-        })
-    }
 }
 </script>
 

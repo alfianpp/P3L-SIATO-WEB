@@ -28,33 +28,42 @@
                                 </div>
                             </div>
 
-                            <h4 class="text-center"><b>LAPORAN PENDAPATAN TAHUNAN</b></h4>
+                            <h4 class="text-center"><b>LAPORAN PENGELUARAN BULANAN</b></h4>
+
+                            <form class="form-inline" style="margin: 20px 0px 10px 0px;">
+                                <div class="form-group">
+                                    <label>Tahun : </label>
+                                    <select v-model="tahun" @change="getLaporan" class="no-print">
+                                        <option value="null" disabled>Tahun</option>
+                                        <option v-for="(tahun, index) in availableTahun" v-bind:key="index">{{tahun}}</option>
+                                    </select>
+                                    <p id="hide-in-view">{{tahun}}</p>
+                                </div>
+                            </form>
 
                             <table v-if="laporan != null" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th class="text-center">Tahun</th>
-                                        <th class="text-center">Cabang</th>
-                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Bulan</th>
+                                        <th class="text-center">Jumlah Pengeluaran</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr v-for="(detail, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{detail.tahun}}</td>
-                                        <td>{{detail.cabang}}</td>
-                                        <td class="text-right">{{detail.total | toNumber}}</td>
+                                        <td>{{detail.bulan | toNamaBulan}}</td>
+                                        <td class="text-right">{{detail.jumlah_pengeluaran | toNumber}}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
-                                        <td></td>
                                         <td class="text-right" style="vertical-align: middle;">TOTAL</td>
-                                        <td class="text-right"><h4><b>{{totalPendapatan | toNumber}}</b></h4></td>
+                                        <td class="text-right"><h4><b>{{totalPengeluaran | toNumber}}</b></h4></td>
                                     </tr>
                                 </tbody>
                             </table>
+
                             <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
                             
                             <div v-if="laporan != null" class="chart" style="margin-top:25px;">
@@ -78,6 +87,7 @@ export default {
     data: function() {
         return {
             laporan: null,
+            tahun: null,
             availableTahun: null,
         }
     },
@@ -99,12 +109,16 @@ export default {
             })
         },
         getLaporan() {
-            axios.post(this.$root.app.url + 'api/laporan/pendapatan_tahunan', {
+            axios.post(this.$root.app.url + 'api/laporan/pengeluaran_bulanan', {
+                tahun: this.tahun,
                 api_key: this.$root.api_key,
             })
             .then(response => {
                 if(response.data.error == false) {
                     this.laporan = response.data.data
+
+                    $("canvas#myChart").remove();
+                    $("div.chart").append('<canvas id="myChart" style="height:300px"></canvas>');
                 }
             })
         },
@@ -118,11 +132,11 @@ export default {
         }
     },
     computed: {
-        totalPendapatan: function () {
+        totalPengeluaran: function () {
             var total = 0
 
-            this.laporan.forEach(function(pendapatan_tahunan) {
-                total += pendapatan_tahunan.total
+            this.laporan.forEach(function(pengeluaran_bulanan) {
+                total += pengeluaran_bulanan.jumlah_pengeluaran
             });
 
             return total
@@ -133,69 +147,41 @@ export default {
     },
     created() {
         this.getAvailableTahun()
-        this.getLaporan()
     },
     updated() {
         this.$nextTick(function () {
             if(this.laporan != null) {
-                var cabang = []
-                var total = []
+                var jumlah_pengeluaran = []
 
                 this.laporan.forEach(function(element) {
-                    if(!cabang.includes(element.cabang)) {
-                        cabang.push(element.cabang)
-                    }
-
-                    var index = cabang.indexOf(element.cabang)
-
-                    if(!(index in total)) {
-                        total[index] = []
-                    }
-                    
-                    total[index].push(element.total)
-
-                    //total[element.cabang].push((element.total) ? element.total : 0)
+                    jumlah_pengeluaran.push((element.jumlah_pengeluaran) ? element.jumlah_pengeluaran : 0)
                 });
 
-                console.log(total)
-
-                function getRandomColor() {
-                    var letters = '0123456789ABCDEF';
-                    var color = '#';
-                    for (var i = 0; i < 6; i++) {
-                        color += letters[Math.floor(Math.random() * 16)];
-                    }
-                    return color;
-                }
-
-                var ds = []
-                cabang.forEach(function(value) {
-                    var i = {}
-                    i.label = value
-                    i.backgroundColor = getRandomColor()
-                    i.data = total[cabang.indexOf(value)]
-                    ds.push(i)
-                })
-
-                console.log(ds)
-
                 var chartData = {
-                    labels: this.availableTahun,
-                    datasets: ds
+                    labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                    datasets: [
+                        {
+                            label: 'Dataset 1',
+                            backgroundColor: [
+                                '#287278', '#65228D', '#4770B3', '#D21F75', '#383689', '#50AED3', '#48B24F', '#E57438', '#569DD2', '#589079', '#58595B', '#64B021'
+                            ],
+                            data: jumlah_pengeluaran
+                        }
+                    ]
                 }
 
                 var ctx = document.getElementById('myChart').getContext('2d');
                 var myChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'pie',
                     data: chartData,
                     options: {
                         responsive: true,
                         legend: {
-                            position: 'top',
+                            position: 'right',
                         },
                         title: {
                             display: true,
-                            text: 'PENDAPATAN TAHUNAN'
+                            text: 'PENGELUARAN BULANAN TAHUN ' + this.tahun
                         }
                     }
                 })

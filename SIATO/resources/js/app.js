@@ -67,6 +67,8 @@ Vue.component('admin-pembayaran-detail', require('./components/admin/pembayaran/
 Vue.component('admin-laporan-spareparts-terlaris', require('./components/admin/laporan/spareparts_terlaris.vue').default);
 Vue.component('admin-laporan-pendapatan-bulanan', require('./components/admin/laporan/pendapatan_bulanan.vue').default);
 Vue.component('admin-laporan-pendapatan-tahunan', require('./components/admin/laporan/pendapatan_tahunan.vue').default);
+Vue.component('admin-laporan-pengeluaran-bulanan', require('./components/admin/laporan/pengeluaran_bulanan.vue').default);
+Vue.component('admin-laporan-penjualan-jasa', require('./components/admin/laporan/penjualan_jasa.vue').default);
 Vue.component('admin-laporan-sisa-stok', require('./components/admin/laporan/sisa_stok.vue').default);
 
 
