@@ -50,7 +50,7 @@
                         <a href="{{ route('admin.kelola.spareparts') }}"><i class="fa fa-database"></i> <span>Spareparts</span></a>
                     </li>
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.supplier' ? 'active' : '' }}">
-                        <a href="{{ route('admin.kelola.supplier') }}"><i class="fa fa-database"></i> <span>Supplier</span></a>
+                        <a id="nav_supplier" href="{{ route('admin.kelola.supplier') }}"><i class="fa fa-database"></i> <span>Supplier</span></a>
                     </li>
                     <li class="{{ Route::currentRouteName() == 'admin.kelola.jasaservice' ? 'active' : '' }}">
                         <a href="{{ route('admin.kelola.jasaservice') }}"><i class="fa fa-database"></i> <span>Jasa Service</span></a>
@@ -87,6 +87,8 @@
                     </li>
                     @endif
                     @endif
+
+                    @if(Auth::user()->role == 0)
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-share"></i> <span>Laporan</span>
@@ -103,6 +105,7 @@
                             <li><a href="{{ route('admin.laporan.sisa_stok') }}"><i class="fa fa-file-text"></i> Sisa Stok</a></li>
                         </ul>
                     </li>
+                    @endif
                 </ul>
             </section>
         </aside>

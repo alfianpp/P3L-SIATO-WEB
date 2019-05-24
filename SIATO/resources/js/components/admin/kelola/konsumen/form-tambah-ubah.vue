@@ -28,7 +28,7 @@
                             <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
                                 <the-mask v-model="konsumen.nomor_telepon" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
-                                <span v-if="response.error && response.data && response.data.merk" class="help-block">{{ response.data.nomor_telepon[0] }}</span>
+                                <span v-if="response.error && response.data && response.data.nomor_telepon" class="help-block">{{ response.data.nomor_telepon[0] }}</span>
                             </div>
                         </div>
 
@@ -36,7 +36,7 @@
                             <label class="col-sm-3 control-label">Alamat</label>
                             <div class="col-sm-9">
                                 <textarea v-model="konsumen.alamat" type="text" class="form-control" rows="3" placeholder="Alamat"></textarea>
-                                <span v-if="response.error && response.data && response.data.tipe" class="help-block">{{ response.data.alamat[0] }}</span>
+                                <span v-if="response.error && response.data && response.data.alamat" class="help-block">{{ response.data.alamat[0] }}</span>
                             </div>
                         </div>
                     </form>

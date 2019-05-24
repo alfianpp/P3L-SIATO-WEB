@@ -19,10 +19,10 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.jenis}">
                             <label class="col-sm-3 control-label">Jenis Transaksi</label>
                             <div class="col-sm-9">
-                                <select v-model="penjualan.jenis" class="form-control">
+                                <select v-model="penjualan.jenis" :disabled="penjualan.jenis == 'SP'" class="form-control">
                                     <option value="null" disabled>Pilih jenis transaksi</option>
                                     <option value="SV">Service</option>
-                                    <option value="SP">Spareparts</option>
+                                    <option v-if="penjualan.jenis == null || penjualan.jenis == 'SP'" value="SP">Spareparts</option>
                                     <option value="SS">Service & Spareparts</option>
                                 </select>
                                 <span v-if="response.error && response.data && response.data.jenis" class="help-block">{{ response.data.jenis[0] }}</span>

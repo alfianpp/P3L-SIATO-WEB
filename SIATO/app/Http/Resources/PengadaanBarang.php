@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Partially\Supplier as SupplierResource;
+use App\Http\Resources\Supplier as SupplierResource;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

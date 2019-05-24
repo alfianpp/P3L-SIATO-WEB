@@ -1,11 +1,11 @@
 <template>
-    <div class="modal fade" id="form-verifikasi" ref="modal">
+    <div class="modal fade" id="form-verifikasi-pengadaan-barang" ref="modal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Verifikasi Barang</h4>
+                    <h4 class="modal-title">Verifikasi Barang Datang</h4>
                 </div>
 
                 <div class="modal-body">
@@ -28,11 +28,11 @@
                             </thead>
 
                             <tbody>
-                                <tr v-for="(detail_pengadaan_barang, index) in listDetailPengadaanBarang" v-bind:key="index">
-                                    <td>{{ detail_pengadaan_barang.spareparts.kode }}</td>
-                                    <td>{{ detail_pengadaan_barang.spareparts.nama }}</td>
-                                    <td>{{ detail_pengadaan_barang.spareparts.merk }}</td>
-                                    <td>{{ detail_pengadaan_barang.jumlah_pesan }}</td>
+                                <tr v-for="(detail, index) in listDetailPengadaanBarang" v-bind:key="index">
+                                    <td>{{ detail.spareparts.kode }}</td>
+                                    <td>{{ detail.spareparts.nama }}</td>
+                                    <td>{{ detail.spareparts.merk }}</td>
+                                    <td>{{ detail.jumlah_pesan }}</td>
                                     <td><input v-model="listDetailPengadaanBarang[index].jumlah_datang" type="number" style="width:100%; padding:0px 5px" placeholder="Jumlah datang"></td>
                                     <td><money v-model="listDetailPengadaanBarang[index].harga" v-bind="money" style="width:100%; padding:0px 5px"></money></td>
                                 </tr>
@@ -105,7 +105,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-verifikasi').modal('hide');
+                    $('#form-verifikasi-pengadaan-barang').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }

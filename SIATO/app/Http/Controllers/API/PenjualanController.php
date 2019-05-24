@@ -246,11 +246,11 @@ class PenjualanController extends Controller
 
                     $penjualan->subtotal = $subtotal;
 
-                    // if($under > 0) {
-                    //     $title = 'Pemberitahuan Stok';
-                    //     $message = 'Ada ' . $under . ' spareparts yang sudah mencapai/dibawah stok minimal.';
-                    //     $this->sendPushNotification($title, $message);
-                    // }
+                    if($under > 0) {
+                        $title = 'Pemberitahuan Stok';
+                        $message = 'Ada ' . $under . ' spareparts yang sudah mencapai/dibawah stok minimal.';
+                        $this->sendPushNotification($title, $message);
+                    }
                 }
                 
                 if($penjualan->save()) {

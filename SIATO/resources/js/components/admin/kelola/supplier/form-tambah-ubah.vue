@@ -19,7 +19,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nama}">
                             <label class="col-sm-3 control-label">Nama</label>
                             <div class="col-sm-9">
-                                <input v-model="supplier.nama" type="text" class="form-control" placeholder="Nama">
+                                <input v-model="supplier.nama" id="nama_supplier" type="text" class="form-control" placeholder="Nama">
                                 <span v-if="response.error && response.data && response.data.nama" class="help-block">{{ response.data.nama[0] }}</span>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.alamat}">
                             <label class="col-sm-3 control-label">Alamat</label>
                             <div class="col-sm-9">
-                                <textarea v-model="supplier.alamat" class="form-control" rows="3" placeholder="Alamat"></textarea>
+                                <textarea v-model="supplier.alamat" id="alamat_supplier" class="form-control" rows="3" placeholder="Alamat"></textarea>
                                 <span v-if="response.error && response.data && response.data.alamat" class="help-block">{{ response.data.alamat[0] }}</span>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nama_sales}">
                             <label class="col-sm-3 control-label">Nama Sales</label>
                             <div class="col-sm-9">
-                                <input v-model="supplier.nama_sales" type="text" class="form-control" placeholder="Nama Sales">
+                                <input v-model="supplier.nama_sales" id="nama_sales_supplier" type="text" class="form-control" placeholder="Nama Sales">
                                 <span v-if="response.error && response.data && response.data.nama_sales" class="help-block">{{ response.data.nama_sales[0] }}</span>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                         <div class="form-group" v-bind:class="{'has-error': response.error && response.data && response.data.nomor_telepon_sales}">
                             <label class="col-sm-3 control-label">Nomor telepon</label>
                             <div class="col-sm-9">
-                                <the-mask v-model="supplier.nomor_telepon_sales" :mask="['#### #### ####', '##### #### ####']" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
+                                <the-mask v-model="supplier.nomor_telepon_sales" :mask="['#### #### ####', '##### #### ####']" id="nomor_telepon_sales_supplier" type="text" class="form-control" placeholder="Nomor telepon"></the-mask>
                                 <span v-if="response.error && response.data && response.data.nomor_telepon_sales" class="help-block">{{ response.data.nomor_telepon_sales[0] }}</span>
                             </div>
                         </div>
@@ -54,8 +54,8 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button v-if="formAction == 'TAMBAH'" @click="addSupplier()" type="button" class="btn btn-success">Tambah</button>
-                    <button v-if="formAction == 'UBAH'" @click="updateSupplier()" type="button" class="btn btn-primary">Ubah</button>
+                    <button v-if="formAction == 'TAMBAH'" @click="addSupplier()" id="btnTambahData" type="button" class="btn btn-success">Tambah</button>
+                    <button v-if="formAction == 'UBAH'" @click="updateSupplier()" id="btnUbahData" type="button" class="btn btn-primary">Ubah</button>
                 </div>
             </div>
         </div>

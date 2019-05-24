@@ -61,6 +61,7 @@ class Pembayaran extends JsonResource
             'cs' => new PegawaiResource($this->cs),
             'kasir' => new PegawaiResource($this->kasir),
             'montir' => $montir,
+            'status' => $this->status,
             'tgl_transaksi' => $this->tgl_transaksi
         ];
     }

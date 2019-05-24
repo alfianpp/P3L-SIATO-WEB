@@ -11,6 +11,12 @@
 |
 */
 
+Route::get('/clear', function() {
+    Artisan::call('cache:clear');
+    Artisan::call('config:cache');
+    return "Cleared!";
+});
+
 Route::get('/', function () {
     return view('index');
 });

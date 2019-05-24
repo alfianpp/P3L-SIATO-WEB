@@ -18,6 +18,8 @@ class Spareparts extends JsonResource
             'kode' => $this->kode,
             'nama' => $this->nama,
             'merk' => $this->merk,
+            'tipe' => $this->tipe,
+            'kode_peletakan' => $this->kode_peletakan
         ];
     }
 }

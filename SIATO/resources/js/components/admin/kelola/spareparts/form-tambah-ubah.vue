@@ -322,7 +322,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .vue-simple-suggest > ul {
   list-style: none;
   margin: 0;

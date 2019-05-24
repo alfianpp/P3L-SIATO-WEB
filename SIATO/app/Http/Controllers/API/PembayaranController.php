@@ -51,8 +51,8 @@ class PembayaranController extends Controller
 
         if($penjualan) {
             $validation = AppHelper::isRequestValid($request, [
-                'diskon' => 'numeric|digits_between:1,11',
-                'uang_diterima' => 'numeric|min:'.($penjualan->subtotal - $request->diskon).'|digits_between:1,11'
+                'diskon' => 'required|numeric|digits_between:1,11',
+                'uang_diterima' => 'required|numeric|min:'.($penjualan->subtotal - $request->diskon).'|digits_between:1,11'
             ]);
 
             if(!$validation->fails()) {

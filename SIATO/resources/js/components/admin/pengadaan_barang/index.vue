@@ -3,7 +3,7 @@
         <section class="content-header">
             <h1>Pengadaan Barang</h1>
             <div class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
+                <button @click="openForm('TAMBAH')" type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#form-tambah-ubah-pengadaan-barang"><i class="fa fa-plus"></i> Tambah</button>
             </div>
         </section>
         
@@ -30,11 +30,10 @@
                                         <td>{{ pengadaan_barang.supplier.nama }}</td>
                                         <td>{{ pengadaan_barang.total | toCurrency }}</td>
                                         <td>{{ pengadaan_barang.tgl_transaksi }}</td>
-                                        <td>{{ pengadaan_barang.status | statusTransaksi }}</td>
+                                        <td>{{ pengadaan_barang.status | statusPengadaanBarang }}</td>
                                         <td class="pull-right">
-                                            <button v-if="pengadaan_barang.status != 3" @click="print(index)" type="button" class="btn btn-default btn-sm"><i class="fa fa-print"></i> Print</button>
                                             <a :href="'/admin/transaksi/pengadaan_barang/detail/' + pengadaan_barang.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
-                                            <button v-if="pengadaan_barang.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
+                                            <button v-if="pengadaan_barang.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah-pengadaan-barang"><i class="fa fa-pencil"></i> Ubah</button>
                                             <button v-if="pengadaan_barang.status != 3" @click="deletePengadaanBarang(pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                                         </td>
                                     </tr>
@@ -57,7 +56,6 @@
 
 <script>
 import formTambahUbah from './form-tambah-ubah.vue';
-import numeral from 'numeral'
 
 export default {
     components: {
@@ -117,24 +115,6 @@ export default {
                 this.getAllPengadaanBarang()
             }
         },
-        print(index) {
-            alert("Belum bisa dipakai.")
-        },
-    },
-    filters: {
-        statusTransaksi: function (value) {
-            switch(value) {
-                case 1:
-                    return "Terbuka"
-                    break
-                case 2:
-                    return "Menunggu verifikasi"
-                    break
-                case 3:
-                    return "Selesai"
-                    break
-            }
-        },
     },
     created() {
         this.getAllPengadaanBarang()
@@ -151,6 +131,7 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
+                        {"type": "num-fmt", "targets": [2]},
                         {"orderable": false, "targets": [0, 3, 5]},
                         {"searchable": false, "targets": [0, 2, 5]}
                     ],

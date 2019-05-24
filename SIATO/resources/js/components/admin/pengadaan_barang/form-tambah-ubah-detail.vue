@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah-detail-pengadaan-barang" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -21,7 +21,7 @@
                             <div class="col-sm-9">
                                 <select v-model="detailPengadaanBarang.spareparts.kode" :disabled="formAction == 'UBAH'" class="form-control">
                                     <option value="null" disabled>Pilih spareparts</option>
-                                    <option v-for="(spareparts, index) in listSpareparts" v-bind:key="index" v-bind:value="spareparts.kode">{{ spareparts.nama }}</option>
+                                    <option v-for="(spareparts, index) in listSpareparts" v-bind:key="index" v-bind:value="spareparts.kode">{{ spareparts.kode }} - {{ spareparts.nama }} - {{ spareparts.merk }} - Sisa stok: {{ spareparts.stok }}</option>
                                 </select>
                                 <span v-if="response.error && response.data && response.data.kode_spareparts" class="help-block">{{ response.data.kode_spareparts[0] }}</span>
                             </div>
@@ -58,7 +58,8 @@ export default {
                 spareparts: {
                     kode: null,
                     nama: null,
-                    merk: null
+                    merk: null,
+                    tipe: null
                 },
                 jumlah_pesan: null,
                 jumlah_datang: null,
@@ -97,7 +98,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-detail-pengadaan-barang').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -113,7 +114,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah').modal('hide');
+                    $('#form-tambah-ubah-detail-pengadaan-barang').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -125,6 +126,7 @@ export default {
             this.detailPengadaanBarang.spareparts.kode = null
             this.detailPengadaanBarang.spareparts.nama = null
             this.detailPengadaanBarang.spareparts.merk = null
+            this.detailPengadaanBarang.spareparts.tipe = null
             this.detailPengadaanBarang.jumlah_pesan = null
             this.detailPengadaanBarang.jumlah_datang = null
             this.detailPengadaanBarang.harga = null
@@ -147,6 +149,7 @@ export default {
             this.detailPengadaanBarang.spareparts.kode = this.selectedDetailPengadaanBarang.spareparts.kode
             this.detailPengadaanBarang.spareparts.nama = this.selectedDetailPengadaanBarang.spareparts.nama
             this.detailPengadaanBarang.spareparts.merk = this.selectedDetailPengadaanBarang.spareparts.merk
+            this.detailPengadaanBarang.spareparts.tipe = this.selectedDetailPengadaanBarang.spareparts.tipe
             this.detailPengadaanBarang.jumlah_pesan = this.selectedDetailPengadaanBarang.jumlah_pesan
             this.detailPengadaanBarang.jumlah_datang = this.selectedDetailPengadaanBarang.jumlah_datang
             this.detailPengadaanBarang.harga = this.selectedDetailPengadaanBarang.harga

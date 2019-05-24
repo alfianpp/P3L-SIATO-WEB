@@ -203,7 +203,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #hide-in-view {
     display: none;
 }

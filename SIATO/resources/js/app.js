@@ -9,7 +9,15 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import moment from 'moment'
+import 'moment/locale/id'
 import numeral from 'numeral'
+
+/**
+ * Moment
+ */
+
+moment.locale('id')
 
 /**
  * Numeral
@@ -84,6 +92,33 @@ Vue.filter('toCurrency', function (value) {
 
 Vue.filter('toNumber', function (value) {
     return numeral(value).format('0,0')
+});
+
+Vue.filter('statusPengadaanBarang', function (value) {
+    switch(value) {
+        case 1:
+            return "Terbuka"
+        case 2:
+            return "Menunggu verifikasi"
+        case 3:
+            return "Selesai"
+    }
+});
+
+Vue.filter('statusPenjualan', function (value) {
+    switch(value) {
+        case 1:
+            return "Terbuka"
+        case 2:
+            return "Menunggu pembayaran"
+        case 3:
+            return "Selesai"
+    }
+});
+
+Vue.filter('nomorTransaksiPenjualan', function (value) {
+    var _temp = value.split("|")
+    return _temp[0] + "-" + moment(String(_temp[1])).format('DDMMYY') + "-" + _temp[2]
 });
 
 /**
