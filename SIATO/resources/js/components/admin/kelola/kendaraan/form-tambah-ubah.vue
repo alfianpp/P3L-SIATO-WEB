@@ -64,7 +64,7 @@
                                     v-model="kendaraan.pemilik.nama" 
                                     :list="listKonsumen" 
                                     :max-suggestions="0" 
-                                    :min-length="3" 
+                                    :min-length="2" 
                                     display-attribute="nama" 
                                     :styles="autoCompleteStyle" 
                                     :destyled=true 

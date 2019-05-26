@@ -75,14 +75,17 @@
                                     <div class="row">
                                         <div class="col-xs-3 col-xs-offset-3">
                                             CS<br>
-                                            {{(detailPembayaran.montir.length > 0) ? 'Montir' : ''}}
+                                            {{(detailPembayaran.montir[0] != null) ? 'Montir' : ''}}
                                         </div>
 
                                         <div class="col-xs-6">
                                             {{detailPembayaran.cs.nama}}<br>
-                                            <div v-for="(montir, index) in detailPembayaran.montir" v-bind:key="index">
-                                                {{montir.nama}}<br/>
+                                            <div v-if="detailPembayaran.montir[0] != null">
+                                                <div v-for="(montir, index) in detailPembayaran.montir" v-bind:key="index">
+                                                    {{montir.nama}}<br/>
+                                                </div>
                                             </div>
+                                            
                                         </div>
                                     </div>   
                                 </div>
