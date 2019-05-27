@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="form-tambah-ubah-pengadaan-barang" ref="modal">
+    <div class="modal fade" id="form-tambah-ubah" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -49,9 +49,6 @@ export default {
                 supplier: {
                     id: null,
                     nama: null,
-                    alamat: null,
-                    nama_sales: null,
-                    nomor_telepon_sales: null
                 },
                 total: null,
                 status: null,
@@ -67,17 +64,6 @@ export default {
         }
     },
     methods: {
-        getSupplier() {
-            axios.post(this.$root.app.url + 'api/data/supplier/index', {
-                api_key: this.$root.api_key,
-            })
-            .then(response => {
-                this.response = response.data
-                if(this.response.error == false) {
-                    this.listSupplier = this.response.data
-                }
-            })
-        },
         addPengadaanBarang() {
             axios.post(this.$root.app.url + 'api/transaksi/pengadaan/data', {
                 id_supplier: this.pengadaan_barang.supplier.id,
@@ -88,7 +74,7 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah-pengadaan-barang').modal('hide');
+                    $('#form-tambah-ubah').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
@@ -104,9 +90,20 @@ export default {
                 if(this.response.error == false) {
                     alert(this.response.message)
                     this.reloadList = true
-                    $('#form-tambah-ubah-pengadaan-barang').modal('hide');
+                    $('#form-tambah-ubah').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
+                }
+            })
+        },
+        getSupplier() {
+            axios.post(this.$root.app.url + 'api/data/supplier/index', {
+                api_key: this.$root.api_key,
+            })
+            .then(response => {
+                this.response = response.data
+                if(this.response.error == false) {
+                    this.listSupplier = this.response.data
                 }
             })
         },
@@ -114,14 +111,9 @@ export default {
             this.pengadaan_barang.id = null
             this.pengadaan_barang.supplier.id = null
             this.pengadaan_barang.supplier.nama = null
-            this.pengadaan_barang.supplier.alamat = null
-            this.pengadaan_barang.supplier.nama_sales = null
-            this.pengadaan_barang.supplier.nomor_telepon_sales = null
             this.pengadaan_barang.total = null
             this.pengadaan_barang.status = null
             this.pengadaan_barang.tgl_transaksi = null
-
-            this.listSupplier = null
             
             this.response.error = false
             this.response.message = ''
@@ -137,9 +129,6 @@ export default {
             this.pengadaan_barang.id = this.selectedPengadaanBarang.id
             this.pengadaan_barang.supplier.id = this.selectedPengadaanBarang.supplier.id
             this.pengadaan_barang.supplier.nama = this.selectedPengadaanBarang.supplier.nama
-            this.pengadaan_barang.supplier.alamat = this.selectedPengadaanBarang.supplier.alamat
-            this.pengadaan_barang.supplier.nama_sales = this.selectedPengadaanBarang.supplier.nama_sales
-            this.pengadaan_barang.supplier.nomor_telepon_sales = this.selectedPengadaanBarang.supplier.nomor_telepon_sales
             this.pengadaan_barang.total = this.selectedPengadaanBarang.total
             this.pengadaan_barang.status = this.selectedPengadaanBarang.status
             this.pengadaan_barang.tgl_transaksi = this.selectedPengadaanBarang.tgl_transaksi

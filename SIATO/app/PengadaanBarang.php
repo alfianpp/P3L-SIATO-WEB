@@ -36,7 +36,7 @@ class PengadaanBarang extends Model
      * @var array
      */
     protected $fillable = [
-        'id_supplier', 'status',
+        'id_supplier',
     ];
 
     public function getFillable()

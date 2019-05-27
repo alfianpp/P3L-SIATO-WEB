@@ -1,29 +1,50 @@
 <template>
     <div class="content-wrapper">
-        <section class="content-header">
-            <h1>Detail Pengadaan Barang</h1>
-            <div v-if="pengadaanBarang != null" class="pull-right" style="margin-top: 0; margin-bottom: 0; position: absolute; top: 11px; right: 15px;">
-                <button v-if="isOpen" @click="openForm('TAMBAH')" type="button" class="pull-right btn btn-success" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-plus"></i> Tambah</button>
-                <button v-if="isWaitingForVerification" @click="openForm('VERIFIKASI')" type="button" class="pull-right btn btn-success" data-toggle="modal" data-target="#form-verifikasi"><i class="fa fa-check"></i> Verifikasi</button>
+        <div id="hide" class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="row">
+                    <div class="col-xs-4"><img :src="$root.app.url + 'images/logo.png'" class="img-responsive" alt="logo"></div>
+                        <div class="col-xs-8 text-center">
+                            <h1><b>A</b>TM<b>A</b> <b>A</b>UTO</h1>
+                            <h5>MOTORCYCLE SPAREPARTS AND SERVICES</h5>
+                            <p>
+                                Jl. Babarsari N o. 43 Yogyakarta 552181
+                                 Telp. (0274) 487711
+                                http://www.atmaauto.com
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
-        
+        <h4 class="text-center"><b>SURAT PEMESANAN</b></h4>
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-sm-3 col-sm-offset-9" v-if="pengadaanBarang != null">
+                            <b>No : {{ pengadaanBarang.supplier.id }}</b><br>
+                            <b>Tanggal Transaksi : {{ pengadaanBarang.tgl_transaksi }}</b><br>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 15px;">
                         <div class="col-sm-6">
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <b>Supplier</b><br>
-                                    <b>Tanggal Transaksi</b><br>
-                                    <b>Status</b>
+                                <div class="col-sm-4" style="border: 3px dashed #c3c3c3" v-if="pengadaanBarang != null">
+                                    <b>Kepada Yth:</b><br>
+                                    <b>{{ pengadaanBarang.supplier.nama }}</b><br>
+                                    <b>{{ pengadaanBarang.supplier.alamat }}</b><br>
+                                    <b>{{ pengadaanBarang.supplier.nomor_telepon_sales }}</b>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="col-sm-8" v-if="pengadaanBarang != null">
-                                    {{ pengadaanBarang.supplier.nama }} <br>
-                                    {{ pengadaanBarang.tgl_transaksi }} <br>
-                                    {{ statusTransaksi }}
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <p>Mohon untuk disediakan barang-barang berikut :</p>
                                 </div>
                             </div>
                         </div>
@@ -31,38 +52,38 @@
 
                     <div class="box">
                         <div class="box-body">
-                            <table v-if="pengadaanBarang != null" id="mytable" class="table table-bordered table-hover">
+                            <table v-if="pengadaanBarang != null" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
-                                        <th>Kode</th>
-                                        <th>Nama</th>
+                                        <th>Nama Barang</th>
                                         <th>Merk</th>
-                                        <th>Jumlah Pesan</th>
-                                        <th>Jumlah Datang</th>
-                                        <th>Harga</th>
-                                        <th></th>
+                                        <th>Tipe Barang</th>
+                                        <th>Satuan</th>
+                                        <th>Jumlah</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
                                     <tr v-for="(detail_pengadaan_barang, index) in listDetailPengadaanBarang" v-bind:key="index">
                                         <td>{{ index+1 }}</td>
-                                        <td>{{ detail_pengadaan_barang.spareparts.kode }}</td>
                                         <td>{{ detail_pengadaan_barang.spareparts.nama }}</td>
                                         <td>{{ detail_pengadaan_barang.spareparts.merk }}</td>
+                                        <td>{{ detail_pengadaan_barang.spareparts.tipe }}</td>
+                                        <td>Box</td>
                                         <td>{{ detail_pengadaan_barang.jumlah_pesan }}</td>
-                                        <td>{{ detail_pengadaan_barang.jumlah_datang }}</td>
-                                        <td>{{ detail_pengadaan_barang.harga | toCurrency }}</td>
-                                        <td class="pull-right">
-                                            <button v-if="isOpen" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
-                                            <button v-if="isOpen" @click="deleteDetailPengadaanBarang(detail_pengadaan_barang.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-2">
+                            <p>Hormat kami, <br><br><br>
+                             (Philips Purnomo)</p><br><br><br><br>
+                        </div>
+                    </div>
+                     <br><br><br><br><br><br><a href="" @click.prevent="printme" target="_blank" class="btn btn-default"><i class="fa fa-print"></i>Print</a>
                 </div>
             </div>
         </section>
@@ -157,6 +178,9 @@ export default {
                 this.getDetailPengadaanBarang()
             }
         },
+        printme(){
+            window.print();
+        }
     },
     computed: {
         statusTransaksi: function () {
@@ -205,8 +229,8 @@ export default {
                     'searching'   : true,
                     'order': [[0, 'asc']],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 1, 5, 7]},
-                        {"searchable": false, "targets": [0, 4, 5, 6, 7]}
+                        {"orderable": false, "targets": [0, 2, 3, 4, 5, 6, 7]},
+                        {"searchable": false, "targets": [0, 2, 3, 4, 5, 6, 7]}
                     ],
                 })
             }

@@ -26,11 +26,11 @@
                                 
                                 <tbody>
                                     <tr v-for="(penjualan, index) in listPenjualan" v-bind:key="index">
-                                        <td>{{ penjualan.jenis + '|' + penjualan.tgl_transaksi + '|' + penjualan.id | nomorTransaksiPenjualan }}</td>
+                                        <td>{{ penjualan.jenis + '|' + penjualan.tgl_transaksi + '|' + penjualan.id | nomorTransaksi }}</td>
                                         <td>{{ penjualan.konsumen.nama }}</td>
                                         <td>{{ penjualan.konsumen.nomor_telepon }}</td>
                                         <td>{{ penjualan.tgl_transaksi }}</td>
-                                        <td>{{ penjualan.status | statusPenjualan }}</td>
+                                        <td>{{ penjualan.status | statusTransaksi }}</td>
                                         <td class="pull-right">
                                             <a :href="'/admin/transaksi/penjualan/detail/' + penjualan.id" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i> Detail</a>
                                             <button v-if="penjualan.status == 1" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i> Ubah</button>
@@ -56,6 +56,7 @@
 
 <script>
 import formTambahUbah from './form-tambah-ubah.vue';
+import moment from 'moment'
 
 export default {
     components: {
@@ -116,6 +117,25 @@ export default {
             }
         },
     },
+    filters: {
+        nomorTransaksi: function (value) {
+            var temp = value.split("|")
+            return temp[0] + "-" + moment(String(temp[1])).format('DDMMYY') + "-" + temp[2]
+        },
+        statusTransaksi: function (value) {
+            switch(value) {
+                case 1:
+                    return "Terbuka"
+                    break
+                case 2:
+                    return "Menunggu pembayaran"
+                    break
+                case 3:
+                    return "Selesai"
+                    break
+            }
+        }
+    },
     created() {
         this.getAllPenjualan()
     },
@@ -131,7 +151,7 @@ export default {
                     'searching'   : true,
                     'order': [],
                     'columnDefs': [
-                        {"orderable": false, "targets": [0, 2, 5]},
+                        {"orderable": false, "targets": [0, 2, 3, 5]},
                         {"searchable": false, "targets": [5]}
                     ],
                 })

@@ -25,15 +25,15 @@
             </thead>
             
             <tbody>
-                <tr v-for="(detail, index) in listPenjualanSpareparts" v-bind:key="index">
+                <tr v-for="(penjualanSpareparts, index) in listPenjualanSpareparts" v-bind:key="index">
                     <td>{{ index+1 }}</td>
-                    <td>{{ detail.spareparts.nama }}</td>
-                    <td>{{ detail.spareparts.merk }}</td>
-                    <td>{{ detail.jumlah }}</td>
-                    <td>{{ detail.harga | toCurrency }}</td>
+                    <td>{{ penjualanSpareparts.spareparts.nama }}</td>
+                    <td>{{ penjualanSpareparts.spareparts.merk }}</td>
+                    <td>{{ penjualanSpareparts.jumlah }}</td>
+                    <td>{{ penjualanSpareparts.harga | toCurrency }}</td>
                     <td class="pull-right">
                         <button v-if="isOpen" @click="openForm('UBAH', index)" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#form-tambah-ubah"><i class="fa fa-pencil"></i></button>
-                        <button v-if="isOpen" @click="deletePenjualanSpareparts(detail.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                        <button v-if="isOpen" @click="deletePenjualanSpareparts(penjualanSpareparts.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
             </tbody>
@@ -60,7 +60,6 @@ export default {
     data: function() {
         return {
             listPenjualanSpareparts: null,
-            subtotal: null,
             formAction: null,
             selectedPenjualanSpareparts: null,
             showFormTambahUbah: false,
@@ -74,7 +73,6 @@ export default {
             .then(response => {
                 if(response.data.error == false) {
                     this.listPenjualanSpareparts = response.data.data
-                    this.sumSubtotal()
 
                     if($.fn.dataTable.isDataTable('#tabel-detail-penjualan-spareparts-' + this.index)) {
                         $('#tabel-detail-penjualan-spareparts-' + this.index).DataTable().destroy()
@@ -113,15 +111,6 @@ export default {
                 this.getPenjualanSpareparts()
             }
         },
-        sumSubtotal() {
-            var _temp = 0
-
-            this.listPenjualanSpareparts.forEach(function(detail) {
-                _temp += detail.jumlah * detail.harga
-            });
-
-            this.subtotal = _temp
-        }
     },
     created() {
         this.getPenjualanSpareparts()

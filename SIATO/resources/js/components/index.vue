@@ -14,10 +14,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="tentang/">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="riwayat/">Login</a>
                 </li>
                 </ul>
             </div>
@@ -28,10 +28,8 @@
             <div class="row">
                 <div class="col-lg-3">
                     <h1 class="my-4">SIATO</h1>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">Category 1</a>
-                        <a href="#" class="list-group-item">Category 2</a>
-                        <a href="#" class="list-group-item">Category 3</a>
+                    <div>
+                        <img :src="$root.app.url + 'images/logo.png'" alt="logo" height="240px"> 
                     </div>
                 </div>
 
@@ -45,15 +43,15 @@
 
                         <div class="carousel-inner" role="listbox">
                             <div class="carousel-item active">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="First slide">
+                                <img class="d-block img-fluid" src="images/bengkel-motor-1.jpg" alt="First slide">
                             </div>
 
                             <div class="carousel-item">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Second slide">
+                                <img class="d-block img-fluid" src="images/bengkel-motor-2.jpg" alt="Second slide">
                             </div>
 
                             <div class="carousel-item">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Third slide">
+                                <img class="d-block img-fluid" src="images/bengkel-motor-3.jpg" alt="Third slide">
                             </div>
                         </div>
 

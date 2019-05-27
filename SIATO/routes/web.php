@@ -11,14 +11,12 @@
 |
 */
 
-Route::get('/clear', function() {
-    Artisan::call('cache:clear');
-    Artisan::call('config:cache');
-    return "Cleared!";
-});
-
 Route::get('/', function () {
     return view('index');
+});
+
+Route::get('/tentang', function () {
+    return view('tentang');
 });
 
 Route::get('/riwayat', 'RiwayatController@view');
@@ -51,6 +49,7 @@ Route::prefix('admin')->group(function () {
         Route::prefix('pengadaan_barang')->group(function () {
             Route::get('/', 'AdminController@pengadaanBarang')->name('admin.transaksi.pengadaan_barang');
             Route::get('/detail/{id}', 'AdminController@pengadaanBarangDetail')->name('admin.transaksi.pengadaan_barang.detail');
+            Route::get('/detail/{id}/print', 'AdminController@pengadaanBarangDetailPrint')->name('admin.transaksi.pengadaan_barang.print');
         });
 
         Route::prefix('penjualan')->group(function () {

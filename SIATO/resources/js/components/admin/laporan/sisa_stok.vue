@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="box-body">
-                            <div id="hide-in-view" class="row">
+                            <div id="hide" class="row">
                                 <div class="col-xs-10 col-xs-offset-1">
                                     <div class="row">
                                         <div class="col-xs-4"><img :src="$root.app.url + 'images/logo.png'" class="img-responsive" alt="logo"></div>
@@ -37,7 +37,7 @@
                                         <option value="null" disabled>Tahun</option>
                                         <option v-for="(tahun, index) in availableTahun" v-bind:key="index">{{tahun}}</option>
                                     </select>
-                                    <p id="hide-in-view">{{tahun}}</p>
+                                    <p id="hide">{{tahun}}</p>
                                 </div>
 
                                 <div class="form-group">
@@ -46,11 +46,11 @@
                                         <option value="null" disabled>Tipe Barang</option>
                                         <option v-for="(tipe, index) in availableTipe" v-bind:key="index">{{tipe}}</option>
                                     </select>
-                                    <p id="hide-in-view">{{tipe_barang}}</p>
+                                    <p id="hide">{{tipe_barang}}</p>
                                 </div>
                             </form>
 
-                            <table v-if="laporan != null" class="table table-bordered table-striped">
+                            <table v-if="tahun != null && tipe_barang != null" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
@@ -60,17 +60,16 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr v-for="(detail, index) in laporan" v-bind:key="index">
+                                    <tr v-for="(asd, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{detail.bulan | toMonthName}}</td>
-                                        <td class="text-right">{{detail.sisa_stok | toNumber}}</td>
+                                        <td>{{asd.bulan | toNamaBulan}}</td>
+                                        <td class="text-right">{{asd.sisa_stok | toNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
+                            <p id="hide" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
                             
-                            <div v-if="laporan != null" class="chart" style="margin-top:25px;">
+                            <div v-if="tahun != null && tipe_barang != null" class="chart" style="margin-top:25px;">
                                 <canvas id="myChart" style="height:300px"></canvas>
                             </div>
                         </div>
@@ -98,6 +97,21 @@ export default {
         }
     },
     methods: {
+        getLaporan() {
+            axios.post(this.$root.app.url + 'api/laporan/sisa_stok', {
+                tahun: this.tahun,
+                tipe_barang: this.tipe_barang,
+                api_key: this.$root.api_key,
+            })
+            .then(response => {
+                if(response.data.error == false) {
+                    this.laporan = response.data.data
+
+                    $("canvas#myChart").remove();
+                    $("div.chart").append('<canvas id="myChart" style="height:300px"></canvas>');
+                }
+            })
+        },
         getAvailableTahunAndTipe() {
             axios.get(this.$root.app.url + 'api/transaksi/penjualan/index/tgl_transaksi')
             .then(response => {
@@ -119,43 +133,36 @@ export default {
                 this.availableTipe = response.data.data
             })
         },
-        getLaporan() {
-            if(this.tahun != null && this.tipe_barang != null) {
-                axios.post(this.$root.app.url + 'api/laporan/sisa_stok', {
-                    tahun: this.tahun,
-                    tipe_barang: this.tipe_barang,
-                    api_key: this.$root.api_key,
-                })
-                .then(response => {
-                    if(response.data.error == false) {
-                        this.laporan = response.data.data
-
-                        $("canvas#myChart").remove();
-                        $("div.chart").append('<canvas id="myChart" style="height:300px"></canvas>');
-                    }
-                })
-            }
-        },
         print() {
             window.print()
         },
     },
     filters: {
-        toMonthName: function (value) {
+        toNamaBulan: function (value) {
             return moment(value, 'MM').format('MMMM');
         }
     },
     computed: {
+        totalPendapatan: function () {
+            var total = 0
+
+            this.laporan.forEach(function(pendapatan_bulanan) {
+                total += pendapatan_bulanan.total
+            });
+
+            return total
+        },
         dateNow: function () {
             return moment().format('DD MMMM YYYY')
         },
     },
     created() {
         this.getAvailableTahunAndTipe()
+        this.getLaporan()
     },
     updated() {
         this.$nextTick(function () {
-            if(this.laporan != null) {
+            if(this.tahun != null && this.tipe_barang != null) {
                 var sisa_stok = []
 
                 this.laporan.forEach(function(element) {
@@ -197,14 +204,16 @@ export default {
                         },
                     }
                 })
+
+                myChart.update();
             }
         })
     }
 }
 </script>
 
-<style scoped>
-#hide-in-view {
+<style>
+#hide {
     display: none;
 }
 
@@ -213,7 +222,7 @@ export default {
         border-top: none;
     }
 
-    #hide-in-view {
+    #hide {
         display: inline;
     }
 

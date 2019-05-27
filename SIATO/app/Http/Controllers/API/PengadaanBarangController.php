@@ -17,12 +17,11 @@ class PengadaanBarangController extends Controller
 {
     var $response;
 
-    var $nullable = ['status'];
+    var $nullable = [];
     var $uneditable = [];
 
     var $rules = [
-        'id_supplier' => 'integer|exists:supplier,id',
-        'status' => 'integer|digits:1'
+        'id_supplier' => 'integer|exists:supplier,id'
     ];
 
     /**

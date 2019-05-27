@@ -108,8 +108,7 @@ export default {
                 nomor_telepon: null,
                 alamat: null,
                 gaji: 0,
-                role: null,
-                api_key: null
+                role: null
             },
             response: {
                 error: false,
@@ -178,7 +177,6 @@ export default {
             this.pegawai.alamat = null
             this.pegawai.gaji = null
             this.pegawai.role = null
-            this.pegawai.api_key = null
 
             this.response.error = false
             this.response.message = ''
@@ -197,7 +195,6 @@ export default {
             this.pegawai.alamat = this.selectedPegawai.alamat
             this.pegawai.gaji = this.selectedPegawai.gaji
             this.pegawai.role = this.selectedPegawai.role
-            this.pegawai.api_key = this.selectedPegawai.api_key
         }
     },
     mounted() {

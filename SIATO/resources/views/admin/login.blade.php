@@ -26,18 +26,18 @@
                 @csrf
 
                 <div class="form-group has-feedback">
-                    <input id="username" name="username" type="text" class="form-control" placeholder="Nama pengguna" value="{{ old('username') }}" required autofocus>
+                    <input name="username" type="text" class="form-control" placeholder="Nama pengguna" value="{{ old('username') }}" required autofocus>
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
 
                 <div class="form-group has-feedback">
-                    <input id="password" name="password" type="password" class="form-control" placeholder="Kata sandi" required>
+                    <input name="password" type="password" class="form-control" placeholder="Kata sandi" required>
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <button id="login" type="submit" class="btn btn-primary btn-block btn-flat">Masuk</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Masuk</button>
                     </div>
                 </div>
             </form>

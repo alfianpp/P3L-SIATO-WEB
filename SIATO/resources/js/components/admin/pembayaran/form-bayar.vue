@@ -50,7 +50,7 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button @click="doPay()" type="button" class="btn btn-success">Simpan</button>
+                    <button @click="save()" type="button" class="btn btn-success">Simpan</button>
                 </div>
             </div>
         </div>
@@ -72,7 +72,6 @@ export default {
                 message: '',
                 data: null
             },
-            reload: false,
             money: {
                 precision: 0,
                 decimal: ',',
@@ -82,7 +81,7 @@ export default {
         }
     },
     methods: {
-        doPay() {
+        save() {
             axios.put(this.$root.app.url + 'api/transaksi/pembayaran/detail/' + this.idPenjualan, {
                 diskon: this.diskon,
                 uang_diterima: this.uang_diterima,
@@ -92,23 +91,19 @@ export default {
                 this.response = response.data
                 if(this.response.error == false) {
                     alert(this.response.message)
-                    this.reload = true
+                    this.reloadList = true
                     $('#form-bayar').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                 }
             })
         },
-        close() {
-            this.diskon = 0
-            this.uang_diterima = 0
-                       
+        close() {           
             this.response.error = false
             this.response.message = ''
             this.response.data = null
 
-            this.$emit('close', this.reload)
-            this.reload = false
+            this.$emit('close')
         },
     },
     computed: {

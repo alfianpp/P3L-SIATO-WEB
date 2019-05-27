@@ -28,9 +28,7 @@ class DetailPengadaanBarangController extends Controller
     var $rules = [
         'id_pengadaan_barang' => 'integer|exists:pengadaan_barang,id',
         'kode_spareparts' => 'alpha_dash|max:12|exists:spareparts,kode',
-        'jumlah_pesan' => 'integer|min:1',
-        'jumlah_datang' => 'integer|min:1',
-        'harga' => 'numeric|digits_between:1,11'
+        'jumlah_pesan' => 'integer|min:1'
     ];
 
     /**
@@ -132,36 +130,20 @@ class DetailPengadaanBarangController extends Controller
                     return ($value !== null);
                 }));
 
-                if($request->has(['jumlah_datang', 'harga'])) {
-                    $detail_pengadaan_barang->jumlah_datang = $request->jumlah_datang;
-                    $detail_pengadaan_barang->harga = $request->harga;
-
-                    $histori_barang = new HistoriBarang;
-                    $histori_barang->kode_spareparts = $detail_pengadaan_barang->kode_spareparts;
-                    $histori_barang->keluar = 0;
-                    $histori_barang->masuk = $request->jumlah_datang;
-                    $histori_barang->save();
-
-                    $spareparts = Spareparts::find($detail_pengadaan_barang->kode_spareparts);
-                    $spareparts->stok = $spareparts->stok + $request->jumlah_datang;
-                    $spareparts->save();
-
-                    $pengadaan_barang = $detail_pengadaan_barang->pengadaan_barang;
-                    if(count(DetailPengadaanBarang::where('id_pengadaan_barang', $pengadaan_barang->id)->whereNull('jumlah_datang')->get()) == 1) {
-                        $total = 0;
-
-                        $details = DetailPengadaanBarang::where('id_pengadaan_barang', $pengadaan_barang->id)->whereNotNull('jumlah_datang')->get();
-                        foreach($details as $detail) {
-                            $total = $total + ($detail->jumlah_datang * $detail->harga);
-                        }
-
-                        $pengadaan_barang->total = $total + ($request->jumlah_datang * $request->harga);
-                        $pengadaan_barang->status = 3;
-                        $pengadaan_barang->save();
-                    }
-                }
-
                 if($detail_pengadaan_barang->save()) {
+                    if($request->filled('jumlah_datang')) {
+                        $histori_barang = new HistoriBarang;
+
+                        $histori_barang->kode_spareparts = $detail_pengadaan_barang->kode_spareparts;
+                        $histori_barang->keluar = 0;
+                        $histori_barang->masuk = $request->jumlah_datang;
+                        $histori_barang->save();
+
+                        $spareparts = Spareparts::find($detail_pengadaan_barang->kode_spareparts);
+                        $spareparts->stok = $spareparts->stok + $request->jumlah_datang;
+                        $spareparts->save();
+                    }
+
                     $this->response->message = 'Berhasil memperbarui data pengadaan barang.';
                 }
                 else {

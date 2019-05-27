@@ -64,7 +64,7 @@
                                     v-model="kendaraan.pemilik.nama" 
                                     :list="listKonsumen" 
                                     :max-suggestions="0" 
-                                    :min-length="2" 
+                                    :min-length="3" 
                                     display-attribute="nama" 
                                     :styles="autoCompleteStyle" 
                                     :destyled=true 
@@ -249,7 +249,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .vue-simple-suggest > ul {
   list-style: none;
   margin: 0;

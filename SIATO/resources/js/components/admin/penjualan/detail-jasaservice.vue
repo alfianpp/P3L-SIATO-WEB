@@ -23,12 +23,12 @@
             </thead>
             
             <tbody>
-                <tr v-for="(detail, index) in listPenjualanJasaService" v-bind:key="index">
+                <tr v-for="(penjualanJasaService, index) in listPenjualanJasaService" v-bind:key="index">
                     <td>{{ index+1 }}</td>
-                    <td>{{ detail.jasa_service.nama }}</td>
-                    <td>{{ detail.harga | toCurrency }}</td>
+                    <td>{{ penjualanJasaService.jasa_service.nama }}</td>
+                    <td>{{ penjualanJasaService.harga | toCurrency }}</td>
                     <td class="pull-right">
-                        <button v-if="isOpen" @click="deletePenjualanJasaService(detail.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                        <button v-if="isOpen" @click="deletePenjualanJasaService(penjualanJasaService.id)" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
             </tbody>
@@ -55,7 +55,6 @@ export default {
     data: function() {
         return {
             listPenjualanJasaService: null,
-            subtotal: null,
             formAction: null,
             selectedPenjualanJasaService: null,
             showFormTambahUbah: false,
@@ -69,7 +68,6 @@ export default {
             .then(response => {
                 if(response.data.error == false) {
                     this.listPenjualanJasaService = response.data.data
-                    this.sumSubtotal()
 
                     if($.fn.dataTable.isDataTable('#tabel-detail-penjualan-jasa-service-' + this.index)) {
                         $('#tabel-detail-penjualan-jasa-service-' + this.index).DataTable().destroy()
@@ -108,15 +106,6 @@ export default {
                 this.getPenjualanJasaService()
             }
         },
-        sumSubtotal() {
-            var _temp = 0
-
-            this.listPenjualanJasaService.forEach(function(detail) {
-                _temp += detail.jumlah * detail.harga
-            });
-
-            this.subtotal = _temp
-        }
     },
     created() {
         this.getPenjualanJasaService()

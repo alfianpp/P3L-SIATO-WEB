@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="box-body">
-                            <div id="hide-in-view" class="row">
+                            <div id="hide" class="row">
                                 <div class="col-xs-10 col-xs-offset-1">
                                     <div class="row">
                                         <div class="col-xs-4"><img :src="$root.app.url + 'images/logo.png'" class="img-responsive" alt="logo"></div>
@@ -33,11 +33,10 @@
                             <form class="form-inline" style="margin: 20px 0px 10px 0px;">
                                 <div class="form-group">
                                     <label>Tahun : </label>
-                                    <select v-model="tahun" @change="getLaporan" class="no-print">
-                                        <option value="null" disabled>Tahun</option>
-                                        <option v-for="(tahun, index) in availableTahun" v-bind:key="index">{{tahun}}</option>
+                                    <select v-model="tahun" class="no-print">
+                                        <option>2019</option>
                                     </select>
-                                    <p id="hide-in-view">{{tahun}}</p>
+                                    <p id="hide">2019</p>
                                 </div>
                             </form>
 
@@ -46,15 +45,15 @@
                                     <tr>
                                         <th class="text-center">No</th>
                                         <th class="text-center">Bulan</th>
-                                        <th class="text-center">Jumlah Pengeluaran</th>
+                                        <th class="text-center">Jumlah</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr v-for="(detail, index) in laporan" v-bind:key="index">
+                                    <tr v-for="(asd, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{detail.bulan | toNamaBulan}}</td>
-                                        <td class="text-right">{{detail.jumlah_pengeluaran | toNumber}}</td>
+                                        <td>{{asd.bulan | toNamaBulan}}</td>
+                                        <td class="text-right">{{asd.jumlah_pengeluaran | toNumber}}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -63,10 +62,9 @@
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
+                            <p id="hide" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
                             
-                            <div v-if="laporan != null" class="chart" style="margin-top:25px;">
+                            <div class="chart" style="margin-top:25px;">
                                 <canvas id="myChart" style="height:300px"></canvas>
                             </div>
                         </div>
@@ -87,38 +85,18 @@ export default {
     data: function() {
         return {
             laporan: null,
-            tahun: null,
-            availableTahun: null,
+            tahun: 2019,
         }
     },
     methods: {
-        getAvailableTahun() {
-            axios.get(this.$root.app.url + 'api/transaksi/penjualan/index/tgl_transaksi')
-            .then(response => {
-                var _temp = []
-
-                response.data.data.forEach(function(tgl_transaksi) {
-                    var tahun = moment(tgl_transaksi, 'DD-MM-YYYY').format('YYYY')
-
-                    if(!_temp.includes(tahun)) {
-                        _temp.push(tahun)
-                    }
-                })
-
-                this.availableTahun = _temp
-            })
-        },
         getLaporan() {
             axios.post(this.$root.app.url + 'api/laporan/pengeluaran_bulanan', {
-                tahun: this.tahun,
+                tahun: 2019,
                 api_key: this.$root.api_key,
             })
             .then(response => {
                 if(response.data.error == false) {
                     this.laporan = response.data.data
-
-                    $("canvas#myChart").remove();
-                    $("div.chart").append('<canvas id="myChart" style="height:300px"></canvas>');
                 }
             })
         },
@@ -146,53 +124,56 @@ export default {
         },
     },
     created() {
-        this.getAvailableTahun()
+        this.getLaporan()
     },
     updated() {
         this.$nextTick(function () {
-            if(this.laporan != null) {
-                var jumlah_pengeluaran = []
+            var jumlah_pengeluaran = []
 
-                this.laporan.forEach(function(element) {
-                    jumlah_pengeluaran.push((element.jumlah_pengeluaran) ? element.jumlah_pengeluaran : 0)
-                });
+            this.laporan.forEach(function(element) {
+                jumlah_pengeluaran.push((element.jumlah_pengeluaran) ? element.jumlah_pengeluaran : 0)
+            });
 
-                var chartData = {
-                    labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                    datasets: [
-                        {
-                            label: 'Dataset 1',
-                            backgroundColor: [
-                                '#287278', '#65228D', '#4770B3', '#D21F75', '#383689', '#50AED3', '#48B24F', '#E57438', '#569DD2', '#589079', '#58595B', '#64B021'
-                            ],
-                            data: jumlah_pengeluaran
-                        }
-                    ]
-                }
-
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        legend: {
-                            position: 'right',
-                        },
-                        title: {
-                            display: true,
-                            text: 'PENGELUARAN BULANAN TAHUN ' + this.tahun
-                        }
+            var chartData = {
+                labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                datasets: [
+                    {
+                       
+                        data:jumlah_pengeluaran,
+                       backgroundColor:[
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF",
+                           "#6384FF"
+                       ]
                     }
-                })
+                ]
             }
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+				type: 'pie',
+				data: chartData,
+				options: {
+                    responsive: true,
+                    label:"PENGELUARAN BULANAN TAHUN" + this.tahun,
+                }
+            })
         })
     }
 }
 </script>
 
-<style scoped>
-#hide-in-view {
+<style>
+#hide {
     display: none;
 }
 
@@ -201,7 +182,7 @@ export default {
         border-top: none;
     }
 
-    #hide-in-view {
+    #hide {
         display: inline;
     }
 }

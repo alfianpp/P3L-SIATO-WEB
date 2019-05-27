@@ -246,11 +246,11 @@ class PenjualanController extends Controller
 
                     $penjualan->subtotal = $subtotal;
 
-                    if($under > 0) {
-                        $title = 'Pemberitahuan Stok';
-                        $message = 'Ada ' . $under . ' spareparts yang sudah mencapai/dibawah stok minimal.';
-                        $this->sendPushNotification($title, $message);
-                    }
+                    // if($under > 0) {
+                    //     $title = 'Pemberitahuan Stok';
+                    //     $message = 'Ada ' . $under . ' spareparts yang sudah mencapai/dibawah stok minimal.';
+                    //     $this->sendPushNotification($title, $message);
+                    // }
                 }
                 
                 if($penjualan->save()) {
@@ -316,7 +316,7 @@ class PenjualanController extends Controller
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
 
-        $token = "d8SWjX_RBUg:APA91bH35lvbEqkTfmUxxv-x18qFed6ngz4ipO7nkxcETU7YRrJcsjkeD9PGuSB458NXTlAVstmcEHLkD7c06CMBWkCguyTiAqDx5cOMybzur6n-FVoZ1iaMjgy4F5tL_l09oju5Pjsi";
+        $token = "e_Jrc4Xg-vA:APA91bGjzxVcjfbw-b1wMDDJwMVFErjeSBDTfGITzD07DdEBhiMNI4-PLjxZZkJSRLHgscbYIZHeWsArTcjV5AmIWuVP8hl8SnJjrWrEt5tEF8LlBQfDtiorN8FtVPdRKJqo3gasIOSZ";
 
         $downstreamResponse = FCM::sendTo($token, $option, $notification);
 

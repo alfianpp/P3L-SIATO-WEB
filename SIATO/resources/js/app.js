@@ -9,15 +9,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import moment from 'moment'
-import 'moment/locale/id'
 import numeral from 'numeral'
-
-/**
- * Moment
- */
-
-moment.locale('id')
 
 /**
  * Numeral
@@ -65,6 +57,7 @@ Vue.component('admin-kelola-cabang', require('./components/admin/kelola/cabang/i
 
 Vue.component('admin-pengadaan-barang', require('./components/admin/pengadaan_barang/index.vue').default);
 Vue.component('admin-pengadaan-barang-detail', require('./components/admin/pengadaan_barang/detail.vue').default);
+Vue.component('admin-pengadaan-barang-print', require('./components/admin/pengadaan_barang/print.vue').default);
 
 Vue.component('admin-penjualan', require('./components/admin/penjualan/index.vue').default);
 Vue.component('admin-penjualan-detail', require('./components/admin/penjualan/detail.vue').default);
@@ -74,13 +67,15 @@ Vue.component('admin-pembayaran-detail', require('./components/admin/pembayaran/
 
 Vue.component('admin-laporan-spareparts-terlaris', require('./components/admin/laporan/spareparts_terlaris.vue').default);
 Vue.component('admin-laporan-pendapatan-bulanan', require('./components/admin/laporan/pendapatan_bulanan.vue').default);
-Vue.component('admin-laporan-pendapatan-tahunan', require('./components/admin/laporan/pendapatan_tahunan.vue').default);
 Vue.component('admin-laporan-pengeluaran-bulanan', require('./components/admin/laporan/pengeluaran_bulanan.vue').default);
-Vue.component('admin-laporan-penjualan-jasa', require('./components/admin/laporan/penjualan_jasa.vue').default);
+Vue.component('admin-laporan-pendapatan-tahunan', require('./components/admin/laporan/pendapatan_tahunan.vue').default);
 Vue.component('admin-laporan-sisa-stok', require('./components/admin/laporan/sisa_stok.vue').default);
 
 
 Vue.component('siato-index', require('./components/index.vue').default);
+Vue.component('konsumen-index', require('./components/konsumen/index.vue').default);
+Vue.component('tentang-index', require('./components/tentang/index.vue').default);
+
 
 /**
  * Filters
@@ -94,33 +89,6 @@ Vue.filter('toNumber', function (value) {
     return numeral(value).format('0,0')
 });
 
-Vue.filter('statusPengadaanBarang', function (value) {
-    switch(value) {
-        case 1:
-            return "Terbuka"
-        case 2:
-            return "Menunggu verifikasi"
-        case 3:
-            return "Selesai"
-    }
-});
-
-Vue.filter('statusPenjualan', function (value) {
-    switch(value) {
-        case 1:
-            return "Terbuka"
-        case 2:
-            return "Menunggu pembayaran"
-        case 3:
-            return "Selesai"
-    }
-});
-
-Vue.filter('nomorTransaksiPenjualan', function (value) {
-    var _temp = value.split("|")
-    return _temp[0] + "-" + moment(String(_temp[1])).format('DDMMYY') + "-" + _temp[2]
-});
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -131,7 +99,7 @@ const app = new Vue({
     el: '#app',
     data: {
         app: {
-            url: 'http://192.168.100.4:8000/',
+            url: 'http://127.0.0.1:8000/',
         },
         api_key: null,
     },

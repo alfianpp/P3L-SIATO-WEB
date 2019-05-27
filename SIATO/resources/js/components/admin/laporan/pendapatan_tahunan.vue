@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="box-body">
-                            <div id="hide-in-view" class="row">
+                            <div id="hide" class="row">
                                 <div class="col-xs-10 col-xs-offset-1">
                                     <div class="row">
                                         <div class="col-xs-4"><img :src="$root.app.url + 'images/logo.png'" class="img-responsive" alt="logo"></div>
@@ -30,6 +30,16 @@
 
                             <h4 class="text-center"><b>LAPORAN PENDAPATAN TAHUNAN</b></h4>
 
+                            <form class="form-inline" style="margin: 20px 0px 10px 0px;">
+                                <div class="form-group">
+                                    <label>Tahun : </label>
+                                    <select v-model="tahun" class="no-print">
+                                        <option>2019</option>
+                                    </select>
+                                    <p id="hide">2019</p>
+                                </div>
+                            </form>
+
                             <table v-if="laporan != null" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -41,11 +51,11 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr v-for="(detail, index) in laporan" v-bind:key="index">
+                                    <tr v-for="(asd, index) in laporan" v-bind:key="index">
                                         <td class="text-center">{{index+1}}</td>
-                                        <td>{{detail.tahun}}</td>
-                                        <td>{{detail.cabang}}</td>
-                                        <td class="text-right">{{detail.total | toNumber}}</td>
+                                        <td>2019</td>
+                                        <td class="text-right">{{asd.cabang | toText}}</td> 
+                                        <td class="text-right">{{asd.total | toNumber}}</td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -55,9 +65,9 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <p id="hide-in-view" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
+                            <p id="hide" class="pull-right" style="margin-top: 25px">dicetak tanggal {{dateNow}}</p>
                             
-                            <div v-if="laporan != null" class="chart" style="margin-top:25px;">
+                            <div class="chart" style="margin-top:25px;">
                                 <canvas id="myChart" style="height:300px"></canvas>
                             </div>
                         </div>
@@ -78,28 +88,13 @@ export default {
     data: function() {
         return {
             laporan: null,
-            availableTahun: null,
+            tahun: 2019,
         }
     },
     methods: {
-        getAvailableTahun() {
-            axios.get(this.$root.app.url + 'api/transaksi/penjualan/index/tgl_transaksi')
-            .then(response => {
-                var _temp = []
-
-                response.data.data.forEach(function(tgl_transaksi) {
-                    var tahun = moment(tgl_transaksi, 'DD-MM-YYYY').format('YYYY')
-
-                    if(!_temp.includes(tahun)) {
-                        _temp.push(tahun)
-                    }
-                })
-
-                this.availableTahun = _temp
-            })
-        },
         getLaporan() {
-            axios.post(this.$root.app.url + 'api/laporan/pendapatan_tahunan', {
+            axios.post(this.$root.app.url + 'api/laporan/pendapatan_bulanan', {
+                tahun: 2019,
                 api_key: this.$root.api_key,
             })
             .then(response => {
@@ -121,8 +116,8 @@ export default {
         totalPendapatan: function () {
             var total = 0
 
-            this.laporan.forEach(function(pendapatan_tahunan) {
-                total += pendapatan_tahunan.total
+            this.laporan.forEach(function(pendapatan_bulanan) {
+                total += pendapatan_bulanan.total
             });
 
             return total
@@ -132,81 +127,69 @@ export default {
         },
     },
     created() {
-        this.getAvailableTahun()
         this.getLaporan()
     },
     updated() {
         this.$nextTick(function () {
-            if(this.laporan != null) {
-                var cabang = []
-                var total = []
+            var jasa_service = []
+            var spareparts = []
+            var total = []
 
-                this.laporan.forEach(function(element) {
-                    if(!cabang.includes(element.cabang)) {
-                        cabang.push(element.cabang)
+            this.laporan.forEach(function(element) {
+                jasa_service.push((element.jasa_service) ? element.jasa_service : 0)
+                spareparts.push((element.spareparts) ? element.spareparts : 0)
+                total.push((element.total) ? element.total : 0)
+            });
+
+            var chartData = {
+                labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                datasets: [
+                    {
+                        label: 'Jasa Service',
+                        backgroundColor: '#e67e22',
+                        borderColor: '#d35400',
+                        borderWidth: 1,
+                        data: jasa_service
+                    },
+                    {
+                        label: 'Spareparts',
+                        backgroundColor: '#3498db',
+                        borderColor: '#2980b9',
+                        borderWidth: 1,
+                        data: spareparts
+                    },
+                    {
+                        label: 'Total',
+                        backgroundColor: '#95a5a6',
+                        borderColor: '#7f8c8d',
+                        borderWidth: 1,
+                        data: total
                     }
-
-                    var index = cabang.indexOf(element.cabang)
-
-                    if(!(index in total)) {
-                        total[index] = []
-                    }
-                    
-                    total[index].push(element.total)
-
-                    //total[element.cabang].push((element.total) ? element.total : 0)
-                });
-
-                console.log(total)
-
-                function getRandomColor() {
-                    var letters = '0123456789ABCDEF';
-                    var color = '#';
-                    for (var i = 0; i < 6; i++) {
-                        color += letters[Math.floor(Math.random() * 16)];
-                    }
-                    return color;
-                }
-
-                var ds = []
-                cabang.forEach(function(value) {
-                    var i = {}
-                    i.label = value
-                    i.backgroundColor = getRandomColor()
-                    i.data = total[cabang.indexOf(value)]
-                    ds.push(i)
-                })
-
-                console.log(ds)
-
-                var chartData = {
-                    labels: this.availableTahun,
-                    datasets: ds
-                }
-
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'PENDAPATAN TAHUNAN'
-                        }
-                    }
-                })
+                ]
             }
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: chartData,
+				options: {
+					responsive: true,
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'PENDAPATAN BULANAN TAHUN ' + this.tahun
+					}
+                }
+            })
         })
     }
 }
 </script>
 
-<style scoped>
-#hide-in-view {
+<style>
+#hide {
     display: none;
 }
 
@@ -215,7 +198,7 @@ export default {
         border-top: none;
     }
 
-    #hide-in-view {
+    #hide {
         display: inline;
     }
 }

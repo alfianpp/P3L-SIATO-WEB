@@ -9,7 +9,8 @@ class Supplier extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     public function toArray($request)
@@ -17,6 +18,8 @@ class Supplier extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
+            'alamat' => $this->alamat,
+            'nomor_telepon_sales' => $this->nomor_telepon_sales,
         ];
     }
 }

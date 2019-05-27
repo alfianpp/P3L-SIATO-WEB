@@ -148,7 +148,7 @@ export default {
                     'order': [[0, 'asc']],
                     'columnDefs': [
                         {"orderable": false, "targets": [0, 2, 3, 6]},
-                        {"searchable": false, "targets": [0, 4, 6]}
+                        {"searchable": false, "targets": [0, 4, 5, 6]}
                     ],
                 })
             }
